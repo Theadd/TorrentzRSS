@@ -79,10 +79,10 @@
 	<div class="row">
 		<div id="sidebar-left" class="col-xs-2 col-sm-2">
 			<ul class="nav main-menu">
-				<li>
+				<!--<li>
 					<a href="ajax/dashboard.html" class="active ajax-link">
-						<i class="fa fa-signal"></i>
-						<span class="hidden-xs">Quality</span>
+						<i class="fa fa-signal hidden-xs hidden-sm hidden-md"></i>
+						<span class="hidden-xs hidden-sm hidden-md">Quality</span>
                         <div class="btn-group pull-right" data-toggle="buttons" style="margin-top: -3px; opacity: 0.8;">
                             <label class="btn btn-default">
                                 <input type="radio" name="options" id="option1"> Any
@@ -95,7 +95,19 @@
                             </label>
                         </div>
 					</a>
-				</li>
+				</li>-->
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        <i class="fa fa-signal"></i>
+                        <span class="hidden-xs">Quality &amp; Safety</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Any</a></li>
+                        <li><a class="nav-option nav-option-radio selected" href="#"><i class="fa fa-check"></i> Good</a></li>
+                        <li><a class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Verified</a></li>
+                    </ul>
+                </li>
+                <li class="divider">DRAG &amp; DROP TO REORDER <i class="fa fa-lg fa-angle-double-down"></i></li>
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle">
 						<i class="fa fa-bar-chart-o"></i>

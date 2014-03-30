@@ -73,3 +73,26 @@ a {
     font-size: 11px;
     font-weight: inherit;
 }
+
+.nav-option-radio i {
+    color: transparent;
+}
+
+.nav-option-radio.selected i {
+    color: inherit;
+}
+
+.main-menu .dropdown-menu > li > a.nav-option {
+    padding-left: 26px;
+}
+
+.main-menu .divider {
+    height: 15px;
+    margin: 9px 0 0;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 8px;
+    font-weight: bold;
+    text-align: center;
+}
