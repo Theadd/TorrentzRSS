@@ -96,3 +96,37 @@ a {
     font-weight: bold;
     text-align: center;
 }
+
+
+/* SORTABLE JQUERY PLUGIN */
+
+body.dragging, body.dragging * {
+    /*cursor: move !important;*/
+}
+
+.dragged {
+    position: absolute !important;
+    opacity: 0.8;
+    z-index: 2000;
+    background-color: transparent;
+}
+
+.dragged a {
+    background-color: transparent !important;
+}
+
+ul.main-menu li.placeholder {
+    position: relative;
+    /** More li styles **/
+    height: 40px;
+    border-top: 1px solid rgba(0,0,0,0.3);
+    border-bottom: 1px solid rgba(0,0,0,0.3);
+    background-color: rgba(255,255,255,0.4);
+    -webkit-box-shadow: 0px 0px 10px rgba(255,255,255,0.6);
+    -moz-box-shadow: 0px 0px 10px rgba(255,255,255,0.6);
+    box-shadow: 0px 0px 10px rgba(255,255,255,0.6);
+    opacity: 0.8;
+}
+
+
+/* */
