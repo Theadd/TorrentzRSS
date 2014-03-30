@@ -1,0 +1,75 @@
+
+body {
+    font-family: Verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+a {
+    outline: 0 none !important;
+}
+
+#search-box {
+    /*float: right;
+    width: calc(100% - 200px);
+    background-color: yellow;
+    text-align: right;*/
+    height: 50px;
+    line-height: 50px;
+    float: right;
+    width: calc(100% - 26px);
+}
+
+#search-box input, #search-box button {
+    border: 1px solid #C7C7C7;
+}
+
+#search-box * {
+    /*input-group-btn*/
+    line-height: 30px;
+    height: 30px;
+}
+
+#search-box button {
+    margin-bottom: 0;
+}
+
+#search-box input {
+    /*background: #dfdfdf;*/
+    text-shadow: 0 1px 1px #EEE;
+    color: #686868;
+    margin: 10px 0 0;
+}
+
+.box-header {
+    background: none repeat scroll 0 0 #F2F2F2;
+    border-bottom: 1px solid #E4E4E4;
+    border-radius: 3px 3px 0 0;
+    color: #6494bb;
+    font-size: 13px;
+    font-weight: bold;
+    height: 28px;
+    letter-spacing: 0.08em;
+    overflow: hidden;
+    position: relative;
+}
+
+#logo a:hover {
+    background-position: right 13px;
+    opacity: 1;
+    padding-left: 20px;
+}
+#logo a {
+    background: url("../img/logo.png") no-repeat scroll right 32px rgba(0, 0, 0, 0);
+    opacity: 0.5;
+}
+
+.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default {
+    background-color: #FFFFFF;
+    border-color: rgba(0, 0, 0, 0.3);
+    color: #999999;
+}
+
+.btn {
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: inherit;
+}
