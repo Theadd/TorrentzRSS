@@ -130,3 +130,23 @@ ul.main-menu li.placeholder {
 
 
 /* */
+
+#results-table {
+    font-size: 12px;
+}
+
+#results-table > tbody > tr > td:nth-child(2), #results-table > tbody > tr > td:nth-child(3) {
+    font-size: 9px;
+    overflow: visible;
+    text-align: right;
+}
+
+#results-table > tbody > tr > td:nth-child(4) {
+    text-align: right;
+    color: green;
+}
+
+#results-table > tbody > tr > td:nth-child(5) {
+    text-align: right;
+    color: blue;
+}
