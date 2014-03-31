@@ -48,11 +48,24 @@ $data['channel'] = array(
     "total" => 0
 );
 
-$query = "http://torrentz.eu/feedA?q=espa%C3%B1ol+|+spanish+|+castellano+movies+|+video+seed+%3E+20+size+%3E+600m+size+%3C++6000m+-hdtv+-screener+-latino+-xxx";
+function convertLatin1ToHtml($str) {
+    $allEntities = get_html_translation_table(HTML_ENTITIES, ENT_NOQUOTES);
+    $specialEntities = get_html_translation_table(HTML_SPECIALCHARS, ENT_NOQUOTES);
+    $noTags = array_diff($allEntities, $specialEntities);
+    $str = strtr($str, $noTags);
+    return $str;
+}
+
+$params = explode('-', $_REQUEST['p']);
+$cin = array("ñ", "Ñ", "ç", "Ç", " ", ">", "<");
+$cout = array("%C3%B1", "%C3%91", "%C3%A7", "%C3%87", "+", "%3E", "%3C");
+$_REQUEST['q'] = str_replace($cin, $cout, $_REQUEST['q']);
+
+$query = "http://torrentz.eu/" . $params[0] . "?q=" . $_REQUEST['q'];//"espa%C3%B1ol+|+spanish+|+castellano+movies+|+video+seed+%3E+20+size+%3E+600m+size+%3C++6000m+-hdtv+-screener+-latino+-xxx";
 
 $total = 0;
 $page = 0;
-while (($sum = process_url($query.'&p='.$page, $data['channel'])) != 0) {
+while (($sum = process_url($query.'&p='.$page, $data['channel'])) != 0 && ($params[1] * 2 > $page)) {
     $total += $sum;
     $page+=2;
 }
@@ -72,3 +85,5 @@ if (isset($_REQUEST['f']) && strtolower($_REQUEST['f']) == 'json') {
         echo $serializer->getSerializedData();
     }
 }
+
+?>

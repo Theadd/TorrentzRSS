@@ -16,6 +16,7 @@ function queryManager(config_params) {
     this.quality = "good";
     this.orderby = "peers";
     this.pages = "1";
+    this.query = "espa%C3%B1ol+|+spanish+|+castellano+movies+|+video+seed+%3E+20+size+%3E+600m+size+%3C++6000m+-hdtv+-screener+-latino+-xxx";
 
     //private:
     var this_qm = this;
@@ -57,14 +58,17 @@ function queryManager(config_params) {
 
         if (!busy && this.enabled) {
 
+            this.refresh();
             busy = true;
             if (clear)
                 tbody.html("");
 
+            var process_params = related[this.quality] + related[this.orderby] + '-' + this.pages;
+
             var request = $.ajax({
                 type: 'GET',
                 url: config['process_url'],
-                data: { f: 'json' },
+                data: { f: 'json', 'p': process_params, 'q': this.query },
                 async: true,
                 xhrFields: {
                     withCredentials: false
@@ -98,6 +102,27 @@ function queryManager(config_params) {
         }
 
         return true;
+    };
+
+    /** Update parameters value. */
+    this.refresh = function() {
+
+        if (!busy && this.enabled) {
+            busy = true;
+
+            this.quality = $('#quality').data('value');
+            this.orderby = $('#order').data('value');
+            this.pages = $('#pages').data('value');
+            this.query = $('#search-query').val();
+            //this.query = this.query.replace(' ', '+');
+            /*this.query = this.query.replace(/[\u00A0-\u99999<>\&]/gim, function(i) {
+                return '&#'+i.charCodeAt(0)+';';
+            });*/
+
+            busy = false;
+        } else {
+            alert("Either busy or disabled!");
+        }
     };
 
 }
