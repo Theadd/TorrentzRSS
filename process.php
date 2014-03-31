@@ -59,6 +59,8 @@ while (($sum = process_url($query.'&p='.$page, $data['channel'])) != 0) {
 
 $data['channel']["total"] = $total;
 
+header('Access-Control-Allow-Origin: *');
+
 if (isset($_REQUEST['f']) && strtolower($_REQUEST['f']) == 'json') {
     header('Content-Type: application/json');
     echo json_encode($data, JSON_PRETTY_PRINT);

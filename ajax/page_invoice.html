@@ -49,54 +49,12 @@
 	</div>
 </div>
 
-<!--<script type="text/javascript">
-    console.log("ftfas");
-    var copy_rss_url = new ZeroClipboard( document.getElementById("copy-rss-url") );
-    copy_rss_url.on( "ready", function( readyEvent ) {
-         alert( "ZeroClipboard SWF is ready!" );
-
-        copy_rss_url.on( "aftercopy", function( event ) {
-            // `this` === `client`
-            // `event.target` === the element that was clicked
-            //event.target.style.display = "none";
-            alert("Copied text to clipboard: " + event.data["text/plain"] );
-        } );
-    } );
-</script>-->
-
 <script type="text/javascript">
 
     $(document).ready(function() {
-
-        var request = $.ajax({
-            type: 'GET',
-            url: 'sample.json',
-            //url: 'process.php',
-            //data: { f: 'json' },
-            //data: { data: http_data, method: http_method, url: (server + http_url) },
-            async: true,
-            xhrFields: {
-                withCredentials: true
-            },
-            crossDomain: true
-        });
-
-        request.success(function(data) {
-
-            var tbody = $('#results-table').find('tbody');
-            $.each(data, function(i_channel, channel) {
-                $.each(channel, function(i, item) {
-                    console.log(i + " = " + JSON.stringify(item));
-                    if (item['title'] !== undefined) {
-
-                        tbody.append('<tr><td><a href="'+item['link']+'">'+item['title']+'</a> <i class="fa fa-angle-double-right"></i> '+item['category']+'</td><td>'+jQuery.timeago(item['pubdate'])+'</td><td>'+item['size']+'</td><td>'+item['seeds']+'</td><td>'+item['peers']+'</td></tr>');
-                    }
-                });
-            });
-        });
-        request.fail(function(data) {
-            alert("fail: "+data);
-            console.log(data);
-        });
+        var tbody = $('#results-table').find('tbody');
+        console.log("calling manager.perform");
+        var working = manager.perform(tbody, true);
+        console.log("end call, return: " + working);
     });
 </script>

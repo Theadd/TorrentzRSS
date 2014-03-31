@@ -74,32 +74,16 @@
 	<div class="row">
 		<div id="sidebar-left" class="col-xs-2 col-sm-2">
 			<ul class="nav main-menu">
-				<!--<li>
-					<a href="ajax/dashboard.html" class="active ajax-link">
-						<i class="fa fa-signal hidden-xs hidden-sm hidden-md"></i>
-						<span class="hidden-xs hidden-sm hidden-md">Quality</span>
-                        <div class="btn-group pull-right" data-toggle="buttons" style="margin-top: -3px; opacity: 0.8;">
-                            <label class="btn btn-default">
-                                <input type="radio" name="options" id="option1"> Any
-                            </label>
-                            <label class="btn btn-default active">
-                                <input type="radio" name="options" id="option2"> Good
-                            </label>
-                            <label class="btn btn-default">
-                                <input type="radio" name="options" id="option3"> Verified
-                            </label>
-                        </div>
-					</a>
-				</li>-->
+
                 <li class="dropdown no-sortable">
                     <a href="#" class="dropdown-toggle no-sortable">
                         <i class="fa fa-signal no-sortable"></i>
                         <span class="hidden-xs no-sortable">Quality &amp; Safety</span>
                     </a>
-                    <ul class="dropdown-menu no-sortable">
-                        <li><a class="nav-option nav-option-radio no-sortable" href="#"><i class="fa fa-check no-sortable"></i> Any</a></li>
-                        <li><a class="nav-option nav-option-radio no-sortable selected" href="#"><i class="fa fa-check no-sortable"></i> Good</a></li>
-                        <li><a class="nav-option nav-option-radio no-sortable" href="#"><i class="fa fa-check no-sortable"></i> Verified</a></li>
+                    <ul id="quality" class="dropdown-menu no-sortable" data-value="good">
+                        <li><a data-value="any" class="nav-option nav-option-radio no-sortable" href="#"><i class="fa fa-check no-sortable"></i> Any</a></li>
+                        <li><a data-value="good" class="nav-option nav-option-radio no-sortable selected" href="#"><i class="fa fa-check no-sortable"></i> Good</a></li>
+                        <li><a data-value="verified" class="nav-option nav-option-radio no-sortable" href="#"><i class="fa fa-check no-sortable"></i> Verified</a></li>
                     </ul>
                 </li>
                 <li class="dropdown no-sortable">
@@ -107,11 +91,11 @@
                         <i class="fa fa-sort no-sortable"></i>
                         <span class="hidden-xs no-sortable">Order by</span>
                     </a>
-                    <ul class="dropdown-menu no-sortable">
-                        <li><a class="nav-option nav-option-radio no-sortable" href="#"><i class="fa fa-check no-sortable"></i> Rating</a></li>
-                        <li><a class="nav-option nav-option-radio no-sortable selected" href="#"><i class="fa fa-check no-sortable"></i> Date</a></li>
-                        <li><a class="nav-option nav-option-radio no-sortable" href="#"><i class="fa fa-check no-sortable"></i> Size</a></li>
-                        <li><a class="nav-option nav-option-radio no-sortable" href="#"><i class="fa fa-check no-sortable"></i> Peers</a></li>
+                    <ul id="order" class="dropdown-menu no-sortable" data-value="peers">
+                        <li><a data-value="rating" class="nav-option nav-option-radio no-sortable" href="#"><i class="fa fa-check no-sortable"></i> Rating</a></li>
+                        <li><a data-value="date" class="nav-option nav-option-radio no-sortable" href="#"><i class="fa fa-check no-sortable"></i> Date</a></li>
+                        <li><a data-value="size" class="nav-option nav-option-radio no-sortable" href="#"><i class="fa fa-check no-sortable"></i> Size</a></li>
+                        <li><a data-value="peers" class="nav-option nav-option-radio no-sortable selected" href="#"><i class="fa fa-check no-sortable"></i> Peers</a></li>
                     </ul>
                 </li>
                 <li class="dropdown no-sortable">
@@ -119,12 +103,12 @@
                         <i class="fa fa-bars no-sortable"></i>
                         <span class="hidden-xs no-sortable">Page requests</span>
                     </a>
-                    <ul class="dropdown-menu no-sortable">
-                        <li><a class="nav-option nav-option-radio no-sortable" href="#"><i class="fa fa-check no-sortable"></i> 1 query (100 results)</a></li>
-                        <li><a class="nav-option nav-option-radio no-sortable selected" href="#"><i class="fa fa-check no-sortable"></i> 2 queries (200 results)</a></li>
-                        <li><a class="nav-option nav-option-radio no-sortable" href="#"><i class="fa fa-check no-sortable"></i> 5 queries (500 results)</a></li>
-                        <li><a class="nav-option nav-option-radio no-sortable" href="#"><i class="fa fa-check no-sortable"></i> 10 queries (1k results)</a></li>
-                        <li><a class="nav-option nav-option-radio no-sortable" href="#"><i class="fa fa-check no-sortable"></i> 100 queries (10k results)</a></li>
+                    <ul id="pages" class="dropdown-menu no-sortable" data-value="1">
+                        <li><a data-value="1" class="nav-option nav-option-radio no-sortable selected" href="#"><i class="fa fa-check no-sortable"></i> 1 query (100 results)</a></li>
+                        <li><a data-value="2" class="nav-option nav-option-radio no-sortable" href="#"><i class="fa fa-check no-sortable"></i> 2 queries (200 results)</a></li>
+                        <li><a data-value="5" class="nav-option nav-option-radio no-sortable" href="#"><i class="fa fa-check no-sortable"></i> 5 queries (500 results)</a></li>
+                        <li><a data-value="10" class="nav-option nav-option-radio no-sortable" href="#"><i class="fa fa-check no-sortable"></i> 10 queries (1k results)</a></li>
+                        <li><a data-value="100" class="nav-option nav-option-radio no-sortable" href="#"><i class="fa fa-check no-sortable"></i> 100 queries (10k results)</a></li>
                     </ul>
                 </li>
                 <li class="divider no-sortable">DRAG &amp; DROP TO REORDER <i class="fa fa-lg fa-angle-double-down"></i></li>
@@ -159,5 +143,6 @@
 <script src="plugins/jquery.timeago.js"></script>
 <script src="js/devoops.js"></script>
 <script src="js/rssz.js"></script>
+<script src="js/rssz-query.js"></script>
 </body>
 </html>
