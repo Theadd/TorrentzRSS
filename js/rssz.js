@@ -1,6 +1,50 @@
 
 var body = $('body');
 
+/* FLOATING ALERTS - GROWL */
+
+/** Class to manage bootstrap growl floating alerts.
+ * @constructor
+ * @type {class}
+ * @example
+ * var abox = new alertManager();
+ * abox.warn('This is a warning.');
+ */
+function alertManager() {
+    /** @constructs */
+    (function() {
+        //Do something here...
+    })();
+
+    /** Set busy state.
+     *
+     * @see queryManager#isBusy
+     * @param is_busy {boolean} new busy state.
+     */
+    this.warn = function(msg) {
+        $.growl({
+            icon: 'fa fa-warning',
+            message: msg,
+            title: ''
+        }, {
+            ele: "#content",
+            type: "warning",
+            allow_dismiss: true,
+            position: {
+                from: "top",
+                align: "right"
+            },
+            offset: 20,
+            spacing: 10,
+            z_index: 1031,
+            fade_in: 400,
+            delay: 7000,
+            pause_on_mouseover: true
+        });
+    };
+}
+
+
 /* SORTABLE SIDEBAR */
 
 $(function  () {
@@ -31,9 +75,11 @@ body.on("click","a.nav-option-radio", function() {
 /* INITIALIZE SEARCH QUERY MANAGER */
 
 var manager = null;
+var abox = null;
 
 jQuery(window).ready(function () {
     console.log("initializing search query manager");
+    abox = new alertManager();
     manager = new queryManager(globals);
     appResize();
 });
@@ -132,10 +178,7 @@ body.on("click","button.add-new-rule", function() {
         items: "li:not(.no-sortable-inner)",
         placeholder: "placeholder"
     });
-    rules = '';
-    $.each($('.query-rule'), function() {
-        rules += $(this).data('value') + ', ';
-    });
+    rules = getAllSidebarRules();
     console.log(rules);
 });
 
@@ -160,3 +203,44 @@ body.on("click","button.query-rule-toggle", function() {
     }
 
 });
+
+function getAllSidebarRules() {
+    var _rules = '',
+        delimiter = '.';
+    console.log("getAllSidebarRules()");
+    $.each($('.query-rule'), function() {
+        var value = getSidebarRule($(this));
+        if (value.length) {
+            _rules += delimiter + value;
+        }
+    });
+
+    return _rules.substr(delimiter.length);
+}
+
+function getSidebarRule(rule) {
+    var name = rule.data('value'),
+        value = '';
+    console.log("getSidebarRule() : " + name);
+    switch (name) {
+        case "limit":
+            var aux = parseInt(rule.find('input').val());
+            if (aux > 0) {
+                value = 'l' + aux;
+            } else {
+                abox.warn("Rule 'limit results' should be greater than zero.");
+            }
+            break;
+        case "merge":
+            value = 'm' + rule.find('input').val();
+            break;
+        case "dupe-movies":
+            value = 'd';
+            rule.find('a.selected').each(function() {
+                value += $(this).data('value');
+            });
+            break;
+    }
+
+    return value;
+}

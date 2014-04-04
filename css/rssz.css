@@ -222,3 +222,13 @@ ul.main-menu li.placeholder {
     text-align: right;
     color: blue;
 }
+
+/* BOOTSTRAP GROWL ALERTS */
+
+.bootstrap-growl-top-right {
+    /*top: 70px !important;*/
+}
+
+.box {
+    z-index: 1030;
+}
