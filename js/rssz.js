@@ -1,4 +1,6 @@
 
+var body = $('body');
+
 /* SORTABLE SIDEBAR */
 
 $(function  () {
@@ -19,7 +21,7 @@ $(function  () {
 
 /* NAV OPTIONs (i.e. radio buttons) */
 
-$('body').on("click","a.nav-option-radio", function() {
+body.on("click","a.nav-option-radio", function() {
     var group = $(this).closest("ul");
     group.find("a.nav-option-radio").removeClass("selected");
     $(this).addClass("selected");
@@ -124,7 +126,7 @@ var sidebar_rules = {
 
 var rules = '';
 
-$('body').on("click","button.add-new-rule", function() {
+body.on("click","button.add-new-rule", function() {
     $('#sidebar-rules-delimiter').before(sidebar_rules[$(this).data("value")]);
     $("ul.sortable-inner").sortable({
         items: "li:not(.no-sortable-inner)",
@@ -138,6 +140,23 @@ $('body').on("click","button.add-new-rule", function() {
 });
 
 
-$('body').on("click","button.query-rule-remove", function() {
+body.on("click","button.query-rule-remove", function() {
     $(this).closest("li").remove();
+});
+
+body.on("click","button.query-rule-toggle", function() {
+    var rule = $(this).closest("li").find(".query-rule"),
+        icon = $(this).find("i");
+
+    icon.toggleClass('fa-eye');
+    icon.toggleClass('fa-eye-slash');
+    $(this).closest("li").toggleClass('no-apply');
+
+    if (rule.data('value').length) {
+        rule.data('original', rule.data('value'));
+        rule.data('value', '');
+    } else {
+        rule.data('value', rule.data('original'));
+    }
+
 });

@@ -125,6 +125,10 @@ a {
     padding: 8px 15px;
 }
 
+li.no-apply a {
+    color: rgba(255,255,255,0.4) !important;
+}
+
 /* SIDEBAR BUTTONS */
 
 .btn-sidebar-container {
