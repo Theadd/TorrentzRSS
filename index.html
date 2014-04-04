@@ -137,25 +137,6 @@
                 </li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle">
-                        <i class="fa fa-times-circle"></i>
-                        <span class="hidden-xs">Process duplicated</span>
-                        <div class="btn-sidebar-container">
-                            <button class="btn btn-sidebar pull-right" type="button">
-                                <i class="fa fa-trash-o"></i>
-                            </button>
-                            <button class="btn btn-sidebar pull-right" type="button">
-                                <i class="fa fa-eye"></i>
-                            </button>
-                        </div>
-                    </a>
-                    <ul class="dropdown-menu no-sortable">
-                        <li><a id="duplicated-movies" data-value="0" class="nav-option nav-option-checkbox no-sortable" href="#"><i class="fa fa-check no-sortable"></i> As movies</a></li>
-                        <li><a id="duplicated-show" data-value="0" class="nav-option nav-option-checkbox no-sortable" href="#"><i class="fa fa-check no-sortable"></i> As one TV show</a></li>
-                        <li><a id="duplicated-shows" data-value="0" class="nav-option nav-option-checkbox no-sortable" href="#"><i class="fa fa-check no-sortable"></i> As multiple TV shows</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle">
                         <i class="fa fa-cloud-download"></i>
                         <span class="hidden-xs">Merge RSS</span>
                         <div class="btn-sidebar-container">
@@ -197,8 +178,8 @@
                         <li class="no-sortable"><a id="duplicated-shows" data-value="0" class="nav-option nav-option-checkbox no-sortable" href="#"><i class="fa fa-check no-sortable"></i> Older</a></li>
                     </ul>
                 </li>
-                <li class="divider no-sortable">ACTIONS</li>
-                <li class="dropdown no-sortable">
+                <li id="sidebar-rules-delimiter" class="divider no-sortable">ACTIONS</li>
+                <li id="add-new-rule" class="dropdown no-sortable">
                     <a href="#" class="dropdown-toggle">
                         <i class="fa fa-plus-square"></i>
                         <span class="hidden-xs">Add new rule</span>
@@ -209,7 +190,7 @@
                                 <i class="fa fa-unlink"></i>
                                 <span class="hidden-xs">Limit results</span>
                                 <div class="btn-sidebar-container">
-                                    <button class="btn btn-sidebar pull-right" type="button">
+                                    <button data-value="limit" class="btn btn-sidebar pull-right" type="button">
                                         <i class="fa fa-plus"></i>
                                     </button>
                                 </div>
@@ -220,7 +201,7 @@
                                 <i class="fa fa-cloud-download"></i>
                                 <span class="hidden-xs">Merge RSS</span>
                                 <div class="btn-sidebar-container">
-                                    <button class="btn btn-sidebar pull-right" type="button">
+                                    <button data-value="merge" class="btn btn-sidebar pull-right" type="button">
                                         <i class="fa fa-plus"></i>
                                     </button>
                                 </div>
