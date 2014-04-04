@@ -3,20 +3,18 @@
 
 $(function  () {
     $("ul.main-menu").sortable({
-        group: 'main-menu',
-        handle: 'li',
-        nested: false,
-        vertical: true,
-        exclude: '.no-sortable',
-        onDragStart: function($item, container, _super) {
-            $item.find('ul.main-menu').sortable('disable')
-            _super($item, container)
-        },
-        onDrop: function($item, container, _super) {
-            $item.find('ul.main-menu').sortable('enable')
-            _super($item, container)
-        }
+        items: "li:not(.no-sortable)",
+        placeholder: "placeholder"
     })
+});
+
+/* SORTABLE INNER SIDEBAR */
+
+$(function  () {
+    $("ul.sortable-inner").sortable({
+        items: "li:not(.no-sortable-inner)",
+        placeholder: "placeholder"
+    });
 });
 
 /* NAV OPTIONs (i.e. radio buttons) */

@@ -87,6 +87,68 @@ a {
     text-align: center;
 }
 
+.main-menu .divider.inner-divider {
+    background-color: transparent;
+    margin-top: 0;
+    height: 24px;
+    padding-top: 9px;
+}
+
+.nav-option-textbox input {
+    width: 56px;
+    height: 21px;
+    font-size: 11px;
+    text-align: center;
+    background-color: rgba(255,255,255,0.5);
+    color: #333;
+    border: 1px solid rgba(255,255,255,0.8);
+}
+
+.nav-option-textbox  {
+    position: absolute;
+    height: 0;
+    width: 100%;
+    padding: 8px 15px;
+}
+
+/* SIDEBAR BUTTONS */
+
+.btn-sidebar-container {
+    float: right;
+    height: 0;
+    left: 0;
+    padding: 10px;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.btn-sidebar {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.2);
+    border-color: rgba(0, 0, 0, 0.3);
+    border-radius: 2px;
+    height: 22px;
+    line-height: inherit;
+    opacity: 0.5;
+    padding: 0;
+    width: 22px;
+    margin-left: 3px;
+    display: none;
+}
+
+.btn-sidebar:hover {
+    opacity: 1;
+    color: inherit;
+}
+
+.main-menu > li > a {
+    padding-right: 10px;
+}
+
+.main-menu > li > a:hover .btn-sidebar, .main-menu > li > a:focus .btn-sidebar, .main-menu > li.active > a .btn-sidebar {
+    display: inherit;
+}
+
 /* SORTABLE JQUERY PLUGIN */
 
 body.dragging, body.dragging * {

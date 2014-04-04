@@ -113,11 +113,90 @@
                 </li>
                 <li class="divider no-sortable">DRAG &amp; DROP TO REORDER <i class="fa fa-lg fa-angle-double-down"></i></li>
 
-				<li><a href="#"><i class="fa fa-table"></i><span class="hidden-xs"> Tables</span></a></li>
-				<li><a href="#"><i class="fa fa-pencil-square-o"></i><span class="hidden-xs"> Forms</span></a></li>
-				<li><a href="#"><i class="fa fa-desktop"></i><span class="hidden-xs"> UI Elements</span></a></li>
-				<li><a href="#"><i class="fa fa-map-marker"></i><span class="hidden-xs"> OpenStreetMap</span></a></li>
-                <li><a href="#"><i class="fa fa-table"></i><span class="hidden-xs"> Locked Screen</span></a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        <i class="fa fa-unlink"></i>
+                        <span class="hidden-xs">Limit results</span>
+                        <div class="btn-sidebar-container">
+                            <button class="btn btn-sidebar pull-right" type="button">
+                                <i class="fa fa-trash-o"></i>
+                            </button>
+                            <button class="btn btn-sidebar pull-right" type="button">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu no-sortable">
+                        <li>
+                            <div class="nav-option-textbox no-sortable">
+                                <input id="limit-value" type="text" placeholder="Limit" class="pull-right no-sortable" value="25" />
+                            </div>
+                            <a id="limit" data-value="0" class="nav-option no-sortable" href="#"><i class="fa fa-th-list no-sortable"></i> Max shown</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        <i class="fa fa-times-circle"></i>
+                        <span class="hidden-xs">Process duplicated</span>
+                        <div class="btn-sidebar-container">
+                            <button class="btn btn-sidebar pull-right" type="button">
+                                <i class="fa fa-trash-o"></i>
+                            </button>
+                            <button class="btn btn-sidebar pull-right" type="button">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu no-sortable">
+                        <li><a id="duplicated-movies" data-value="0" class="nav-option nav-option-checkbox no-sortable" href="#"><i class="fa fa-check no-sortable"></i> As movies</a></li>
+                        <li><a id="duplicated-show" data-value="0" class="nav-option nav-option-checkbox no-sortable" href="#"><i class="fa fa-check no-sortable"></i> As one TV show</a></li>
+                        <li><a id="duplicated-shows" data-value="0" class="nav-option nav-option-checkbox no-sortable" href="#"><i class="fa fa-check no-sortable"></i> As multiple TV shows</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        <i class="fa fa-cloud-download"></i>
+                        <span class="hidden-xs">Merge RSS</span>
+                        <div class="btn-sidebar-container">
+                            <button class="btn btn-sidebar pull-right" type="button">
+                                <i class="fa fa-trash-o"></i>
+                            </button>
+                            <button class="btn btn-sidebar pull-right" type="button">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu no-sortable">
+                        <li class="no-sortable">
+                            <div class="nav-option-textbox no-sortable">
+                                <input id="merge-value" type="text" placeholder="http://" class="pull-right no-sortable" />
+                            </div>
+                            <a id="merge" data-value="0" class="nav-option no-sortable" href="#"><i class="fa fa-link no-sortable"></i> URL</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        <i class="fa fa-film"></i>
+                        <span class="hidden-xs">Duplicated movies</span>
+                        <div class="btn-sidebar-container">
+                            <button class="btn btn-sidebar pull-right" type="button">
+                                <i class="fa fa-trash-o"></i>
+                            </button>
+                            <button class="btn btn-sidebar pull-right" type="button">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu no-sortable sortable-inner">
+                        <li class="divider inner-divider no-sortable no-sortable-inner">REORDER BY PREFERENCE <i class="fa fa-lg fa-angle-double-down"></i></li>
+                        <li class="no-sortable"><a id="duplicated-movies" data-value="0" class="nav-option nav-option-checkbox no-sortable" href="#"><i class="fa fa-check no-sortable"></i> Quality</a></li>
+                        <li class="no-sortable"><a id="duplicated-show" data-value="0" class="nav-option nav-option-checkbox no-sortable" href="#"><i class="fa fa-check no-sortable"></i> Seeds + Peers</a></li>
+                        <li class="no-sortable"><a id="duplicated-shows" data-value="0" class="nav-option nav-option-checkbox no-sortable" href="#"><i class="fa fa-check no-sortable"></i> Newer</a></li>
+                        <li class="no-sortable"><a id="duplicated-shows" data-value="0" class="nav-option nav-option-checkbox no-sortable" href="#"><i class="fa fa-check no-sortable"></i> Older</a></li>
+                    </ul>
+                </li>
                 <li><a href="#"><i class="fa fa-pencil-square-o"></i><span class="hidden-xs"> Search Results</span></a></li>
                 <li><a href="#"><i class="fa fa-desktop"></i><span class="hidden-xs"> UI Feed</span></a></li>
                 <li><a class="ajax-link" href="ajax/page_invoice.html"><i class="fa fa-map-marker"></i><span class="hidden-xs"> Invoice</span></a></li>
@@ -139,7 +218,7 @@
 <script src="plugins/jquery/jquery-2.1.0.min.js"></script>
 <script src="plugins/jquery-ui.min.js"></script>
 <script src="plugins/bootstrap/bootstrap.min.js"></script>
-<script src="plugins/jquery-sortable.js"></script>
+<!--<script src="plugins/jquery-sortable.js"></script>-->
 <script src="plugins/jquery.timeago.js"></script>
 <script src="js/devoops.js"></script>
 <script src="js/rssz.js"></script>
