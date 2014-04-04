@@ -9,6 +9,16 @@ a {
     outline: 0 none !important;
 }
 
+#content {
+    margin-bottom: auto !important;
+    padding-bottom: 0 !important;
+}
+
+#main {
+    min-height: inherit !important;
+}
+
+
 /* SEARCH BOX */
 
 #search-box {

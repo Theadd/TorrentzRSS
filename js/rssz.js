@@ -33,5 +33,17 @@ var manager = null;
 jQuery(window).ready(function () {
     console.log("initializing search query manager");
     manager = new queryManager(globals);
+    appResize();
+});
 
+/* HANDLE WINDOW RESIZE */
+
+function appResize() {
+    var content = $('#content'),
+        available = $(window).height() - content.offset().top;
+    content.css('min-height', available + 'px');
+}
+
+jQuery(window).resize(function () {
+    appResize();
 });
