@@ -76,6 +76,10 @@ a {
     padding-left: 26px;
 }
 
+.main-menu .dropdown-menu .dropdown-menu > li > a.nav-option {
+    padding-left: 36px;
+}
+
 .main-menu .divider {
     height: 15px;
     margin: 9px 0 0;
@@ -119,7 +123,7 @@ a {
     left: 0;
     padding: 10px;
     position: absolute;
-    top: 0;
+    margin-top: -30px;
     width: 100%;
 }
 
@@ -145,8 +149,13 @@ a {
     padding-right: 10px;
 }
 
-.main-menu > li > a:hover .btn-sidebar, .main-menu > li > a:focus .btn-sidebar, .main-menu > li.active > a .btn-sidebar {
+.main-menu li > a:hover .btn-sidebar, .main-menu li > a:focus .btn-sidebar {
     display: inherit;
+}
+
+.nav-option-submit {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: rgba(0, 0, 0, 0.35) !important;
 }
 
 /* SORTABLE JQUERY PLUGIN */
