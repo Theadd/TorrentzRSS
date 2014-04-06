@@ -130,11 +130,19 @@ function queryManager(config_params) {
                         }
                     });
                 });
+
+                $('#ajax-content').show();
+                $('.preloader').hide();
+
                 busy = false;
             });
             request.fail(function(data) {
                 log.warn("Fail: "+data);
                 console.log(data);
+
+                $('#ajax-content').show();
+                $('.preloader').hide();
+
                 busy = false;
             });
         } else {
