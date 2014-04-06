@@ -17,6 +17,8 @@ function queryManager(config_params) {
     this.orderby = "peers";
     this.pages = "1";
     this.query = "espa%C3%B1ol+|+spanish+|+castellano+movies+|+video+seed+%3E+20+size+%3E+600m+size+%3C++6000m+-hdtv+-screener+-latino+-xxx";
+    this.rules = '';
+    this.rule_delimiter = '';
 
     //private:
     var this_qm = this;
@@ -24,11 +26,50 @@ function queryManager(config_params) {
     var busy = false;
     /** Sets the relation between the named parameters on the web and the required parameter names at the back end. */
     var related = { 'good': 'feed', 'any': 'feed_any', 'verified': 'feed_verified', 'rating': 'N', 'date': 'A', 'size': 'S', 'peers': '' };
+    var log = null;
 
     /** @constructs */
     (function() {
-        //Do something here...
+        body.on("click","button.add-new-rule", function() {
+            $('#sidebar-rules-delimiter').before(sidebar_rules[$(this).data("value")]);
+            $("ul.sortable-inner").sortable({
+                items: "li:not(.no-sortable-inner)",
+                placeholder: "placeholder"
+            });
+            this_qm.validate();
+        });
+
+
+        body.on("click","button.query-rule-remove", function() {
+            $(this).closest("li").remove();
+        });
+
+        body.on("click","button.query-rule-toggle", function() {
+            var rule = $(this).closest("li").find(".query-rule"),
+                icon = $(this).find("i");
+
+            icon.toggleClass('fa-eye');
+            icon.toggleClass('fa-eye-slash');
+            $(this).closest("li").toggleClass('no-apply');
+
+            if (rule.data('value').length) {
+                rule.data('original', rule.data('value'));
+                rule.data('value', '');
+            } else {
+                rule.data('value', rule.data('original'));
+            }
+
+        });
     })();
+
+    /** Sets an instance of alertManager as logger.
+     *
+     * @see alertManager
+     * @param alert_manager {object} Instance of alertManager class.
+     */
+    this.setLogger = function(alert_manager) {
+        log = alert_manager;
+    };
 
     /** Set busy state.
      *
@@ -60,15 +101,14 @@ function queryManager(config_params) {
 
             this.refresh();
             busy = true;
-            if (clear)
-                tbody.html("");
+
 
             var process_params = related[this.quality] + related[this.orderby] + '-' + this.pages;
 
             var request = $.ajax({
                 type: 'GET',
                 url: config['process_url'],
-                data: { f: 'json', 'p': process_params, 'q': this.query },
+                data: { f: 'json', 'p': process_params, 'r': this.rules, 'q': this.query },
                 async: true,
                 xhrFields: {
                     withCredentials: false
@@ -78,7 +118,9 @@ function queryManager(config_params) {
 
             request.success(function(data) {
 
-                //var tbody = $('#results-table').find('tbody');
+                if (clear)
+                    tbody.html("");
+
                 $.each(data, function(i_channel, channel) {
                     $.each(channel, function(i, item) {
                         console.log(i + " = " + JSON.stringify(item));
@@ -91,12 +133,12 @@ function queryManager(config_params) {
                 busy = false;
             });
             request.fail(function(data) {
-                alert("fail: "+data);
+                log.warn("Fail: "+data);
                 console.log(data);
                 busy = false;
             });
         } else {
-            alert("Either busy or disabled!");
+            log.warn("Either busy or disabled!");
 
             return false;
         }
@@ -107,8 +149,9 @@ function queryManager(config_params) {
     /** Update parameters value. */
     this.refresh = function() {
 
-        if (!busy && this.enabled) {
-            busy = true;
+        if (!this_qm.isBusy() && this.enabled) {
+            this.validate();
+            this.setBusy(true);
 
             this.quality = $('#quality').data('value');
             this.orderby = $('#order').data('value');
@@ -119,10 +162,56 @@ function queryManager(config_params) {
                 return '&#'+i.charCodeAt(0)+';';
             });*/
 
-            busy = false;
+            this.setBusy(false);
         } else {
-            alert("Either busy or disabled!");
+            log.warn("Either busy or disabled!");
         }
     };
+
+    this.validate = function() {
+        if (!this_qm.isBusy()) {
+            this_qm.setBusy(true);
+            this_qm.rules = '';
+
+            $.each($('.query-rule'), function() {
+                var value = getSidebarRule($(this));
+                if (value.length) {
+                    this_qm.rules += this_qm.rule_delimiter + value;
+                }
+            });
+
+            this_qm.rules = this_qm.rules.substr(this.rule_delimiter.length);
+            this_qm.setBusy(false);
+        } else {
+            log.warn("Either busy or disabled!");
+        }
+    }
+
+    function getSidebarRule(rule) {
+        var name = rule.data('value'),
+            value = '';
+
+        switch (name) {
+            case "limit":
+                var aux = parseInt(rule.find('input').val());
+                if (aux > 0) {
+                    value = 'l' + aux;
+                } else {
+                    log.warn("Rule 'limit results' should be greater than zero.");
+                }
+                break;
+            case "merge":
+                value = 'm' + rule.find('input').val();
+                break;
+            case "dupe-movies":
+                value = 'd';
+                rule.find('a.selected').each(function() {
+                    value += $(this).data('value');
+                });
+                break;
+        }
+
+        return value;
+    }
 
 }

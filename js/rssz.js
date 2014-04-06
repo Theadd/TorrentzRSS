@@ -42,6 +42,28 @@ function alertManager() {
             pause_on_mouseover: true
         });
     };
+
+    this.error = function(msg) {
+        $.growl({
+            icon: 'fa fa-times-circle-o',
+            message: msg,
+            title: ''
+        }, {
+            ele: "#content",
+            type: "error",
+            allow_dismiss: true,
+            position: {
+                from: "top",
+                align: "right"
+            },
+            offset: 20,
+            spacing: 10,
+            z_index: 1031,
+            fade_in: 400,
+            delay: 7000,
+            pause_on_mouseover: true
+        });
+    };
 }
 
 
@@ -81,6 +103,7 @@ jQuery(window).ready(function () {
     console.log("initializing search query manager");
     abox = new alertManager();
     manager = new queryManager(globals);
+    manager.setLogger(abox);
     appResize();
 });
 
@@ -170,77 +193,7 @@ var sidebar_rules = {
 </li>'
 };
 
-var rules = '';
-
-body.on("click","button.add-new-rule", function() {
-    $('#sidebar-rules-delimiter').before(sidebar_rules[$(this).data("value")]);
-    $("ul.sortable-inner").sortable({
-        items: "li:not(.no-sortable-inner)",
-        placeholder: "placeholder"
-    });
-    rules = getAllSidebarRules();
-    console.log(rules);
-});
 
 
-body.on("click","button.query-rule-remove", function() {
-    $(this).closest("li").remove();
-});
 
-body.on("click","button.query-rule-toggle", function() {
-    var rule = $(this).closest("li").find(".query-rule"),
-        icon = $(this).find("i");
 
-    icon.toggleClass('fa-eye');
-    icon.toggleClass('fa-eye-slash');
-    $(this).closest("li").toggleClass('no-apply');
-
-    if (rule.data('value').length) {
-        rule.data('original', rule.data('value'));
-        rule.data('value', '');
-    } else {
-        rule.data('value', rule.data('original'));
-    }
-
-});
-
-function getAllSidebarRules() {
-    var _rules = '',
-        delimiter = '.';
-    console.log("getAllSidebarRules()");
-    $.each($('.query-rule'), function() {
-        var value = getSidebarRule($(this));
-        if (value.length) {
-            _rules += delimiter + value;
-        }
-    });
-
-    return _rules.substr(delimiter.length);
-}
-
-function getSidebarRule(rule) {
-    var name = rule.data('value'),
-        value = '';
-    console.log("getSidebarRule() : " + name);
-    switch (name) {
-        case "limit":
-            var aux = parseInt(rule.find('input').val());
-            if (aux > 0) {
-                value = 'l' + aux;
-            } else {
-                abox.warn("Rule 'limit results' should be greater than zero.");
-            }
-            break;
-        case "merge":
-            value = 'm' + rule.find('input').val();
-            break;
-        case "dupe-movies":
-            value = 'd';
-            rule.find('a.selected').each(function() {
-                value += $(this).data('value');
-            });
-            break;
-    }
-
-    return value;
-}
