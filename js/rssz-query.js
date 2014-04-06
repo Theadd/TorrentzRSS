@@ -18,7 +18,7 @@ function queryManager(config_params) {
     this.pages = "1";
     this.query = "espa%C3%B1ol+|+spanish+|+castellano+movies+|+video+seed+%3E+20+size+%3E+600m+size+%3C++6000m+-hdtv+-screener+-latino+-xxx";
     this.rules = '';
-    this.rule_delimiter = '';
+    this.rule_delimiter = '-';
 
     //private:
     var this_qm = this;
