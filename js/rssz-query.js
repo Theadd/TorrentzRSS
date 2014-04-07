@@ -189,6 +189,7 @@ function queryManager(config_params) {
             });
 
             this_qm.rules = this_qm.rules.substr(this.rule_delimiter.length);
+            log.warn(this_qm.rules);
             this_qm.setBusy(false);
         } else {
             log.warn("Either busy or disabled!");
@@ -213,6 +214,12 @@ function queryManager(config_params) {
                 break;
             case "dupe-movies":
                 value = 'd';
+                rule.find('a.selected').each(function() {
+                    value += $(this).data('value');
+                });
+                break;
+            case "sort":
+                value = 's';
                 rule.find('a.selected').each(function() {
                     value += $(this).data('value');
                 });

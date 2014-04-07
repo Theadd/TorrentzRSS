@@ -139,12 +139,12 @@ var sidebar_rules = {
         </button>\
     </div>\
 </a>\
-    <ul data-value="limit" class="dropdown-menu no-sortable query-rule">\
-        <li>\
-            <div class="nav-option-textbox no-sortable">\
-                <input type="text" placeholder="Limit" class="pull-right no-sortable" value="25"  style="width: calc(100% - 130px);" />\
+    <ul data-value="limit" class="dropdown-menu query-rule">\
+        <li class="no-sortable">\
+            <div class="nav-option-textbox">\
+                <input type="text" placeholder="Limit" class="pull-right" value="25"  style="width: calc(100% - 130px);" />\
             </div>\
-            <a class="nav-option no-sortable" href="#"><i class="fa fa-th-list no-sortable"></i> Max shown</a>\
+            <a class="nav-option" href="#"><i class="fa fa-th-list"></i> Max shown</a>\
         </li>\
     </ul>\
 </li>',
@@ -161,12 +161,12 @@ var sidebar_rules = {
         </button>\
     </div>\
 </a>\
-    <ul data-value="merge" class="dropdown-menu no-sortable query-rule">\
+    <ul data-value="merge" class="dropdown-menu query-rule">\
         <li class="no-sortable">\
-            <div class="nav-option-textbox no-sortable">\
-                <input type="text" placeholder="http://" class="pull-right no-sortable" style="width: calc(100% - 70px); text-align: left;" />\
+            <div class="nav-option-textbox">\
+                <input type="text" placeholder="http://" class="pull-right" style="width: calc(100% - 70px); text-align: left;" />\
             </div>\
-            <a class="nav-option no-sortable" href="#"><i class="fa fa-link no-sortable"></i> URL</a>\
+            <a class="nav-option" href="#"><i class="fa fa-link"></i> URL</a>\
         </li>\
     </ul>\
 </li>',
@@ -183,12 +183,42 @@ var sidebar_rules = {
         </button>\
     </div>\
 </a>\
-    <ul data-value="dupe-movies" class="dropdown-menu no-sortable sortable-inner query-rule">\
+    <ul data-value="dupe-movies" class="dropdown-menu query-rule">\
         <li class="divider inner-divider no-sortable no-sortable-inner">REORDER BY PREFERENCE <i class="fa fa-lg fa-angle-double-down"></i></li>\
-        <li class="no-sortable"><a data-value="q" class="nav-option nav-option-checkbox no-sortable selected" href="#"><i class="fa fa-check no-sortable"></i> Quality</a></li>\
-        <li class="no-sortable"><a data-value="c" class="nav-option nav-option-checkbox no-sortable selected" href="#"><i class="fa fa-check no-sortable"></i> Seeds + Peers</a></li>\
-        <li class="no-sortable"><a data-value="n" class="nav-option nav-option-checkbox no-sortable selected" href="#"><i class="fa fa-check no-sortable"></i> Newer</a></li>\
-        <li class="no-sortable"><a data-value="o" class="nav-option nav-option-checkbox no-sortable" href="#"><i class="fa fa-check no-sortable"></i> Older</a></li>\
+        <li class="no-sortable"><a data-value="q" class="nav-option nav-option-checkbox selected" href="#"><i class="fa fa-check"></i> Quality</a></li>\
+        <li class="no-sortable"><a data-value="c" class="nav-option nav-option-checkbox selected" href="#"><i class="fa fa-check"></i> Seeds + Peers</a></li>\
+        <li class="no-sortable"><a data-value="n" class="nav-option nav-option-checkbox selected" href="#"><i class="fa fa-check"></i> Newer</a></li>\
+        <li class="no-sortable"><a data-value="o" class="nav-option nav-option-checkbox" href="#"><i class="fa fa-check"></i> Older</a></li>\
+    </ul>\
+</li>',
+    'sort': '<li class="dropdown">\
+        <a href="#" class="dropdown-toggle">\
+    <i class="fa fa-sort"></i>\
+    <span class="hidden-xs">Sort by</span>\
+    <div class="btn-sidebar-container">\
+        <button class="btn btn-sidebar pull-right query-rule-remove" type="button">\
+            <i class="fa fa-trash-o"></i>\
+        </button>\
+        <button class="btn btn-sidebar pull-right query-rule-toggle" type="button">\
+            <i class="fa fa-eye"></i>\
+        </button>\
+    </div>\
+</a>\
+    <ul data-value="sort" class="dropdown-menu no-sortable query-rule">\
+        <ul class="dropdown-menu dropdown-persistent">\
+            <li class="no-sortable"><a data-value="t" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Title</a></li>\
+            <li class="no-sortable"><a data-value="d" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Date</a></li>\
+            <li class="no-sortable"><a data-value="s" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Size</a></li>\
+            <li class="no-sortable"><a data-value="p" class="nav-option nav-option-radio selected" href="#"><i class="fa fa-check"></i> Peers (S+L)</a></li>\
+            <li class="no-sortable"><a data-value="e" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Seeds</a></li>\
+            <li class="no-sortable"><a data-value="l" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Leechers</a></li>\
+            <li class="no-sortable"><a data-value="m" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Seeds - Leechers</a></li>\
+        </ul>\
+        <ul class="dropdown-menu dropdown-persistent">\
+            <li class="divider inner-divider no-sortable">OPTIONS</li>\
+            <li class="no-sortable"><a data-value="A" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Ascending</a></li>\
+            <li class="no-sortable"><a data-value="D" class="nav-option nav-option-radio selected" href="#"><i class="fa fa-check"></i> Descending</a></li>\
+        </ul>\
     </ul>\
 </li>'
 };
