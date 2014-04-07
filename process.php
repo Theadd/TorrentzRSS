@@ -5,7 +5,25 @@ require_once 'XML/Serializer.php';
 
 header('Access-Control-Allow-Origin: *');
 
+function array_orderby()
+{
+    $args = func_get_args();
+    $data = array_shift($args);
+    foreach ($args as $n => $field) {
+        if (is_string($field)) {
+            $tmp = array();
+            foreach ($data as $key => $row)
+                $tmp[$key] = $row[$field];
+            $args[$n] = $tmp;
+            }
+    }
+    $args[] = &$data;
+    call_user_func_array('array_multisort', $args);
+    return array_pop($args);
+}
+
 function process_url($url, &$channel) {
+	$url = addslashes(stripslashes($url));
     $command = 'curl -x localhost:8118 "'.$url.'" -iX GET';
     $response = shell_exec($command);
 
@@ -75,6 +93,21 @@ function run($p, $r, $q) {
 					$aux = run($request['p'], $request['r'], $request['q']);
 					$channel = array_merge($channel, $aux);
 				}
+				break;
+			case 's':
+				//limit results
+				$arg = (substr($rule, 2, 1) == 'A') ? SORT_ASC : SORT_DESC;
+				$field = '';
+				switch (substr($rule, 1, 1)) {
+					case 't': $field = 'title'; break;
+					case 'd': $field = 'pubdate'; break;
+					case 's': $field = 'size'; break;
+					case 'p': $field = 'seeds'; break;	//FIXME: seeds+peers
+					case 'e': $field = 'seeds'; break;
+					case 'l': $field = 'peers'; break;
+					case 'm': $field = 'peers'; break;	//FIXME: seeds-peers
+				}
+				$channel = array_orderby($channel, $field, $arg);
 				break;
 		}
 	}
