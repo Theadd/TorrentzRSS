@@ -1,5 +1,5 @@
 
-var globals = { 'process_url': 'http://37.187.9.5/rssz/process.php' };
+var globals = { 'process_url': 'process.php' /*'http://37.187.9.5/rssz/process.php'*/ };
 
 /** Class to manage search queries.
  * @constructor
@@ -126,7 +126,7 @@ function queryManager(config_params) {
                         console.log(i + " = " + JSON.stringify(item));
                         if (item['title'] !== undefined) {
 
-                            tbody.append('<tr><td><a href="'+item['link']+'">'+item['title']+'</a> <i class="fa fa-angle-double-right"></i> '+item['category']+'</td><td>'+jQuery.timeago(item['pubdate'])+'</td><td>'+item['size']+'</td><td>'+item['seeds']+'</td><td>'+item['peers']+'</td></tr>');
+                            tbody.append('<tr><td><a href="'+item['link']+'">'+item['title']+'</a> <i class="fa fa-angle-double-right"></i> '+item['category']+'</td><td>'+jQuery.timeago(item['pubtimestamp'].toString())+'</td><td>'+item['size']+'</td><td>'+item['seeds']+'</td><td>'+item['leechers']+'</td></tr>');
                         }
                     });
                 });

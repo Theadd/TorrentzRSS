@@ -1,9 +1,21 @@
 <?php
 
-require_once "XML/RSS.php";
+/* CONFIGURATION PARAMETERS */
+
+define("RSSZ_USE_PROXY", false);
+define("RSSZ_PROXY", 'localhost:8118');
+/* Allow web browsers to get content from this file (Your TorrentzRSS back end) if its not located in the same domain as the requesting web page. */
+define("RSSZ_ALLOW_CROSS_DOMAIN", true);
+
+/* END OF CONFIGURATION PARAMETERS */
+
+error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
+
+require_once 'XML/RSS.php';
 require_once 'XML/Serializer.php';
 
-header('Access-Control-Allow-Origin: *');
+if (RSSZ_ALLOW_CROSS_DOMAIN)
+    header('Access-Control-Allow-Origin: *');
 
 function array_orderby()
 {
@@ -24,11 +36,12 @@ function array_orderby()
 
 function process_url($url, &$channel) {
 	$url = addslashes(stripslashes($url));
-    $command = 'curl -x localhost:8118 "'.$url.'" -iX GET';
+    $content = "";
+
+    $command = (RSSZ_USE_PROXY) ? 'curl -x '.RSSZ_PROXY.' "'.$url.'" -iX GET' : 'curl "'.$url.'" -iX GET';
     $response = shell_exec($command);
 
     $isHeader = true;
-    $content = "";
     foreach(preg_split("/((\r?\n)|(\r\n?))/", $response) as $line){
 
         if ($isHeader && empty($line)) {
@@ -39,10 +52,11 @@ function process_url($url, &$channel) {
             $content .= $line.PHP_EOL;
         }
     }
+
     $filename = microtime(true);
     file_put_contents("data/".$filename.".xml", $content);
 
-    $rss =& new XML_RSS("data/".$filename.".xml");
+    $rss = new XML_RSS("data/".$filename.".xml");
     $rss->parse();
     $items = $rss->getItems();
 
@@ -50,11 +64,18 @@ function process_url($url, &$channel) {
         preg_match("/Size\:\s(.*?)\sSeeds\:\s(\d+?)\D.*?Peers\:\s(\d+?)\D.*?Hash\:\s(.*?)$/", $item['description'], $m);
         $item['link'] = "http://torrage.com/torrent/".strtoupper($m[4]).".torrent";
         $item['size'] = $m[1];
+        $item['size_raw'] = intval($m[1]);
         $item['hash'] = strtoupper($m[4]);
         $item['seeds'] = $m[2];
-        $item['peers'] = $m[3];
+        $item['peers'] = $m[2] + $m[3];
+        $item['leechers'] = $m[3];
+        $item['seeds-leechers'] = $m[2] - $m[3];
+        @$item['pubtimestamp'] = strtotime($item['pubdate']);
         $channel[] = $item;
     }
+
+    unset($rss);
+    unlink("data/".$filename.".xml");
 
     return count($items);
 }
@@ -100,12 +121,12 @@ function run($p, $r, $q) {
 				$field = '';
 				switch (substr($rule, 1, 1)) {
 					case 't': $field = 'title'; break;
-					case 'd': $field = 'pubdate'; break;
-					case 's': $field = 'size'; break;
-					case 'p': $field = 'seeds'; break;	//FIXME: seeds+peers
+					case 'd': $field = 'pubtimestamp'; break;
+					case 's': $field = 'size_raw'; break;
+					case 'p': $field = 'peers'; break;
 					case 'e': $field = 'seeds'; break;
-					case 'l': $field = 'peers'; break;
-					case 'm': $field = 'peers'; break;	//FIXME: seeds-peers
+					case 'l': $field = 'leechers'; break;
+					case 'm': $field = 'seeds-leechers'; break;
 				}
 				$channel = array_orderby($channel, $field, $arg);
 				break;

@@ -113,13 +113,28 @@
       return $.trim([prefix, words, suffix].join(separator));
     },
 
-    parse: function(iso8601) {
+    /*parse: function(iso8601) {
       var s = $.trim(iso8601);
       s = s.replace(/\.\d+/,""); // remove milliseconds
       s = s.replace(/-/,"/").replace(/-/,"/");
       s = s.replace(/T/," ").replace(/Z/," UTC");
       s = s.replace(/([\+\-]\d\d)\:?(\d\d)/," $1$2"); // -04:00 -> -0400
       s = s.replace(/([\+\-]\d\d)$/," $100"); // +09 -> +0900
+      return new Date(s);
+    },*/
+    parse: function(iso8601) {
+      if ((iso8601 - 0) == iso8601 && iso8601.length > 0) { // Checks if iso8601 is a unix timestamp
+          var s = new Date(iso8601);
+          if (isNaN(s.getTime())) { // Checks if iso8601 is formatted in milliseconds
+              var s = new Date(iso8601 * 1000); //if not, add milliseconds
+          }
+          return s;
+      }
+
+      var s = $.trim(iso8601);
+      s = s.replace(/-/,"/").replace(/-/,"/");
+      s = s.replace(/T/," ").replace(/Z/," UTC");
+      s = s.replace(/([\+-]\d\d)\:?(\d\d)/," $1$2"); // -04:00 -> -0400
       return new Date(s);
     },
     datetime: function(elem) {
