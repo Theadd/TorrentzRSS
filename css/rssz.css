@@ -22,10 +22,10 @@ a {
 /* SEARCH BOX */
 
 #search-box {
-    height: 50px;
-    line-height: 50px;
     float: right;
     width: calc(100% - 26px);
+    height: 50px;
+    line-height: 50px;
 }
 
 #search-box input, #search-box button {
@@ -33,8 +33,8 @@ a {
 }
 
 #search-box * {
-    line-height: 30px;
     height: 30px;
+    line-height: 30px;
 }
 
 #search-box button {
@@ -42,30 +42,30 @@ a {
 }
 
 #search-box input {
-    text-shadow: 0 1px 1px #EEE;
-    color: #686868;
     margin: 10px 0 0;
+    color: #686868;
+    text-shadow: 0 1px 1px #EEE;
 }
 
 .box-header {
-    background: none repeat scroll 0 0 #F2F2F2;
+    position: relative;
+    overflow: hidden;
+    height: 28px;
     border-bottom: 1px solid #E4E4E4;
     border-radius: 3px 3px 0 0;
+    background: none repeat scroll 0 0 #F2F2F2;
     color: #6494bb;
-    font-size: 13px;
-    font-weight: bold;
-    height: 28px;
     letter-spacing: 0.08em;
-    overflow: hidden;
-    position: relative;
+    font-weight: bold;
+    font-size: 13px;
 }
 
 /* LOGO */
 
 #logo a:hover {
+    padding-left: 20px;
     background-position: right 13px;
     opacity: 1;
-    padding-left: 20px;
 }
 #logo a {
     background: url("../img/logo.png") no-repeat scroll right 32px rgba(0, 0, 0, 0);
@@ -82,6 +82,14 @@ a {
     color: inherit;
 }
 
+.nav-option-radio-optional i {
+    color: transparent;
+}
+
+.nav-option-radio-optional.selected i {
+    color: inherit;
+}
+
 .main-menu .dropdown-menu > li > a.nav-option {
     padding-left: 26px;
 }
@@ -91,38 +99,38 @@ a {
 }
 
 .main-menu .divider {
-    height: 15px;
-    margin: 9px 0 0;
     overflow: hidden;
+    margin: 9px 0 0;
+    height: 15px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.5);
     color: rgba(255, 255, 255, 0.8);
-    font-size: 8px;
-    font-weight: bold;
     text-align: center;
+    font-weight: bold;
+    font-size: 8px;
 }
 
 .main-menu .divider.inner-divider {
-    background-color: transparent;
     margin-top: 0;
-    height: 24px;
     padding-top: 9px;
+    height: 24px;
+    background-color: transparent;
 }
 
 .nav-option-textbox input {
     width: 56px;
     height: 21px;
-    font-size: 11px;
-    text-align: center;
+    border: 1px solid rgba(255,255,255,0.8);
     background-color: rgba(255,255,255,0.5);
     color: #333;
-    border: 1px solid rgba(255,255,255,0.8);
+    text-align: center;
+    font-size: 11px;
 }
 
 .nav-option-textbox  {
     position: absolute;
-    height: 0;
-    width: 100%;
     padding: 8px 15px;
+    width: 100%;
+    height: 0;
 }
 
 li.no-apply a {
@@ -136,31 +144,31 @@ li.no-apply a {
 /* SIDEBAR BUTTONS */
 
 .btn-sidebar-container {
-    float: right;
-    height: 0;
-    left: 0;
-    padding: 10px;
     position: absolute;
+    left: 0;
+    float: right;
     margin-top: -30px;
+    padding: 10px;
     width: 100%;
+    height: 0;
 }
 
 .btn-sidebar {
-    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.2);
-    border-color: rgba(0, 0, 0, 0.3);
-    border-radius: 2px;
-    height: 22px;
-    line-height: inherit;
-    opacity: 0.5;
+    display: none;
+    margin-left: 3px;
     padding: 0;
     width: 22px;
-    margin-left: 3px;
-    display: none;
+    height: 22px;
+    border-color: rgba(0, 0, 0, 0.3);
+    border-radius: 2px;
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.2);
+    line-height: inherit;
+    opacity: 0.5;
 }
 
 .btn-sidebar:hover {
-    opacity: 1;
     color: inherit;
+    opacity: 1;
 }
 
 .main-menu > li > a {
@@ -184,9 +192,9 @@ body.dragging, body.dragging * {
 
 .dragged {
     position: absolute !important;
-    opacity: 0.8;
     z-index: 2000;
     background-color: transparent;
+    opacity: 0.8;
 }
 
 .dragged a {
@@ -212,19 +220,19 @@ ul.main-menu li.placeholder {
 }
 
 #results-table > tbody > tr > td:nth-child(2), #results-table > tbody > tr > td:nth-child(3) {
-    font-size: 9px;
     overflow: visible;
     text-align: right;
+    font-size: 9px;
 }
 
 #results-table > tbody > tr > td:nth-child(4) {
-    text-align: right;
     color: green;
+    text-align: right;
 }
 
 #results-table > tbody > tr > td:nth-child(5) {
-    text-align: right;
     color: blue;
+    text-align: right;
 }
 
 /* BOOTSTRAP GROWL ALERTS */

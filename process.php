@@ -62,6 +62,7 @@ function process_url($url, &$channel) {
 
     foreach ($items as $item) {
         preg_match("/Size\:\s(.*?)\sSeeds\:\s(\d+?)\D.*?Peers\:\s(\d+?)\D.*?Hash\:\s(.*?)$/", $item['description'], $m);
+        $item['title_lowercase'] = strtolower(htmlentities($item['title'], ENT_COMPAT, "UTF-8"));
         $item['link'] = "http://torrage.com/torrent/".strtoupper($m[4]).".torrent";
         $item['size'] = $m[1];
         $item['size_raw'] = intval($m[1]);
@@ -78,6 +79,160 @@ function process_url($url, &$channel) {
     unlink("data/".$filename.".xml");
 
     return count($items);
+}
+
+function getMovieQualityRate($title) {
+    $rate = 0;
+
+    if (preg_match("/(?:dvd.?scr(?:eener)?)|(?:br.?scr(?:eener)?)|(?:bluray.?scr(?:eener)?)|(?:hdtv.?scr(?:eener)?)/", $title)) {
+        $rate = 2;
+    } else if (preg_match("/screener/", $title)) {
+        $rate = 1;
+    } else {
+        if (preg_match("/(?:br.?rip)|(?:bd.?rip)|(?:bluray.?rip)|(?:bluray)/", $title)) {
+            $rate = 7;
+        } else if (preg_match("/(?:dvd.?rip)/", $title)) {
+            $rate = 6;
+        } else if (preg_match("/hdtv/", $title)) {
+            $rate = 5;
+        } else if (preg_match("/(?:web.?rip)/", $title)) {
+            $rate = 4;
+        } else if (preg_match("/rip/", $title)) {
+            $rate = 3;
+        }
+    }
+
+    return $rate;
+}
+
+/* Returns an associative array (key: hash) corresponding with the resulting channel items. */
+function handleDuplicatesAsMovies($channel, $rule) {
+    //Handle duplicates as movies
+    $hashes = array();
+    $args = str_split(substr($rule, 1));    //i.e.: QSs --> array('Q', 'S', 's');
+    $aux = array_orderby($channel, 'title_lowercase', SORT_ASC);
+    $items = count($aux);
+    $i = 0;
+    while ($i + 1 < $items) {
+        if (strlen($iname = substr($aux[$i]['title_lowercase'], 0, strpos($aux[$i]['title_lowercase'], ' ', 5)))) {
+            $wnd = 1;
+            $halfpos = round(strlen($aux[$i]['title_lowercase']) / 2);
+            while (true) {
+                if (!((@substr($aux[$i+$wnd]['title_lowercase'], 0, strlen($iname)) == $iname)
+                    && levenshtein(substr($aux[$i]['title_lowercase'], 0, $halfpos), substr($aux[$i+$wnd]['title_lowercase'], 0, $halfpos)) < round($halfpos * 0.5)))
+                    break;
+                $item1 = $aux[$i];
+                $item2 = $aux[$i+$wnd];
+                $swapped = false;
+                foreach ($args as $arg) {
+                    switch ($arg) {
+                        case 'Q':
+                            //better quality
+                            $rate1 = getMovieQualityRate($item1['title_lowercase']);
+                            $rate2 = getMovieQualityRate($item2['title_lowercase']);
+                            if ($rate2 > $rate1) {
+                                //keep item2 and break foreach
+                                $item1 = $item2;
+                                break 2;
+                            } else if ($rate1 > $rate2) break 2;
+                            break;
+                        case 'q':
+                            //poorer quality
+                            $rate1 = getMovieQualityRate($item1['title_lowercase']);
+                            $rate2 = getMovieQualityRate($item2['title_lowercase']);
+                            if ($rate2 < $rate1) {
+                                //keep item2 and break foreach
+                                $item1 = $item2;
+                                break 2;
+                            } else if ($rate1 < $rate2) break 2;
+                            break;
+                        case 'S':
+                            //quite more seeds
+                            if ($item2['seeds'] > $item1['seeds']) {
+                                if ($item2['seeds'] >= $item1['seeds'] * 1.25) {
+                                    //keep item2 and break foreach
+                                    $item1 = $item2;
+                                    break 2;
+                                } else {
+                                    //swap
+                                    if (!$swapped) {
+                                        $tmp = $item1;
+                                        $item1 = $item2;
+                                        $item2 = $tmp;
+                                        $swapped = true;
+                                        //continue foreach
+                                    }
+                                }
+                            } else if ($item1['seeds'] >= $item2['seeds'] * 1.25) break 2;
+                            break;
+                        case 'P':
+                            //quite more peers
+                            if ($item2['peers'] > $item1['peers']) {
+                                if ($item2['peers'] >= $item1['peers'] * 1.25) {
+                                    //keep item2 and break foreach
+                                    $item1 = $item2;
+                                    break 2;
+                                } else {
+                                    //swap
+                                    if (!$swapped) {
+                                        $tmp = $item1;
+                                        $item1 = $item2;
+                                        $item2 = $tmp;
+                                        $swapped = true;
+                                        //continue foreach
+                                    }
+                                }
+                            } else if ($item1['peers'] >= $item2['peers'] * 1.25) break 2;
+                            break;
+                        case 'L':
+                            //larger sizes
+                            if ($item2['size_raw'] > $item1['size_raw']) {
+                                if ($item2['size_raw'] >= $item1['size_raw'] * 1.25) {
+                                    //keep item2 and break foreach
+                                    $item1 = $item2;
+                                    break 2;
+                                } else {
+                                    //swap
+                                    if (!$swapped) {
+                                        $tmp = $item1;
+                                        $item1 = $item2;
+                                        $item2 = $tmp;
+                                        $swapped = true;
+                                        //continue foreach
+                                    }
+                                }
+                            } else if ($item1['size_raw'] >= $item2['size_raw'] * 1.25) break 2;
+                            break;
+                        case 's':
+                            //smaller sizes
+                            if ($item2['size_raw'] < $item1['size_raw']) {
+                                if ($item2['size_raw'] <= $item1['size_raw'] * 1.25) {
+                                    //keep item2 and break foreach
+                                    $item1 = $item2;
+                                    break 2;
+                                } else {
+                                    //swap
+                                    if (!$swapped) {
+                                        $tmp = $item1;
+                                        $item1 = $item2;
+                                        $item2 = $tmp;
+                                        $swapped = true;
+                                        //continue foreach
+                                    }
+                                }
+                            } else if ($item1['size_raw'] <= $item2['size_raw'] * 1.25) break 2;
+                            break;
+                    }
+                }
+                $aux[$i] = $item1;
+                ++$wnd; //next item in group
+            }
+            $hashes[$aux[$i]['hash']] = true;   //save
+            $i += $wnd; //next group
+        }
+    }
+
+    return $hashes;
 }
 
 function run($p, $r, $q) {
@@ -120,7 +275,7 @@ function run($p, $r, $q) {
 				$arg = (substr($rule, 2, 1) == 'A') ? SORT_ASC : SORT_DESC;
 				$field = '';
 				switch (substr($rule, 1, 1)) {
-					case 't': $field = 'title'; break;
+					case 't': $field = 'title_lowercase'; break;
 					case 'd': $field = 'pubtimestamp'; break;
 					case 's': $field = 'size_raw'; break;
 					case 'p': $field = 'peers'; break;
@@ -130,12 +285,26 @@ function run($p, $r, $q) {
 				}
 				$channel = array_orderby($channel, $field, $arg);
 				break;
+            case 'd':
+                //Handle duplicates as movies
+                $hashes = handleDuplicatesAsMovies($channel, $rule);
+                $i = 0;
+                while ($i < count($channel)) {
+                    if (isset($hashes[$channel[$i]['hash']])) {
+                        unset($hashes[$channel[$i]['hash']]);
+                    } else {
+                        unset($channel[$i]);
+                    }
+                    ++$i;
+                }
+                $channel = array_values($channel);  //reindex
+                break;
 		}
 	}
 	
 	return $channel;
 }
-
+//dsSQ
 //$params = explode('-', $_REQUEST['p']);
 //$cin = array("ñ", "Ñ", "ç", "Ç", " ", ">", "<");
 //$cout = array("%C3%B1", "%C3%91", "%C3%A7", "%C3%87", "+", "%3E", "%3C");

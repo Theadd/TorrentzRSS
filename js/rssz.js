@@ -94,6 +94,21 @@ body.on("click","a.nav-option-radio", function() {
     group.data("value", $(this).data("value"));
 });
 
+body.on("click","a.nav-option-radio-optional", function() {
+    var parent = $(this).closest("ul"),
+        group = $(this).data("group"),
+        selected = $(this).hasClass("selected");
+    //ul[data-group='Companies']
+    if (group === undefined) {
+        parent.find("a.nav-option-radio-optional").removeClass("selected");
+        if (!selected) $(this).addClass("selected");
+        //parent.data("value", $(this).data("value"));
+    } else {
+        parent.find("a.nav-option-radio-optional[data-group='" + group + "']").removeClass("selected");
+        if (!selected) $(this).addClass("selected");
+    }
+});
+
 /* INITIALIZE SEARCH QUERY MANAGER */
 
 var manager = null;

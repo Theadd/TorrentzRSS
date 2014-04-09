@@ -192,7 +192,7 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle">
                         <i class="fa fa-film"></i>
-                        <span class="hidden-xs">Duplicated movies</span>
+                        <span class="hidden-xs">Handle duplicates</span>
                         <div class="btn-sidebar-container">
                             <button class="btn btn-sidebar pull-right query-rule-remove" type="button">
                                 <i class="fa fa-trash-o"></i>
@@ -203,11 +203,13 @@
                         </div>
                     </a>
                     <ul data-value="dupe-movies" class="dropdown-menu sortable-inner query-rule">
-                        <li class="divider inner-divider no-sortable no-sortable-inner">REORDER BY PREFERENCE <i class="fa fa-lg fa-angle-double-down"></i></li>
-                        <li class="no-sortable"><a data-value="q" class="nav-option nav-option-checkbox selected" href="#"><i class="fa fa-check"></i> Quality</a></li>
-                        <li class="no-sortable"><a data-value="c" class="nav-option nav-option-checkbox selected" href="#"><i class="fa fa-check"></i> Seeds + Peers</a></li>
-                        <li class="no-sortable"><a data-value="n" class="nav-option nav-option-checkbox selected" href="#"><i class="fa fa-check"></i> Newer</a></li>
-                        <li class="no-sortable"><a data-value="o" class="nav-option nav-option-checkbox" href="#"><i class="fa fa-check"></i> Older</a></li>
+                        <li class="divider inner-divider no-sortable no-sortable-inner">CHECK &amp; REORDER BY PREFERENCE <i class="fa fa-lg fa-angle-double-down"></i></li>
+                        <li class="no-sortable"><a data-value="Q" data-group="quality" class="nav-option nav-option-radio-optional selected" href="#"><i class="fa fa-check"></i> Better quality</a></li>
+                        <li class="no-sortable"><a data-value="q" data-group="quality" class="nav-option nav-option-radio-optional" href="#"><i class="fa fa-check"></i> Poorer quality</a></li>
+                        <li class="no-sortable"><a data-value="S" data-group="peers" class="nav-option nav-option-radio-optional selected" href="#"><i class="fa fa-check"></i> Quite more seeds</a></li>
+                        <li class="no-sortable"><a data-value="P" data-group="peers" class="nav-option nav-option-radio-optional" href="#"><i class="fa fa-check"></i> Quite more peers</a></li>
+                        <li class="no-sortable"><a data-value="L" data-group="size" class="nav-option nav-option-radio-optional" href="#"><i class="fa fa-check"></i> Larger sizes</a></li>
+                        <li class="no-sortable"><a data-value="s" data-group="size" class="nav-option nav-option-radio-optional selected" href="#"><i class="fa fa-check"></i> Smaller sizes</a></li>
                     </ul>
                 </li>
                 <li id="sidebar-rules-delimiter" class="divider no-sortable">ACTIONS</li>
@@ -242,13 +244,13 @@
                         <li class="dropdown no-sortable">
                             <a href="#" class="dropdown-toggle nav-option">
                                 <i class="fa fa-times-circle"></i>
-                                <span class="hidden-xs">Process duplicated</span>
+                                <span class="hidden-xs">Handle duplicates</span>
                             </a>
                             <ul class="dropdown-menu no-sortable">
                                 <li class="no-sortable">
                                     <a href="#" class="dropdown-toggle nav-option">
                                         <i class="fa fa-film"></i>
-                                        <span class="hidden-xs">As movies</span>
+                                        <span class="hidden-xs">Treat as movies</span>
                                         <div class="btn-sidebar-container">
                                             <button data-value="dupe-movies" class="btn btn-sidebar pull-right add-new-rule" type="button">
                                                 <i class="fa fa-plus"></i>
@@ -259,7 +261,7 @@
                                 <li class="no-sortable">
                                     <a href="#" class="dropdown-toggle nav-option">
                                         <i class="fa fa-video-camera"></i>
-                                        <span class="hidden-xs">As TV shows</span>
+                                        <span class="hidden-xs">Treat as TV shows</span>
                                         <div class="btn-sidebar-container">
                                             <button data-value="dupe-tv" class="btn btn-sidebar pull-right add-new-rule" type="button">
                                                 <i class="fa fa-plus"></i>
