@@ -188,7 +188,7 @@ var sidebar_rules = {
     'dupe-movies': '<li class="dropdown">\
         <a href="#" class="dropdown-toggle">\
     <i class="fa fa-film"></i>\
-    <span class="hidden-xs">Duplicated movies</span>\
+    <span class="hidden-xs">Handle duplicates <span class="superscript hidden-sm hidden-md">MOVIES</span></span>\
     <div class="btn-sidebar-container">\
         <button class="btn btn-sidebar pull-right query-rule-remove" type="button">\
             <i class="fa fa-trash-o"></i>\
@@ -198,12 +198,37 @@ var sidebar_rules = {
         </button>\
     </div>\
 </a>\
-    <ul data-value="dupe-movies" class="dropdown-menu query-rule">\
-        <li class="divider inner-divider no-sortable no-sortable-inner">REORDER BY PREFERENCE <i class="fa fa-lg fa-angle-double-down"></i></li>\
-        <li class="no-sortable"><a data-value="q" class="nav-option nav-option-checkbox selected" href="#"><i class="fa fa-check"></i> Quality</a></li>\
-        <li class="no-sortable"><a data-value="c" class="nav-option nav-option-checkbox selected" href="#"><i class="fa fa-check"></i> Seeds + Peers</a></li>\
-        <li class="no-sortable"><a data-value="n" class="nav-option nav-option-checkbox selected" href="#"><i class="fa fa-check"></i> Newer</a></li>\
-        <li class="no-sortable"><a data-value="o" class="nav-option nav-option-checkbox" href="#"><i class="fa fa-check"></i> Older</a></li>\
+    <ul data-value="dupe-movies" class="dropdown-menu sortable-inner query-rule">\
+        <li class="divider inner-divider no-sortable no-sortable-inner">CHECK &amp; REORDER BY PREFERENCE <i class="fa fa-lg fa-angle-double-down"></i></li>\
+        <li class="no-sortable"><a data-value="Q" data-group="quality" class="nav-option nav-option-radio-optional selected" href="#"><i class="fa fa-check"></i> Better quality</a></li>\
+        <li class="no-sortable"><a data-value="q" data-group="quality" class="nav-option nav-option-radio-optional" href="#"><i class="fa fa-check"></i> Poorer quality</a></li>\
+        <li class="no-sortable"><a data-value="S" data-group="peers" class="nav-option nav-option-radio-optional selected" href="#"><i class="fa fa-check"></i> Quite more seeds</a></li>\
+        <li class="no-sortable"><a data-value="P" data-group="peers" class="nav-option nav-option-radio-optional" href="#"><i class="fa fa-check"></i> Quite more peers</a></li>\
+        <li class="no-sortable"><a data-value="L" data-group="size" class="nav-option nav-option-radio-optional" href="#"><i class="fa fa-check"></i> Larger sizes</a></li>\
+        <li class="no-sortable"><a data-value="s" data-group="size" class="nav-option nav-option-radio-optional selected" href="#"><i class="fa fa-check"></i> Smaller sizes</a></li>\
+    </ul>\
+</li>',
+    'dupe-tv': '<li class="dropdown">\
+        <a href="#" class="dropdown-toggle">\
+    <i class="fa fa-youtube-play"></i>\
+    <span class="hidden-xs">Handle duplicates <span class="superscript hidden-sm hidden-md">TV</span></span>\
+    <div class="btn-sidebar-container">\
+        <button class="btn btn-sidebar pull-right query-rule-remove" type="button">\
+            <i class="fa fa-trash-o"></i>\
+        </button>\
+        <button class="btn btn-sidebar pull-right query-rule-toggle" type="button">\
+            <i class="fa fa-eye"></i>\
+        </button>\
+    </div>\
+</a>\
+    <ul data-value="dupe-tv" class="dropdown-menu sortable-inner query-rule">\
+        <li class="divider inner-divider no-sortable no-sortable-inner">CHECK &amp; REORDER BY PREFERENCE <i class="fa fa-lg fa-angle-double-down"></i></li>\
+        <li class="no-sortable"><a data-value="Q" data-group="quality" class="nav-option nav-option-radio-optional selected" href="#"><i class="fa fa-check"></i> Better quality</a></li>\
+        <li class="no-sortable"><a data-value="q" data-group="quality" class="nav-option nav-option-radio-optional" href="#"><i class="fa fa-check"></i> Poorer quality</a></li>\
+        <li class="no-sortable"><a data-value="S" data-group="peers" class="nav-option nav-option-radio-optional selected" href="#"><i class="fa fa-check"></i> Quite more seeds</a></li>\
+        <li class="no-sortable"><a data-value="P" data-group="peers" class="nav-option nav-option-radio-optional" href="#"><i class="fa fa-check"></i> Quite more peers</a></li>\
+        <li class="no-sortable"><a data-value="L" data-group="size" class="nav-option nav-option-radio-optional" href="#"><i class="fa fa-check"></i> Larger sizes</a></li>\
+        <li class="no-sortable"><a data-value="s" data-group="size" class="nav-option nav-option-radio-optional selected" href="#"><i class="fa fa-check"></i> Smaller sizes</a></li>\
     </ul>\
 </li>',
     'sort': '<li class="dropdown">\

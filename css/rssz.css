@@ -141,6 +141,13 @@ li.no-apply a {
     display: block !important;
 }
 
+.superscript {
+    opacity: 0.8;
+    font-size: 0.6em;
+    vertical-align: top;
+    letter-spacing: 0.1em;
+}
+
 /* SIDEBAR BUTTONS */
 
 .btn-sidebar-container {
