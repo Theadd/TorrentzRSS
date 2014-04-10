@@ -1,71 +1,312 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>TorrentzRSS by Theadd</title>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>TorrentzRSS!</title>
+		<meta name="description" content="description">
+		<meta name="author" content="DevOOPS">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="plugins/bootstrap/bootstrap.css" rel="stylesheet">
+		<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+		<link href='http://fonts.googleapis.com/css?family=Righteous' rel='stylesheet' type='text/css'>
+		<link href="css/style.css" rel="stylesheet">
+		<link href="css/rssz.css" rel="stylesheet">
+		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!--[if lt IE 9]>
+				<script src="http://getbootstrap.com/docs-assets/js/html5shiv.js"></script>
+				<script src="http://getbootstrap.com/docs-assets/js/respond.min.js"></script>
+		<![endif]-->
+	</head>
+<body>
+<!--Start Header-->
+<div id="screensaver">
+	<canvas id="canvas"></canvas>
+	<i class="fa fa-lock" id="screen_unlock"></i>
+</div>
+<div id="modalbox">
+	<div class="devoops-modal">
+		<div class="devoops-modal-header">
+			<div class="modal-header-name">
+				<span>Basic table</span>
+			</div>
+			<div class="box-icons">
+				<a class="close-link">
+					<i class="fa fa-times"></i>
+				</a>
+			</div>
+		</div>
+		<div class="devoops-modal-inner">
+		</div>
+		<div class="devoops-modal-bottom">
+		</div>
+	</div>
+</div>
+<header class="navbar">
+	<div class="container-fluid expanded-panel">
+		<div class="row">
+			<div id="logo" class="col-xs-12 col-sm-2">
+				<a href="index.html">TorrentzRSS!</a>
+			</div>
+			<div id="top-panel" class="col-xs-12 col-sm-10">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12">
+						<a href="#" class="show-sidebar">
+						  <i class="fa fa-bars"></i>
+						</a>
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <div class="wrapper">
-      <header>
-        <h1>TorrentzRSS</h1>
-        <p>Advanced torrentz.eu RSS feeds parser.</p>
+                                <div class="input-group" id="search-box">
+                                    <input id="search-query" type="text" placeholder="Torrentz.eu Search Query" class="form-control" value="español | spanish | castellano movies | video seed > 20 size > 600m size <  6000m -hdtv -screener -latino -xxx" />
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="button"><i class="fa fa-search fa-lg"></i></button>
+                                    </span>
+                                </div>
 
-        <p class="view"><a href="https://github.com/Theadd/TorrentzRSS">View the Project on GitHub <small>Theadd/TorrentzRSS</small></a></p>
+					</div>
 
+                </div>
+			</div>
+		</div>
+	</div>
+</header>
+<!--End Header-->
+<!--Start Container-->
+<div id="main" class="container-fluid">
+	<div class="row">
+		<div id="sidebar-left" class="col-xs-2 col-sm-2">
+			<ul class="nav main-menu">
+                <li class="divider no-sortable">QUERY PARAMETERS</i></li>
+                <li class="dropdown no-sortable">
+                    <a href="#" class="dropdown-toggle no-sortable">
+                        <i class="fa fa-signal no-sortable"></i>
+                        <span class="hidden-xs no-sortable">Quality &amp; Safety</span>
+                    </a>
+                    <ul id="quality" class="dropdown-menu no-sortable" data-value="good">
+                        <li class="no-sortable"><a data-value="any" class="nav-option nav-option-radio no-sortable" href="#"><i class="fa fa-check no-sortable"></i> Any</a></li>
+                        <li class="no-sortable"><a data-value="good" class="nav-option nav-option-radio no-sortable selected" href="#"><i class="fa fa-check no-sortable"></i> Good</a></li>
+                        <li class="no-sortable"><a data-value="verified" class="nav-option nav-option-radio no-sortable" href="#"><i class="fa fa-check no-sortable"></i> Verified</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown no-sortable">
+                    <a href="#" class="dropdown-toggle no-sortable">
+                        <i class="fa fa-sort no-sortable"></i>
+                        <span class="hidden-xs no-sortable">Order by</span>
+                    </a>
+                    <ul id="order" class="dropdown-menu no-sortable" data-value="peers">
+                        <li class="no-sortable"><a data-value="rating" class="nav-option nav-option-radio no-sortable" href="#"><i class="fa fa-check no-sortable"></i> Rating</a></li>
+                        <li class="no-sortable"><a data-value="date" class="nav-option nav-option-radio no-sortable" href="#"><i class="fa fa-check no-sortable"></i> Date</a></li>
+                        <li class="no-sortable"><a data-value="size" class="nav-option nav-option-radio no-sortable" href="#"><i class="fa fa-check no-sortable"></i> Size</a></li>
+                        <li class="no-sortable"><a data-value="peers" class="nav-option nav-option-radio no-sortable selected" href="#"><i class="fa fa-check no-sortable"></i> Peers</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown no-sortable">
+                    <a href="#" class="dropdown-toggle no-sortable">
+                        <i class="fa fa-bars no-sortable"></i>
+                        <span class="hidden-xs no-sortable">Page requests</span>
+                    </a>
+                    <ul id="pages" class="dropdown-menu no-sortable" data-value="1">
+                        <li class="no-sortable"><a data-value="1" class="nav-option nav-option-radio no-sortable selected" href="#"><i class="fa fa-check no-sortable"></i> 1 query (100 results)</a></li>
+                        <li class="no-sortable"><a data-value="2" class="nav-option nav-option-radio no-sortable" href="#"><i class="fa fa-check no-sortable"></i> 2 queries (200 results)</a></li>
+                        <li class="no-sortable"><a data-value="5" class="nav-option nav-option-radio no-sortable" href="#"><i class="fa fa-check no-sortable"></i> 5 queries (500 results)</a></li>
+                        <li class="no-sortable"><a data-value="10" class="nav-option nav-option-radio no-sortable" href="#"><i class="fa fa-check no-sortable"></i> 10 queries (1k results)</a></li>
+                        <li class="no-sortable"><a data-value="100" class="nav-option nav-option-radio no-sortable" href="#"><i class="fa fa-check no-sortable"></i> 100 queries (10k results)</a></li>
+                    </ul>
+                </li>
+                <li class="divider no-sortable">RULES - DRAG &amp; DROP TO REORDER <i class="fa fa-lg fa-angle-double-down"></i></li>
 
-        <ul>
-          <li><a href="https://github.com/Theadd/TorrentzRSS/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/Theadd/TorrentzRSS/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/Theadd/TorrentzRSS">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        <i class="fa fa-unlink"></i>
+                        <span class="hidden-xs">Limit results</span>
+                        <div class="btn-sidebar-container">
+                            <button class="btn btn-sidebar pull-right query-rule-remove" type="button">
+                                <i class="fa fa-trash-o"></i>
+                            </button>
+                            <button class="btn btn-sidebar pull-right query-rule-toggle" type="button">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        </div>
+                    </a>
+                    <ul data-value="limit" class="dropdown-menu query-rule">
+                        <li class="no-sortable">
+                            <div class="nav-option-textbox">
+                                <input type="text" placeholder="Limit" class="pull-right" value="25"  style="width: calc(100% - 130px);" />
+                            </div>
+                            <a class="nav-option" href="#"><i class="fa fa-th-list"></i> Max shown</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        <i class="fa fa-cloud-download"></i>
+                        <span class="hidden-xs">Merge RSS</span>
+                        <div class="btn-sidebar-container">
+                            <button class="btn btn-sidebar pull-right query-rule-remove" type="button">
+                                <i class="fa fa-trash-o"></i>
+                            </button>
+                            <button class="btn btn-sidebar pull-right query-rule-toggle" type="button">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        </div>
+                    </a>
+                    <ul data-value="merge" class="dropdown-menu query-rule">
+                        <li class="no-sortable">
+                            <div class="nav-option-textbox">
+                                <input type="text" placeholder="http://" class="pull-right" style="width: calc(100% - 70px); text-align: left;" />
+                            </div>
+                            <a class="nav-option" href="#"><i class="fa fa-link"></i> URL</a>
+                        </li>
+                    </ul>
+                </li>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        <i class="fa fa-sort"></i>
+                        <span class="hidden-xs">Sort by</span>
+                        <div class="btn-sidebar-container">
+                            <button class="btn btn-sidebar pull-right query-rule-remove" type="button">
+                                <i class="fa fa-trash-o"></i>
+                            </button>
+                            <button class="btn btn-sidebar pull-right query-rule-toggle" type="button">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        </div>
+                    </a>
+                    <ul data-value="sort" class="dropdown-menu no-sortable query-rule">
+                        <ul class="dropdown-menu dropdown-persistent">
+                            <li class="no-sortable"><a data-value="t" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Title</a></li>
+                            <li class="no-sortable"><a data-value="d" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Date</a></li>
+                            <li class="no-sortable"><a data-value="s" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Size</a></li>
+                            <li class="no-sortable"><a data-value="p" class="nav-option nav-option-radio selected" href="#"><i class="fa fa-check"></i> Peers (S+L)</a></li>
+                            <li class="no-sortable"><a data-value="e" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Seeds</a></li>
+                            <li class="no-sortable"><a data-value="l" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Leechers</a></li>
+                            <li class="no-sortable"><a data-value="m" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Seeds - Leechers</a></li>
+                        </ul>
+                        <ul class="dropdown-menu dropdown-persistent">
+                            <li class="divider inner-divider no-sortable">OPTIONS</li>
+                            <li class="no-sortable"><a data-value="A" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Ascending</a></li>
+                            <li class="no-sortable"><a data-value="D" class="nav-option nav-option-radio selected" href="#"><i class="fa fa-check"></i> Descending</a></li>
+                        </ul>
+                    </ul>
+                </li>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        <i class="fa fa-film"></i>
+                        <span class="hidden-xs">Handle duplicates</span>
+                        <div class="btn-sidebar-container">
+                            <button class="btn btn-sidebar pull-right query-rule-remove" type="button">
+                                <i class="fa fa-trash-o"></i>
+                            </button>
+                            <button class="btn btn-sidebar pull-right query-rule-toggle" type="button">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        </div>
+                    </a>
+                    <ul data-value="dupe-movies" class="dropdown-menu sortable-inner query-rule">
+                        <li class="divider inner-divider no-sortable no-sortable-inner">CHECK &amp; REORDER BY PREFERENCE <i class="fa fa-lg fa-angle-double-down"></i></li>
+                        <li class="no-sortable"><a data-value="Q" data-group="quality" class="nav-option nav-option-radio-optional selected" href="#"><i class="fa fa-check"></i> Better quality</a></li>
+                        <li class="no-sortable"><a data-value="q" data-group="quality" class="nav-option nav-option-radio-optional" href="#"><i class="fa fa-check"></i> Poorer quality</a></li>
+                        <li class="no-sortable"><a data-value="S" data-group="peers" class="nav-option nav-option-radio-optional selected" href="#"><i class="fa fa-check"></i> Quite more seeds</a></li>
+                        <li class="no-sortable"><a data-value="P" data-group="peers" class="nav-option nav-option-radio-optional" href="#"><i class="fa fa-check"></i> Quite more peers</a></li>
+                        <li class="no-sortable"><a data-value="L" data-group="size" class="nav-option nav-option-radio-optional" href="#"><i class="fa fa-check"></i> Larger sizes</a></li>
+                        <li class="no-sortable"><a data-value="s" data-group="size" class="nav-option nav-option-radio-optional selected" href="#"><i class="fa fa-check"></i> Smaller sizes</a></li>
+                    </ul>
+                </li>
+                <li id="sidebar-rules-delimiter" class="divider no-sortable">ACTIONS</li>
+                <li class="dropdown no-sortable">
+                    <a href="#" class="dropdown-toggle">
+                        <i class="fa fa-plus-square"></i>
+                        <span class="hidden-xs">Add new rule</span>
+                    </a>
+                    <ul class="dropdown-menu no-sortable sortable-inner">
+                        <li class="no-sortable">
+                            <a href="#" class="dropdown-toggle nav-option">
+                                <i class="fa fa-unlink"></i>
+                                <span class="hidden-xs">Limit results</span>
+                                <div class="btn-sidebar-container">
+                                    <button data-value="limit" class="btn btn-sidebar pull-right add-new-rule" type="button">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="no-sortable">
+                            <a href="#" class="dropdown-toggle nav-option">
+                                <i class="fa fa-cloud-download"></i>
+                                <span class="hidden-xs">Merge RSS</span>
+                                <div class="btn-sidebar-container">
+                                    <button data-value="merge" class="btn btn-sidebar pull-right add-new-rule" type="button">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="dropdown no-sortable">
+                            <a href="#" class="dropdown-toggle nav-option">
+                                <i class="fa fa-times-circle"></i>
+                                <span class="hidden-xs">Handle duplicates</span>
+                            </a>
+                            <ul class="dropdown-menu no-sortable">
+                                <li class="no-sortable">
+                                    <a href="#" class="dropdown-toggle nav-option">
+                                        <i class="fa fa-film"></i>
+                                        <span class="hidden-xs">Treat as movies</span>
+                                        <div class="btn-sidebar-container">
+                                            <button data-value="dupe-movies" class="btn btn-sidebar pull-right add-new-rule" type="button">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="no-sortable">
+                                    <a href="#" class="dropdown-toggle nav-option">
+                                        <i class="fa fa-video-camera"></i>
+                                        <span class="hidden-xs">Treat as TV shows</span>
+                                        <div class="btn-sidebar-container">
+                                            <button data-value="dupe-tv" class="btn btn-sidebar pull-right add-new-rule" type="button">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="no-sortable">
+                            <a href="#" class="dropdown-toggle nav-option">
+                                <i class="fa fa-sort"></i>
+                                <span class="hidden-xs">Sort by</span>
+                                <div class="btn-sidebar-container">
+                                    <button data-value="sort" class="btn btn-sidebar pull-right add-new-rule" type="button">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="no-sortable"><a href="results" class="nav-option-submit ajax-link"><i class="fa fa-cogs"></i><span class="hidden-xs"> Apply query &amp; rules!</span></a></li>
+			</ul>
+		</div>
+		<!--Start Content-->
+		<div id="content" class="col-xs-12 col-sm-10">
+			<div class="preloader">
+				<img src="img/devoops_getdata.gif" class="devoops-getdata" alt="preloader"/>
+			</div>
+			<div id="ajax-content"></div>
+		</div>
+		<!--End Content-->
+	</div>
+</div>
+<!--End Container-->
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
-
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/Theadd">Theadd</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
-    </div>
-    <script src="javascripts/scale.fix.js"></script>
-    
-  </body>
+<script src="plugins/jquery/jquery-2.1.0.min.js"></script>
+<script src="plugins/jquery-ui.min.js"></script>
+<script src="plugins/bootstrap/bootstrap.min.js"></script>
+<!--<script src="plugins/jquery-sortable.js"></script>-->
+<script src="plugins/jquery.timeago.js"></script>
+<script src="plugins/bootstrap-growl.min.js"></script>
+<script src="js/devoops.js"></script>
+<script src="js/rssz.js"></script>
+<script src="js/rssz-query.js"></script>
+</body>
 </html>

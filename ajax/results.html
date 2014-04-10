@@ -1,0 +1,60 @@
+<div class="row">
+	<div id="breadcrumb" class="col-md-12">
+		<ol class="breadcrumb">
+			<li><a href="index.html">TorrentzRSS!</a></li>
+			<li><a href="#">Search Results</a></li>
+		</ol>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12">
+		<div class="box">
+			<div class="box-content">
+				<div class="col-xs-6">
+					<b>Search Results:</b><br>
+					Total: 34, Filtered: 20, Showing: 14<br>
+                    Max seeds: 258<br>
+                    Min seeds: 42
+				</div>
+				<div class="col-xs-6 text-right pull-right" style="max-width: 300px;">
+                    <strong>Copy your RSS url!</strong><br>
+                    <div class="input-group">
+                        <input id="rss-url" type="text" value="magnet:?xt=urn:btih:07530481732dd7f2c519dad9420314e8c1216fea" class="form-control" data-original-title="" title="">
+                        <span class="input-group-addon"><a href="#" id="copy-rss-url" data-clipboard-target="rss-url"><i class="fa fa-clipboard"></i></a></span>
+                    </div>
+				</div>
+				<div class="clearfix"></div>
+				<div class="col-xs-12">
+					<br/>
+                    <table id="results-table" class="table m-table table-bordered table-striped table-hover table-heading">
+                        <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th style="text-align: right;">Added</th>
+                            <th style="text-align: right;">Size</th>
+                            <th style="text-align: center;"><i class="fa fa-lg fa-arrow-circle-up" title="Seeders (Sharing)"></i></th>
+                            <th style="text-align: center;"><i class="fa fa-lg fa-arrow-circle-down" title="Leechers (Downloading)"></i></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+					<small>* <a href="#">Permalink</a></small>
+				</div>
+				<div class="clearfix"></div>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        var tbody = $('#results-table').find('tbody');
+        console.log("calling manager.perform");
+        var working = manager.perform(tbody, true);
+        console.log("end call, return: " + working);
+    });
+</script>

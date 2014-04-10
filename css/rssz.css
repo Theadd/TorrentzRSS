@@ -1,0 +1,246 @@
+
+/* MAIN */
+
+body {
+    font-family: Verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+a {
+    outline: 0 none !important;
+}
+
+#content {
+    margin-bottom: auto !important;
+    padding-bottom: 0 !important;
+}
+
+#main {
+    min-height: inherit !important;
+}
+
+
+/* SEARCH BOX */
+
+#search-box {
+    float: right;
+    width: calc(100% - 26px);
+    height: 50px;
+    line-height: 50px;
+}
+
+#search-box input, #search-box button {
+    border: 1px solid #C7C7C7;
+}
+
+#search-box * {
+    height: 30px;
+    line-height: 30px;
+}
+
+#search-box button {
+    margin-bottom: 0;
+}
+
+#search-box input {
+    margin: 10px 0 0;
+    color: #686868;
+    text-shadow: 0 1px 1px #EEE;
+}
+
+.box-header {
+    position: relative;
+    overflow: hidden;
+    height: 28px;
+    border-bottom: 1px solid #E4E4E4;
+    border-radius: 3px 3px 0 0;
+    background: none repeat scroll 0 0 #F2F2F2;
+    color: #6494bb;
+    letter-spacing: 0.08em;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+/* LOGO */
+
+#logo a:hover {
+    padding-left: 20px;
+    background-position: right 13px;
+    opacity: 1;
+}
+#logo a {
+    background: url("../img/logo.png") no-repeat scroll right 32px rgba(0, 0, 0, 0);
+    opacity: 0.5;
+}
+
+/* SIDEBAR */
+
+.nav-option-radio i {
+    color: transparent;
+}
+
+.nav-option-radio.selected i {
+    color: inherit;
+}
+
+.nav-option-radio-optional i {
+    color: transparent;
+}
+
+.nav-option-radio-optional.selected i {
+    color: inherit;
+}
+
+.main-menu .dropdown-menu > li > a.nav-option {
+    padding-left: 26px;
+}
+
+.main-menu .dropdown-menu .dropdown-menu > li > a.nav-option {
+    padding-left: 36px;
+}
+
+.main-menu .divider {
+    overflow: hidden;
+    margin: 9px 0 0;
+    height: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    font-weight: bold;
+    font-size: 8px;
+}
+
+.main-menu .divider.inner-divider {
+    margin-top: 0;
+    padding-top: 9px;
+    height: 24px;
+    background-color: transparent;
+}
+
+.nav-option-textbox input {
+    width: 56px;
+    height: 21px;
+    border: 1px solid rgba(255,255,255,0.8);
+    background-color: rgba(255,255,255,0.5);
+    color: #333;
+    text-align: center;
+    font-size: 11px;
+}
+
+.nav-option-textbox  {
+    position: absolute;
+    padding: 8px 15px;
+    width: 100%;
+    height: 0;
+}
+
+li.no-apply a {
+    color: rgba(255,255,255,0.4) !important;
+}
+
+.dropdown-persistent {
+    display: block !important;
+}
+
+/* SIDEBAR BUTTONS */
+
+.btn-sidebar-container {
+    position: absolute;
+    left: 0;
+    float: right;
+    margin-top: -30px;
+    padding: 10px;
+    width: 100%;
+    height: 0;
+}
+
+.btn-sidebar {
+    display: none;
+    margin-left: 3px;
+    padding: 0;
+    width: 22px;
+    height: 22px;
+    border-color: rgba(0, 0, 0, 0.3);
+    border-radius: 2px;
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.2);
+    line-height: inherit;
+    opacity: 0.5;
+}
+
+.btn-sidebar:hover {
+    color: inherit;
+    opacity: 1;
+}
+
+.main-menu > li > a {
+    padding-right: 10px;
+}
+
+.main-menu li > a:hover .btn-sidebar, .main-menu li > a:focus .btn-sidebar {
+    display: inherit;
+}
+
+.nav-option-submit {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: rgba(0, 0, 0, 0.35) !important;
+}
+
+/* SORTABLE JQUERY PLUGIN */
+
+body.dragging, body.dragging * {
+    /*cursor: move !important;*/
+}
+
+.dragged {
+    position: absolute !important;
+    z-index: 2000;
+    background-color: transparent;
+    opacity: 0.8;
+}
+
+.dragged a {
+    background-color: transparent !important;
+}
+
+ul.main-menu li.placeholder {
+    position: relative;
+    height: 40px;
+    border-top: 1px solid rgba(0,0,0,0.3);
+    border-bottom: 1px solid rgba(0,0,0,0.3);
+    background-color: rgba(255,255,255,0.4);
+    -webkit-box-shadow: 0px 0px 10px rgba(255,255,255,0.6);
+    -moz-box-shadow: 0px 0px 10px rgba(255,255,255,0.6);
+    box-shadow: 0px 0px 10px rgba(255,255,255,0.6);
+    opacity: 0.8;
+}
+
+/* RESULTS TABLE */
+
+#results-table {
+    font-size: 12px;
+}
+
+#results-table > tbody > tr > td:nth-child(2), #results-table > tbody > tr > td:nth-child(3) {
+    overflow: visible;
+    text-align: right;
+    font-size: 9px;
+}
+
+#results-table > tbody > tr > td:nth-child(4) {
+    color: green;
+    text-align: right;
+}
+
+#results-table > tbody > tr > td:nth-child(5) {
+    color: blue;
+    text-align: right;
+}
+
+/* BOOTSTRAP GROWL ALERTS */
+
+.bootstrap-growl-top-right {
+    /*top: 70px !important;*/
+}
+
+.box {
+    z-index: 1030;
+}
