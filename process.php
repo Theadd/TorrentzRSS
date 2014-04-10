@@ -6,6 +6,10 @@ define("RSSZ_USE_PROXY", false);
 define("RSSZ_PROXY", 'localhost:8118');
 /* Allow web browsers to get content from this file (Your TorrentzRSS back end) if its not located in the same domain as the requesting web page. */
 define("RSSZ_ALLOW_CROSS_DOMAIN", true);
+define("RSSZ_SITE_NAME", "TorrentzRSS!");
+define("RSSZ_SITE_URL", "http://Theadd.github.io/TorrentzRSS/");
+/* Time in minutes for torrent applications to wait between requests. */
+define("RSSZ_TTL", 15);
 
 /* END OF CONFIGURATION PARAMETERS */
 
@@ -13,6 +17,8 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 
 require_once 'XML/RSS.php';
 require_once 'XML/Serializer.php';
+
+$results = 0;
 
 if (RSSZ_ALLOW_CROSS_DOMAIN)
     header('Access-Control-Allow-Origin: *');
@@ -243,12 +249,11 @@ function run($p, $r, $q) {
 	$q = str_replace($cin, $cout, $q);
 	
 	$query = "http://torrentz.eu/" . $params[0] . "?q=" . $q;
-	
-	$total = 0;
+
 	$page = 0;
 	while (($sum = process_url($query.'&p='.$page, $channel)) != 0 && ($params[1] * 2 > $page)) {
-		$total += $sum;
-		$page+=2;
+        $GLOBALS['results'] += $sum;
+		$page += 2;
 	}
 	
 	$r = explode('-', $r);
@@ -317,26 +322,24 @@ if (isset($_REQUEST['tiny'])) {
 	file_put_contents("data/".$tiny, $sdata);
 	echo $tiny;
 } else {
-	//$query = "http://torrentz.eu/" . $params[0] . "?q=" . $_REQUEST['q'];
 
 	$data['channel'] = array(
-		"title" => "TorrentzRSS!",
-		"link"  => "http://37.187.9.5/rssz",
-		"ttl"  => 15,
-		"total" => 0
+		"title" => RSSZ_SITE_NAME.' '.urldecode($_REQUEST['q']),
+		"link"  => RSSZ_SITE_URL,
+		"dataSource"  => "http://torrentz.eu/",
+		"project"  => "https://github.com/Theadd/TorrentzRSS",
+		"author"  => "Theadd",
+		"version"  => "1.0",
+		"license"  => "GPL v2",
+		"ttl"  => RSSZ_TTL,
+		"total" => 0,
+		"excluded" => 0
 	);
 
-	/*$total = 0;
-	$page = 0;
-	while (($sum = process_url($query.'&p='.$page, $data['channel'])) != 0 && ($params[1] * 2 > $page)) {
-		$total += $sum;
-		$page+=2;
-	}*/
 	$value = run($_REQUEST['p'], $_REQUEST['r'], $_REQUEST['q']);
 	$data['channel'] = array_merge($data['channel'], $value);
 	$data['channel']["total"] = count($value);
-
-	
+	$data['channel']["excluded"] = $results - $data['channel']["total"];
 
 	if (isset($_REQUEST['f']) && strtolower($_REQUEST['f']) == 'json') {
 		header('Content-Type: application/json');
