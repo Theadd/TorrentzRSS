@@ -31,6 +31,7 @@ function queryManager(config_params) {
     /** @constructs */
     (function() {
         body.on("click","button.add-new-rule", function() {
+            $('#no-selected-rule').hide();
             $('#sidebar-rules-delimiter').before(sidebar_rules[$(this).data("value")]);
             $("ul.sortable-inner").sortable({
                 items: "li:not(.no-sortable-inner)",
@@ -42,6 +43,9 @@ function queryManager(config_params) {
 
         body.on("click","button.query-rule-remove", function() {
             $(this).closest("li").remove();
+            if (!$('.query-rule').size()) {
+                $('#no-selected-rule').show();
+            }
         });
 
         body.on("click","button.query-rule-toggle", function() {
