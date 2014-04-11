@@ -1,5 +1,5 @@
 
-var globals = { 'process_url': 'process.php' /*'http://37.187.9.5/rssz/process.php'*/ };
+var globals = { 'process_url': 'http://37.187.9.5/rssz/process.php' };
 
 /** Class to manage search queries.
  * @constructor
