@@ -129,6 +129,9 @@ function queryManager(config_params) {
                             tbody.append('<tr><td><a href="'+item['link']+'">'+item['title']+'</a> <i class="fa fa-angle-double-right"></i> '+item['category']+'</td><td>'+jQuery.timeago(item['pubtimestamp'].toString())+'</td><td>'+item['size']+'</td><td>'+item['seeds']+'</td><td>'+item['leechers']+'</td></tr>');
                         }
                     });
+                    /*<b>Search Results:</b><br>
+                     Total: 34, Filtered: 20, Showing: 14<br>*/
+                    $('#results-info').html("<b>" + channel['total'] + " Matching results!</b><br />\nExcluded " + channel['excluded'] + " out of " + (channel['total'] + channel['excluded']) + " results.");
                 });
 
                 $('#ajax-content').show();

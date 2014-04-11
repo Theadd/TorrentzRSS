@@ -7,6 +7,7 @@ body {
 
 a {
     outline: 0 none !important;
+    text-decoration: none !important;
 }
 
 #content {
@@ -139,6 +140,39 @@ li.no-apply a {
 
 .dropdown-persistent {
     display: block !important;
+}
+
+.superscript {
+    opacity: 0.8;
+    font-size: 0.6em;
+    vertical-align: top;
+    letter-spacing: 0.1em;
+}
+
+.sidebar-note {
+    font-size: 10px;
+    text-align: center;
+    opacity: 0.5;
+    -webkit-transition: 0.5s;
+    -moz-transition: 0.5s;
+    -o-transition: 0.5s;
+    transition: 0.5s;
+}
+
+.sidebar-note:hover {
+    opacity: 1;
+}
+
+.sidebar-note a {
+    color: rgba(255, 255, 255, 0.6);
+    -webkit-transition: 0.5s;
+    -moz-transition: 0.5s;
+    -o-transition: 0.5s;
+    transition: 0.5s;
+}
+
+.sidebar-note a:hover {
+    color: rgba(255, 255, 255, 0.9);
 }
 
 /* SIDEBAR BUTTONS */
