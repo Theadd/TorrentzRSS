@@ -20,21 +20,21 @@
 			<div class="col-xs-4">
 				<div class="sparkline-dashboard" id="sparkline-1"></div>
 				<div class="sparkline-dashboard-info">
-					756.45M
-					<span class="txt-primary">FEEDS IN USE</span>
+					<div id="excluded-torrents">-</div>
+					<span class="txt-primary">EXCLUDED</span>
 				</div>
 			</div>
 			<div class="col-xs-4">
 				<div class="sparkline-dashboard" id="sparkline-2"></div>
 				<div class="sparkline-dashboard-info">
-					245.12M
-					<span class="txt-info">PARSED TORRENTS</span>
+					<div id="parsed-torrents">-</div>
+					<span class="txt-info">RESULTS</span>
 				</div>
 			</div>
 			<div class="col-xs-4">
 				<div class="sparkline-dashboard" id="sparkline-3"></div>
 				<div class="sparkline-dashboard-info">
-					107.83M
+					<div id="total-queries">-</div>
 					<span>QUERIES</span>
 				</div>
 			</div>
@@ -136,7 +136,7 @@
                 <div class="box-header">
                     <div class="box-name">
                         <i class="fa fa-info"></i>
-                        <span>Help</span>
+                        <span>Advanced Search Parameters</span>
                     </div>
                     <div class="box-icons">
                         <a class="collapse-link">
@@ -188,16 +188,7 @@
 //var sparkline_arr_2 = SparklineTestData();
 //var sparkline_arr_3 = SparklineTestData();
 $(document).ready(function() {
-	// Make all JS-activity for dashboard
-	//DashboardTabChecker();
-	// Load Knob plugin and run callback for draw Knob charts for dashboard(tab-servers)
-	//LoadKnobScripts(DrawKnobDashboard);
-	// Load Sparkline plugin and run callback for draw Sparkline charts for dashboard(top of dashboard + plot in tables)
-	//LoadSparkLineScript(DrawSparklineDashboard);
-	// Load Morris plugin and run callback for draw Morris charts for dashboard
-	//LoadMorrisScripts(MorrisDashboard);
-	// Make beauty hover in table
-	//$("#ticker-table").beautyHover();
+	manager.updateStats();
     WinMove();
 });
 </script>

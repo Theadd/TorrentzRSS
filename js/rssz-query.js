@@ -1,5 +1,5 @@
 
-var globals = { 'process_url': 'http://37.187.9.5/rssz/process.php' };
+var globals = { 'process_url': 'process.php' /*'http://37.187.9.5/rssz/process.php'*/ };
 
 /** Class to manage search queries.
  * @constructor
@@ -88,6 +88,44 @@ function queryManager(config_params) {
     this.isBusy = function() {
         return busy;
     };
+
+    /** Get object's busy state.
+     *
+     * @see {@link setBusy}
+     * @returns {boolean} is either busy or not.
+     */
+    this.updateStats = function() {
+
+        var request = $.ajax({
+            type: 'GET',
+            url: config['process_url'],
+            data: { stats: true },
+            async: true,
+            xhrFields: {
+                withCredentials: false
+            },
+            crossDomain: true
+        });
+
+        request.success(function(data) {
+            $("#total-queries").html(nFormatter(data['queries']));
+            $("#excluded-torrents").html(nFormatter(data['excluded']));
+            $("#parsed-torrents").html(nFormatter(data['total']));
+        });
+    };
+
+    function nFormatter(num) {
+        if (num >= 1000000000) {
+            return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'G';
+        }
+        if (num >= 1000000) {
+            return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+        }
+        if (num >= 1000) {
+            return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+        }
+        return num;
+    }
 
     /** Performs current search query if possible.
      *
