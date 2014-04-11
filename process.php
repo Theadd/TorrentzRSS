@@ -324,6 +324,9 @@ if (isset($_REQUEST['tiny'])) {
 	$tiny = md5($sdata);
 	file_put_contents("data/".$tiny, $sdata);
 	echo $tiny;
+} else if (isset($_REQUEST['stats'])) {
+    header('Content-Type: application/json');
+    echo json_encode(unserialize(file_get_contents("data/stats")), JSON_PRETTY_PRINT);
 } else {
 
 	$data['channel'] = array(
@@ -369,6 +372,39 @@ if (isset($_REQUEST['tiny'])) {
 		}
 	}
 
+    $lockwait = 2;       // seconds to wait for lock
+    $waittime = 250000;  // microseconds to wait between lock attempts
+    // 2s / 250000us = 8 attempts.
+    $statsfile = 'data/stats';
+
+    if (!file_exists($statsfile)) {
+        $stats = array('total' => 0, 'excluded' => 0, 'queries' => 0);
+        file_put_contents($statsfile, serialize($stats));
+    }
+    //TODO: file_get_contents, fopen, flock, fwrite & fclose within bucle
+    $stats = unserialize(file_get_contents($statsfile));
+    if( $fh = fopen($statsfile, 'w+') ) {
+        $waitsum = 0;
+        // attempt to get exclusive, non-blocking lock
+        $locked = flock($fh, LOCK_EX | LOCK_NB);
+        while( !$locked && ($waitsum <= $lockwait) ) {
+            $waitsum += $waittime/1000000; // microseconds to seconds
+            usleep($waittime);
+            $locked = flock($fh, LOCK_EX | LOCK_NB);
+        }
+        if( !$locked ) {
+            //echo "Could not lock $statsfile for write within $lockwait seconds.";
+        } else {
+            $stats['queries']++;
+            $stats['total'] += $data['channel']["total"];
+            $stats['excluded'] += $data['channel']["excluded"];
+            fwrite($fh, serialize($stats));
+            flock($fh, LOCK_UN);  // ALWAYS unlock
+        }
+        fclose($fh);            // ALWAYS close your file handle
+    } else {
+        //echo "Could not open $statsfile";
+    }
 }
 
 ?>
