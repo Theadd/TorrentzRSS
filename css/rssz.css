@@ -218,6 +218,60 @@ li.no-apply a {
     color: rgba(0, 0, 0, 0.35) !important;
 }
 
+    /* EMPTY RULES BOX */
+
+#no-selected-rule {
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.5);
+    margin: 10px;
+    font-size: 13px;
+    text-shadow: 1px 1px 1px #999999;
+    color: rgba(0,0,0,0.2);
+    border-radius: 4px;
+    letter-spacing: 0.35em;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    cursor: default;
+    -webkit-transition: 0.5s;
+    -moz-transition: 0.5s;
+    -o-transition: 0.5s;
+    transition: 0.5s;
+    height: 40px;
+}
+
+#no-selected-rule .on-hover {
+    opacity: 0;
+    -webkit-transition: 0.5s;
+    -moz-transition: 0.5s;
+    -o-transition: 0.5s;
+    transition: 0.5s;
+    position: absolute;
+    width: 100%;
+    text-align: center;
+}
+
+#no-selected-rule .on-no-hover {
+    opacity: 1;
+    -webkit-transition: 0.5s;
+    -moz-transition: 0.5s;
+    -o-transition: 0.5s;
+    transition: 0.5s;
+    position: absolute;
+    width: 100%;
+    text-align: center;
+}
+
+#no-selected-rule:hover {
+    box-shadow: 0 0 13px rgba(255, 255, 255, 0.6);
+}
+
+#no-selected-rule:hover .on-no-hover {
+    opacity: 0;
+}
+
+#no-selected-rule:hover .on-hover {
+    opacity: 1;
+}
+
 /* SORTABLE JQUERY PLUGIN */
 
 body.dragging, body.dragging * {
