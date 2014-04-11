@@ -315,6 +315,9 @@ function run($p, $r, $q) {
 //$cout = array("%C3%B1", "%C3%91", "%C3%A7", "%C3%87", "+", "%3E", "%3C");
 //$_REQUEST['q'] = str_replace($cin, $cout, $_REQUEST['q']);
 
+if (!isset($_REQUEST['r']))
+    $_REQUEST['r'] = '';
+
 if (isset($_REQUEST['tiny'])) {
 	$data = array('q' => $_REQUEST['q'], 'p' => $_REQUEST['p'], 'r' => $_REQUEST['r']);
 	$sdata = serialize($data);
@@ -345,6 +348,19 @@ if (isset($_REQUEST['tiny'])) {
 		header('Content-Type: application/json');
 		echo json_encode($data, JSON_PRETTY_PRINT);
 	} else {
+
+        $options = array(
+            "indent"          => "    ",
+            "linebreak"       => "\n",
+            "typeHints"       => false,
+            "addDecl"         => true,
+            "encoding"        => "UTF-8",
+            "rootName"        => "rss",
+            "rootAttributes"  => array("version" => "2.0"),
+            "defaultTagName"  => "item",
+            "attributesArray" => "_attributes"
+        );
+
 		$serializer = new XML_Serializer($options);
 
 		if ($serializer->serialize($data)) {
