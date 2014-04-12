@@ -34,6 +34,7 @@ function queryManager(config_params) {
     /** @constructs */
     (function() {
         body.on("click","button.add-new-rule", function() {
+            //$('#no-selected-rule').before().css('border-bottom', "1px solid rgba(255, 255, 255, 0.5) !important");
             $('#no-selected-rule').hide();
             $('#sidebar-rules-delimiter').before(sidebar_rules[$(this).data("value")]);
             $("ul.sortable-inner").sortable({
@@ -47,6 +48,7 @@ function queryManager(config_params) {
         body.on("click","button.query-rule-remove", function() {
             $(this).closest("li").remove();
             if (!$('.query-rule').size()) {
+                //$('#no-selected-rule').before().css('border-bottom', 0);
                 $('#no-selected-rule').show();
             }
         });
