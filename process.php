@@ -555,7 +555,7 @@ function run($p, $r, $q) {
                 break;
 		}
 	}
-    
+
 	return $channel;
 }
 
