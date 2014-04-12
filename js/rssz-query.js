@@ -229,9 +229,7 @@ function queryManager(config_params) {
 
                 $.each(data, function(i_channel, channel) {
                     $.each(channel, function(i, item) {
-                        console.log(i + " = " + JSON.stringify(item));
                         if (item['title'] !== undefined) {
-
                             tbody.append('<tr><td><a href="'+item['link']+'">'+item['title']+'</a> <i class="fa fa-angle-double-right"></i> '+item['category']+'</td><td>'+jQuery.timeago(item['pubtimestamp'].toString())+'</td><td>'+item['size']+'</td><td>'+item['seeds']+'</td><td>'+item['leechers']+'</td></tr>');
                         }
                     });
@@ -335,6 +333,14 @@ function queryManager(config_params) {
                 rule.find('a.selected').each(function() {
                     value += $(this).data('value');
                 });
+                break;
+            case "exclude":
+                var pattern = Base64.encode(rule.find('input').val());
+                value = 'e';
+                rule.find('a.selected').each(function() {
+                    value += $(this).data('value');
+                });
+                value += 'p'+pattern;
                 break;
         }
 

@@ -10,6 +10,26 @@ a {
     text-decoration: none !important;
 }
 
+/*input:-moz-placeholder {
+    color: #ffffff;
+    opacity: 0.65;
+}*/
+
+input::-moz-placeholder {
+    color: #ffffff;
+    opacity: 0.65;
+}
+
+input:-ms-input-placeholder {
+    color: #ffffff;
+    opacity: 0.65;
+}
+
+input::-webkit-input-placeholder {
+    color: #ffffff;
+    opacity: 0.65;
+}
+
 #content {
     margin-bottom: auto !important;
     padding-bottom: 0 !important;

@@ -492,7 +492,6 @@ function run($p, $r, $q) {
 			case 'l':
 				//limit results
 				if (count($channel) > intval(substr($rule, 1))) {
-					//echo "RULE: $rule : ".count($channel)." > ".intval(substr($rule, 1))."<br>\n";
 					$channel = array_slice($channel, 0, intval(substr($rule, 1)));
 				}
 				break;
@@ -506,7 +505,7 @@ function run($p, $r, $q) {
 				}
 				break;
 			case 's':
-				//limit results
+				//sort
 				$arg = (substr($rule, 2, 1) == 'A') ? SORT_ASC : SORT_DESC;
 				$field = '';
 				switch (substr($rule, 1, 1)) {
@@ -544,6 +543,29 @@ function run($p, $r, $q) {
                     if (isset($hashes[$channel[$i]['hash']])) {
                         unset($hashes[$channel[$i]['hash']]);
                     } else {
+                        unset($channel[$i]);
+                    }
+                    ++$i;
+                }
+                $channel = array_values($channel);  //reindex
+                break;
+            case 'e':
+                //Exclude
+                $pos = strpos($rule, 'p');
+                $args = substr($rule, 0, $pos);     //r=regexp, m=matching, t=title
+                $isRegExp = (strpos($args, 'r'));
+                $matching = (strpos($args, 'm'));
+                $fromTitle = (strpos($args, 't'));
+                $pattern = base64_decode(substr($rule, $pos + 1));
+
+                $i = 0;
+                $channels = count($channel);
+                while ($i < $channels) {
+                    $field = ($fromTitle) ? $channel[$i]['title_lowercase'] : $channel[$i]['category'][0];
+                    $match = ($isRegExp) ? preg_match("/".$pattern."/", $field) : (strpos($field, $pattern) !== false);
+                    if ($match && $matching) {
+                        unset($channel[$i]);
+                    } else if (!$match && !$matching) {
                         unset($channel[$i]);
                     }
                     ++$i;
