@@ -2,8 +2,9 @@
 
 /* CONFIGURATION PARAMETERS */
 
-/* If true, it will use 'curl' command line to retrieve the data, otherwise it will use php curl functions. */
-define("RSSZ_USE_SHELL_EXEC", false);
+//TODO: remove this line
+set_time_limit(5);
+
 define("RSSZ_USE_PROXY", false);
 define("RSSZ_PROXY", 'localhost:8118');
 /* Allow web browsers to get content from this file (Your TorrentzRSS back end) if its not located in the same domain as the requesting web page. */
@@ -16,6 +17,13 @@ define("RSSZ_TTL", 15);
 /* END OF CONFIGURATION PARAMETERS */
 
 error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
+
+/* RSSZ_USE_SHELL_EXEC: If true, it will use 'curl' command line to retrieve the data, otherwise it will use curl functions from php. */
+if (!function_exists('curl_setopt') || !function_exists('curl_setopt')) {   //TODO: both are identical.
+    define("RSSZ_USE_SHELL_EXEC", true);
+} else {
+    define("RSSZ_USE_SHELL_EXEC", false);
+}
 
 require_once 'XML/RSS.php';
 require_once 'XML/Serializer.php';
@@ -323,143 +331,141 @@ function handleDuplicatesAsTVShows($channel, $rule) {
     $i = 0;
     while ($i + 1 < $items) {
         $wnd = 1;
-        $info1 = getTVShowInfo($aux[$i]['title_lowercase']);
-
-        //if (strlen($iname = substr($aux[$i]['title_lowercase'], 0, strpos($aux[$i]['title_lowercase'], ' ', 5)))) {
-        if ($info1 == false) {
-            $i += $wnd;
-            continue;
-        }
-            while (true) {
-                /*if (!((@substr($aux[$i+$wnd]['title_lowercase'], 0, strlen($iname)) == $iname)
-                    && levenshtein(substr($aux[$i]['title_lowercase'], 0, $halfpos), substr($aux[$i+$wnd]['title_lowercase'], 0, $halfpos)) < round($halfpos * 0.5)))
-                    break;*/
-                $info2 = getTVShowInfo($aux[$i+$wnd]['title_lowercase']);
-                if ($info2 == false) {
-                    ++$wnd;
-                    continue;
-                }
-                if (levenshtein($info1['name'], $info2['name']) > 5)
-                    break; //not same tv serie, go next group
-                $item1 = $aux[$i];
-                $item2 = $aux[$i+$wnd];
-                //get only last episode
-                if ($info1['episode'] < $info2['episode']) {
-                    $aux[$i] = $item2;
-                    ++$wnd; //next item in group
-                    continue;
-                } else if ($info1['episode'] > $info2['episode']) {
-                    ++$wnd;
-                    continue;
-                }
-                //
-                $swapped = false;
-                foreach ($args as $arg) {
-                    switch ($arg) {
-                        case 'Q':
-                            //better quality
-                            $rate1 = getTVShowQualityRate($item1['title_lowercase']);
-                            $rate2 = getTVShowQualityRate($item2['title_lowercase']);
-                            if ($rate2 > $rate1) {
-                                //keep item2 and break foreach
-                                $item1 = $item2;
-                                break 2;
-                            } else if ($rate1 > $rate2) break 2;
-                            break;
-                        case 'q':
-                            //poorer quality
-                            $rate1 = getMovieQualityRate($item1['title_lowercase']);
-                            $rate2 = getMovieQualityRate($item2['title_lowercase']);
-                            if ($rate2 < $rate1) {
-                                //keep item2 and break foreach
-                                $item1 = $item2;
-                                break 2;
-                            } else if ($rate1 < $rate2) break 2;
-                            break;
-                        case 'S':
-                            //quite more seeds
-                            if ($item2['seeds'] > $item1['seeds']) {
-                                if ($item2['seeds'] >= $item1['seeds'] * 1.25) {
-                                    //keep item2 and break foreach
-                                    $item1 = $item2;
-                                    break 2;
-                                } else {
-                                    //swap
-                                    if (!$swapped) {
-                                        $tmp = $item1;
-                                        $item1 = $item2;
-                                        $item2 = $tmp;
-                                        $swapped = true;
-                                        //continue foreach
-                                    }
-                                }
-                            } else if ($item1['seeds'] >= $item2['seeds'] * 1.25) break 2;
-                            break;
-                        case 'P':
-                            //quite more peers
-                            if ($item2['peers'] > $item1['peers']) {
-                                if ($item2['peers'] >= $item1['peers'] * 1.25) {
-                                    //keep item2 and break foreach
-                                    $item1 = $item2;
-                                    break 2;
-                                } else {
-                                    //swap
-                                    if (!$swapped) {
-                                        $tmp = $item1;
-                                        $item1 = $item2;
-                                        $item2 = $tmp;
-                                        $swapped = true;
-                                        //continue foreach
-                                    }
-                                }
-                            } else if ($item1['peers'] >= $item2['peers'] * 1.25) break 2;
-                            break;
-                        case 'L':
-                            //larger sizes
-                            if ($item2['size_raw'] > $item1['size_raw']) {
-                                if ($item2['size_raw'] >= $item1['size_raw'] * 1.25) {
-                                    //keep item2 and break foreach
-                                    $item1 = $item2;
-                                    break 2;
-                                } else {
-                                    //swap
-                                    if (!$swapped) {
-                                        $tmp = $item1;
-                                        $item1 = $item2;
-                                        $item2 = $tmp;
-                                        $swapped = true;
-                                        //continue foreach
-                                    }
-                                }
-                            } else if ($item1['size_raw'] >= $item2['size_raw'] * 1.25) break 2;
-                            break;
-                        case 's':
-                            //smaller sizes
-                            if ($item2['size_raw'] < $item1['size_raw']) {
-                                if ($item2['size_raw'] <= $item1['size_raw'] * 1.25) {
-                                    //keep item2 and break foreach
-                                    $item1 = $item2;
-                                    break 2;
-                                } else {
-                                    //swap
-                                    if (!$swapped) {
-                                        $tmp = $item1;
-                                        $item1 = $item2;
-                                        $item2 = $tmp;
-                                        $swapped = true;
-                                        //continue foreach
-                                    }
-                                }
-                            } else if ($item1['size_raw'] <= $item2['size_raw'] * 1.25) break 2;
-                            break;
-                    }
-                }
-                $aux[$i] = $item1;
-                ++$wnd; //next item in group
+        $info1 = false;
+        while (true) {
+            if ($i + $wnd >= $items)
+                break;  //reached end of array
+            $info1 = getTVShowInfo($aux[$i]['title_lowercase']);
+            if ($info1 == false) {
+                break;
             }
-            $hashes[$aux[$i]['hash']] = true;   //save
-            $i += $wnd; //next group
-        //}
+            $info2 = getTVShowInfo($aux[$i+$wnd]['title_lowercase']);
+            if ($info2 == false) {
+                ++$wnd;
+                continue;
+            }
+            if (levenshtein($info1['name'], $info2['name']) > 5)
+                break; //not same tv serie, go next group
+            $item1 = $aux[$i];
+            $item2 = $aux[$i+$wnd];
+            //get only last episode
+            if ($info1['episode'] < $info2['episode']) {
+                $aux[$i] = $item2;
+                ++$wnd; //next item in group
+                continue;
+            } else if ($info1['episode'] > $info2['episode']) {
+                ++$wnd;
+                continue;
+            }
+            //
+            $swapped = false;
+            foreach ($args as $arg) {
+                switch ($arg) {
+                    case 'Q':
+                        //better quality
+                        $rate1 = getTVShowQualityRate($item1['title_lowercase']);
+                        $rate2 = getTVShowQualityRate($item2['title_lowercase']);
+                        if ($rate2 > $rate1) {
+                            //keep item2 and break foreach
+                            $item1 = $item2;
+                            break 2;
+                        } else if ($rate1 > $rate2) break 2;
+                        break;
+                    case 'q':
+                        //poorer quality
+                        $rate1 = getMovieQualityRate($item1['title_lowercase']);
+                        $rate2 = getMovieQualityRate($item2['title_lowercase']);
+                        if ($rate2 < $rate1) {
+                            //keep item2 and break foreach
+                            $item1 = $item2;
+                            break 2;
+                        } else if ($rate1 < $rate2) break 2;
+                        break;
+                    case 'S':
+                        //quite more seeds
+                        if ($item2['seeds'] > $item1['seeds']) {
+                            if ($item2['seeds'] >= $item1['seeds'] * 1.25) {
+                                //keep item2 and break foreach
+                                $item1 = $item2;
+                                break 2;
+                            } else {
+                                //swap
+                                if (!$swapped) {
+                                    $tmp = $item1;
+                                    $item1 = $item2;
+                                    $item2 = $tmp;
+                                    $swapped = true;
+                                    //continue foreach
+                                }
+                            }
+                        } else if ($item1['seeds'] >= $item2['seeds'] * 1.25) break 2;
+                        break;
+                    case 'P':
+                        //quite more peers
+                        if ($item2['peers'] > $item1['peers']) {
+                            if ($item2['peers'] >= $item1['peers'] * 1.25) {
+                                //keep item2 and break foreach
+                                $item1 = $item2;
+                                break 2;
+                            } else {
+                                //swap
+                                if (!$swapped) {
+                                    $tmp = $item1;
+                                    $item1 = $item2;
+                                    $item2 = $tmp;
+                                    $swapped = true;
+                                    //continue foreach
+                                }
+                            }
+                        } else if ($item1['peers'] >= $item2['peers'] * 1.25) break 2;
+                        break;
+                    case 'L':
+                        //larger sizes
+                        if ($item2['size_raw'] > $item1['size_raw']) {
+                            if ($item2['size_raw'] >= $item1['size_raw'] * 1.25) {
+                                //keep item2 and break foreach
+                                $item1 = $item2;
+                                break 2;
+                            } else {
+                                //swap
+                                if (!$swapped) {
+                                    $tmp = $item1;
+                                    $item1 = $item2;
+                                    $item2 = $tmp;
+                                    $swapped = true;
+                                    //continue foreach
+                                }
+                            }
+                        } else if ($item1['size_raw'] >= $item2['size_raw'] * 1.25) break 2;
+                        break;
+                    case 's':
+                        //smaller sizes
+                        if ($item2['size_raw'] < $item1['size_raw']) {
+                            if ($item2['size_raw'] <= $item1['size_raw'] * 1.25) {
+                                //keep item2 and break foreach
+                                $item1 = $item2;
+                                break 2;
+                            } else {
+                                //swap
+                                if (!$swapped) {
+                                    $tmp = $item1;
+                                    $item1 = $item2;
+                                    $item2 = $tmp;
+                                    $swapped = true;
+                                    //continue foreach
+                                }
+                            }
+                        } else if ($item1['size_raw'] <= $item2['size_raw'] * 1.25) break 2;
+                        break;
+                }
+            }
+            $aux[$i] = $item1;
+            ++$wnd; //next item in group
+        }
+        if ($info1 != false) {
+            $hashes[$aux[$i]['hash']] = true;
+        }   //save
+        $i += $wnd; //next group
     }
 
     return $hashes;
@@ -518,7 +524,8 @@ function run($p, $r, $q) {
                 //Handle duplicates as movies
                 $hashes = handleDuplicatesAsMovies($channel, $rule);
                 $i = 0;
-                while ($i < count($channel)) {
+                $channels = count($channel);
+                while ($i < $channels) {
                     if (isset($hashes[$channel[$i]['hash']])) {
                         unset($hashes[$channel[$i]['hash']]);
                     } else {
@@ -532,7 +539,8 @@ function run($p, $r, $q) {
                 //Handle duplicates as TV shows
                 $hashes = handleDuplicatesAsTVShows($channel, $rule);
                 $i = 0;
-                while ($i < count($channel)) {
+                $channels = count($channel);
+                while ($i < $channels) {
                     if (isset($hashes[$channel[$i]['hash']])) {
                         unset($hashes[$channel[$i]['hash']]);
                     } else {
@@ -547,11 +555,44 @@ function run($p, $r, $q) {
 	
 	return $channel;
 }
-//dsSQ
-//$params = explode('-', $_REQUEST['p']);
-//$cin = array("ñ", "Ñ", "ç", "Ç", " ", ">", "<");
-//$cout = array("%C3%B1", "%C3%91", "%C3%A7", "%C3%87", "+", "%3E", "%3C");
-//$_REQUEST['q'] = str_replace($cin, $cout, $_REQUEST['q']);
+
+function triggerOnShutdown($total, $excluded) {
+
+    //UPDATE STATS FILE:
+    $lockwait = 2;       // seconds to wait for lock
+    $waittime = 250000;  // microseconds to wait between lock attempts
+    // 2s / 250000us = 8 attempts.
+    $statsfile = 'C:/Users/Admin/TorrentzRSS/data/stats';
+
+    if (!file_exists($statsfile)) {
+        $stats = array('total' => 0, 'excluded' => 0, 'queries' => 0);
+        file_put_contents($statsfile, serialize($stats));
+    }
+    //TODO: file_get_contents, fopen, flock, fwrite & fclose within bucle
+    $stats = unserialize(file_get_contents($statsfile));
+    if( $fh = fopen($statsfile, 'w+') ) {
+        $waitsum = 0;
+        // attempt to get exclusive, non-blocking lock
+        $locked = flock($fh, LOCK_EX | LOCK_NB);
+        while( !$locked && ($waitsum <= $lockwait) ) {
+            $waitsum += $waittime/1000000; // microseconds to seconds
+            usleep($waittime);
+            $locked = flock($fh, LOCK_EX | LOCK_NB);
+        }
+        if( !$locked ) {
+            //echo "Could not lock $statsfile for write within $lockwait seconds.";
+        } else {
+            $stats['queries']++;
+            $stats['total'] += $total;
+            $stats['excluded'] += $excluded;
+            fwrite($fh, serialize($stats));
+            flock($fh, LOCK_UN);  // ALWAYS unlock
+        }
+        fclose($fh);            // ALWAYS close your file handle
+    } else {
+        //echo "Could not open $statsfile";
+    }
+}
 
 if (!isset($_REQUEST['r']))
     $_REQUEST['r'] = '';
@@ -610,39 +651,8 @@ if (isset($_REQUEST['tiny'])) {
 		}
 	}
 
-    $lockwait = 2;       // seconds to wait for lock
-    $waittime = 250000;  // microseconds to wait between lock attempts
-    // 2s / 250000us = 8 attempts.
-    $statsfile = 'data/stats';
+    register_shutdown_function('triggerOnShutdown', $data['channel']["total"], $data['channel']["excluded"]);
 
-    if (!file_exists($statsfile)) {
-        $stats = array('total' => 0, 'excluded' => 0, 'queries' => 0);
-        file_put_contents($statsfile, serialize($stats));
-    }
-    //TODO: file_get_contents, fopen, flock, fwrite & fclose within bucle
-    $stats = unserialize(file_get_contents($statsfile));
-    if( $fh = fopen($statsfile, 'w+') ) {
-        $waitsum = 0;
-        // attempt to get exclusive, non-blocking lock
-        $locked = flock($fh, LOCK_EX | LOCK_NB);
-        while( !$locked && ($waitsum <= $lockwait) ) {
-            $waitsum += $waittime/1000000; // microseconds to seconds
-            usleep($waittime);
-            $locked = flock($fh, LOCK_EX | LOCK_NB);
-        }
-        if( !$locked ) {
-            //echo "Could not lock $statsfile for write within $lockwait seconds.";
-        } else {
-            $stats['queries']++;
-            $stats['total'] += $data['channel']["total"];
-            $stats['excluded'] += $data['channel']["excluded"];
-            fwrite($fh, serialize($stats));
-            flock($fh, LOCK_UN);  // ALWAYS unlock
-        }
-        fclose($fh);            // ALWAYS close your file handle
-    } else {
-        //echo "Could not open $statsfile";
-    }
 }
 
 ?>
