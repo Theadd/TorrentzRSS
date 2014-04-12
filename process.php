@@ -483,13 +483,12 @@ function run($p, $r, $q) {
 	$q = str_replace($cin, $cout, $q);
 	
 	$query = "http://torrentz.eu/" . $params[0] . "?q=" . $q;
-
 	$page = 0;
-	while (($sum = process_url($query.'&p='.$page, $channel)) != 0 && ($params[1] * 2 > $page)) {
+	while (($sum = process_url($query.'&p='.$page, $channel_aux)) != 0 && ($params[1] * 2 > $page)) {
+        $channel = array_merge($channel, $channel_aux);
         $GLOBALS['results'] += $sum;
 		$page += 2;
 	}
-	
 	$r = explode('-', $r);
 	foreach ($r as $rule) {
 		switch (substr($rule, 0, 1)) {
@@ -556,7 +555,7 @@ function run($p, $r, $q) {
                 break;
 		}
 	}
-	
+    
 	return $channel;
 }
 
