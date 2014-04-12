@@ -263,6 +263,12 @@ function queryManager(config_params) {
                     value += $(this).data('value');
                 });
                 break;
+            case "dupe-tv":
+                value = 't';
+                rule.find('a.selected').each(function() {
+                    value += $(this).data('value');
+                });
+                break;
             case "sort":
                 value = 's';
                 rule.find('a.selected').each(function() {

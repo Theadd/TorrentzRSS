@@ -2,6 +2,8 @@
 
 /* CONFIGURATION PARAMETERS */
 
+/* If true, it will use 'curl' command line to retrieve the data, otherwise it will use php curl functions. */
+define("RSSZ_USE_SHELL_EXEC", false);
 define("RSSZ_USE_PROXY", false);
 define("RSSZ_PROXY", 'localhost:8118');
 /* Allow web browsers to get content from this file (Your TorrentzRSS back end) if its not located in the same domain as the requesting web page. */
@@ -44,8 +46,27 @@ function process_url($url, &$channel) {
 	$url = addslashes(stripslashes($url));
     $content = "";
 
-    $command = (RSSZ_USE_PROXY) ? 'curl -x '.RSSZ_PROXY.' "'.$url.'" -iX GET' : 'curl "'.$url.'" -iX GET';
-    $response = shell_exec($command);
+    if (RSSZ_USE_SHELL_EXEC) {
+        $command = (RSSZ_USE_PROXY) ? 'curl -x '.RSSZ_PROXY.' "'.$url.'" -iX GET' : 'curl "'.$url.'" -iX GET';
+        $response = shell_exec($command);
+    } else {
+        $agent= 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.0.3705; .NET CLR 1.1.4322)';
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        if (RSSZ_USE_PROXY) {
+            curl_setopt($ch, CURLOPT_PROXY, RSSZ_PROXY);
+        } else {
+            curl_setopt($ch, CURLOPT_PROXY, null);
+        }
+        curl_setopt($ch, CURLOPT_VERBOSE, true);
+        curl_setopt($ch, CURLOPT_USERAGENT, $agent);
+        //curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_HEADER, 1);
+        $response = curl_exec($ch);
+        curl_close($ch);
+    }
 
     $isHeader = true;
     foreach(preg_split("/((\r?\n)|(\r\n?))/", $response) as $line){
@@ -109,6 +130,57 @@ function getMovieQualityRate($title) {
     }
 
     return $rate;
+}
+
+function getTVShowQualityRate($title) {
+
+    if (preg_match("/[[:space:]]1080p[[:space:]]/", $title)) {
+        $rate = 5;
+    } else if (preg_match("/[[:space:]]720p[[:space:]]/", $title)) {
+        $rate = 4;
+    } else if (preg_match("/[[:space:]]hdtv[[:space:]]/", $title)) {
+        $rate = 3;
+    } else if (preg_match("/[[:space:]]web.?(?:rip)?[[:space:]]/", $title)) {
+        $rate = 2;
+    } else if (preg_match("/[[:space:]]480p[[:space:]]/", $title)) {
+        $rate = 1;
+    } else {
+        $rate = 0;
+    }
+
+    return $rate;
+}
+
+/*function getTVShowEpisode($title) {
+    if (preg_match("/[[:space:]]s([0-9]+)e([0-9]+)[[:space:]]/", $title, $m)) {
+        $num = intval($m[1]) * 1000 + intval($m[2]);
+    } else if (preg_match("/[[:space:]]([0-9]+)x([0-9]+)[[:space:]]/", $title, $m)) {
+        $num = intval($m[1]) * 1000 + intval($m[2]);
+    } else if (preg_match_all("/[[:space:]]([0-9]+?)[[:space:]]/", $title, $m, PREG_SET_ORDER)) {
+        $num = intval($m[count($m) - 1][1]);
+    } else if (preg_match("/[[:space:]]special[[:space:]]/", $title, $m)) {
+        $num = 0;   //special episode
+    } else {
+        $num = 1;   //invalid result
+    }
+    return $num;
+}*/
+
+function getTVShowInfo($title) {
+    $info = array('name' => '', 'episode' => -1);
+    if (preg_match("/[[:space:]]s([0-9]+)e([0-9]+)[[:space:]]/", $title, $m, PREG_OFFSET_CAPTURE)) {
+        $info['episode'] = intval($m[1][0]) * 1000 + intval($m[2][0]);
+        $info['name'] = preg_replace('/[^a-z]/', '', substr($title, 0, $m[0][1]));
+    } else if (preg_match("/[[:space:]]([0-9]+)x([0-9]+)[[:space:]]/", $title, $m, PREG_OFFSET_CAPTURE)) {
+        $info['episode'] = intval($m[1][0]) * 1000 + intval($m[2][0]);
+        $info['name'] = preg_replace('/[^a-z]/', '', substr($title, 0, $m[0][1]));
+    } else if (preg_match("/[[:space:]]special[[:space:]]/", $title, $m, PREG_OFFSET_CAPTURE)) {
+        $info['episode'] = 0;   //special episode
+        $info['name'] = 'special '.preg_replace('/[^a-z]/', '', substr($title, 0, $m[0][1]));
+    } else {
+        $info = false;
+    }
+    return $info;
 }
 
 /* Returns an associative array (key: hash) corresponding with the resulting channel items. */
@@ -241,6 +313,158 @@ function handleDuplicatesAsMovies($channel, $rule) {
     return $hashes;
 }
 
+/* Returns an associative array (key: hash) corresponding with the resulting channel items. */
+function handleDuplicatesAsTVShows($channel, $rule) {
+    //Handle duplicates as TV Shows
+    $hashes = array();
+    $args = str_split(substr($rule, 1));    //i.e.: QSs --> array('Q', 'S', 's');
+    $aux = array_orderby($channel, 'title_lowercase', SORT_ASC);
+    $items = count($aux);
+    $i = 0;
+    while ($i + 1 < $items) {
+        $wnd = 1;
+        $info1 = getTVShowInfo($aux[$i]['title_lowercase']);
+
+        //if (strlen($iname = substr($aux[$i]['title_lowercase'], 0, strpos($aux[$i]['title_lowercase'], ' ', 5)))) {
+        if ($info1 == false) {
+            $i += $wnd;
+            continue;
+        }
+            while (true) {
+                /*if (!((@substr($aux[$i+$wnd]['title_lowercase'], 0, strlen($iname)) == $iname)
+                    && levenshtein(substr($aux[$i]['title_lowercase'], 0, $halfpos), substr($aux[$i+$wnd]['title_lowercase'], 0, $halfpos)) < round($halfpos * 0.5)))
+                    break;*/
+                $info2 = getTVShowInfo($aux[$i+$wnd]['title_lowercase']);
+                if ($info2 == false) {
+                    ++$wnd;
+                    continue;
+                }
+                if (levenshtein($info1['name'], $info2['name']) > 5)
+                    break; //not same tv serie, go next group
+                $item1 = $aux[$i];
+                $item2 = $aux[$i+$wnd];
+                //get only last episode
+                if ($info1['episode'] < $info2['episode']) {
+                    $aux[$i] = $item2;
+                    ++$wnd; //next item in group
+                    continue;
+                } else if ($info1['episode'] > $info2['episode']) {
+                    ++$wnd;
+                    continue;
+                }
+                //
+                $swapped = false;
+                foreach ($args as $arg) {
+                    switch ($arg) {
+                        case 'Q':
+                            //better quality
+                            $rate1 = getTVShowQualityRate($item1['title_lowercase']);
+                            $rate2 = getTVShowQualityRate($item2['title_lowercase']);
+                            if ($rate2 > $rate1) {
+                                //keep item2 and break foreach
+                                $item1 = $item2;
+                                break 2;
+                            } else if ($rate1 > $rate2) break 2;
+                            break;
+                        case 'q':
+                            //poorer quality
+                            $rate1 = getMovieQualityRate($item1['title_lowercase']);
+                            $rate2 = getMovieQualityRate($item2['title_lowercase']);
+                            if ($rate2 < $rate1) {
+                                //keep item2 and break foreach
+                                $item1 = $item2;
+                                break 2;
+                            } else if ($rate1 < $rate2) break 2;
+                            break;
+                        case 'S':
+                            //quite more seeds
+                            if ($item2['seeds'] > $item1['seeds']) {
+                                if ($item2['seeds'] >= $item1['seeds'] * 1.25) {
+                                    //keep item2 and break foreach
+                                    $item1 = $item2;
+                                    break 2;
+                                } else {
+                                    //swap
+                                    if (!$swapped) {
+                                        $tmp = $item1;
+                                        $item1 = $item2;
+                                        $item2 = $tmp;
+                                        $swapped = true;
+                                        //continue foreach
+                                    }
+                                }
+                            } else if ($item1['seeds'] >= $item2['seeds'] * 1.25) break 2;
+                            break;
+                        case 'P':
+                            //quite more peers
+                            if ($item2['peers'] > $item1['peers']) {
+                                if ($item2['peers'] >= $item1['peers'] * 1.25) {
+                                    //keep item2 and break foreach
+                                    $item1 = $item2;
+                                    break 2;
+                                } else {
+                                    //swap
+                                    if (!$swapped) {
+                                        $tmp = $item1;
+                                        $item1 = $item2;
+                                        $item2 = $tmp;
+                                        $swapped = true;
+                                        //continue foreach
+                                    }
+                                }
+                            } else if ($item1['peers'] >= $item2['peers'] * 1.25) break 2;
+                            break;
+                        case 'L':
+                            //larger sizes
+                            if ($item2['size_raw'] > $item1['size_raw']) {
+                                if ($item2['size_raw'] >= $item1['size_raw'] * 1.25) {
+                                    //keep item2 and break foreach
+                                    $item1 = $item2;
+                                    break 2;
+                                } else {
+                                    //swap
+                                    if (!$swapped) {
+                                        $tmp = $item1;
+                                        $item1 = $item2;
+                                        $item2 = $tmp;
+                                        $swapped = true;
+                                        //continue foreach
+                                    }
+                                }
+                            } else if ($item1['size_raw'] >= $item2['size_raw'] * 1.25) break 2;
+                            break;
+                        case 's':
+                            //smaller sizes
+                            if ($item2['size_raw'] < $item1['size_raw']) {
+                                if ($item2['size_raw'] <= $item1['size_raw'] * 1.25) {
+                                    //keep item2 and break foreach
+                                    $item1 = $item2;
+                                    break 2;
+                                } else {
+                                    //swap
+                                    if (!$swapped) {
+                                        $tmp = $item1;
+                                        $item1 = $item2;
+                                        $item2 = $tmp;
+                                        $swapped = true;
+                                        //continue foreach
+                                    }
+                                }
+                            } else if ($item1['size_raw'] <= $item2['size_raw'] * 1.25) break 2;
+                            break;
+                    }
+                }
+                $aux[$i] = $item1;
+                ++$wnd; //next item in group
+            }
+            $hashes[$aux[$i]['hash']] = true;   //save
+            $i += $wnd; //next group
+        //}
+    }
+
+    return $hashes;
+}
+
 function run($p, $r, $q) {
 	$channel = array();
 	$params = explode('-', $p);
@@ -293,6 +517,20 @@ function run($p, $r, $q) {
             case 'd':
                 //Handle duplicates as movies
                 $hashes = handleDuplicatesAsMovies($channel, $rule);
+                $i = 0;
+                while ($i < count($channel)) {
+                    if (isset($hashes[$channel[$i]['hash']])) {
+                        unset($hashes[$channel[$i]['hash']]);
+                    } else {
+                        unset($channel[$i]);
+                    }
+                    ++$i;
+                }
+                $channel = array_values($channel);  //reindex
+                break;
+            case 't':
+                //Handle duplicates as TV shows
+                $hashes = handleDuplicatesAsTVShows($channel, $rule);
                 $i = 0;
                 while ($i < count($channel)) {
                     if (isset($hashes[$channel[$i]['hash']])) {
