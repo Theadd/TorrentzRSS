@@ -29,6 +29,7 @@ require_once 'XML/RSS.php';
 require_once 'XML/Serializer.php';
 
 $results = 0;
+$errors = array();
 
 if (RSSZ_ALLOW_CROSS_DOMAIN)
     header('Access-Control-Allow-Origin: *');
@@ -88,6 +89,9 @@ function process_url($url, &$channel) {
         }
     }
 
+    if (preg_match("/class=\"error\">(.*?)</", $content, $m)) {
+        $GLOBALS['errors'][] = "Torrentz.eu says: ".$m[1];
+    }
     $filename = microtime(true);
     file_put_contents("data/".$filename.".xml", $content);
 
@@ -623,6 +627,7 @@ if (isset($_REQUEST['tiny'])) {
 		"params"  => $_REQUEST['p'],
 		"rules"  => $_REQUEST['r'],
 		"query"  => $_REQUEST['q'],
+		"errors"  => 0,
 		"ttl"  => RSSZ_TTL,
 		"total" => 0,
 		"excluded" => 0
@@ -632,6 +637,7 @@ if (isset($_REQUEST['tiny'])) {
 	$data['channel'] = array_merge($data['channel'], $value);
 	$data['channel']["total"] = count($value);
 	$data['channel']["excluded"] = $results - $data['channel']["total"];
+	$data['channel']["errors"] = $errors;
 
 	if (isset($_REQUEST['f']) && strtolower($_REQUEST['f']) == 'json') {
 		header('Content-Type: application/json');

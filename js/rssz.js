@@ -50,7 +50,7 @@ function alertManager() {
             title: ''
         }, {
             ele: "#content",
-            type: "error",
+            type: "danger",
             allow_dismiss: true,
             position: {
                 from: "top",
