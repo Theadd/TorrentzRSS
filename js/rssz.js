@@ -50,7 +50,7 @@ function alertManager() {
             title: ''
         }, {
             ele: "#content",
-            type: "error",
+            type: "danger",
             allow_dismiss: true,
             position: {
                 from: "top",
@@ -120,6 +120,15 @@ jQuery(window).ready(function () {
     manager = new queryManager(globals);
     manager.setLogger(abox);
     appResize();
+    var params = window.location.href.split("/"),
+        last = params[params.length - 1];
+
+    var regex = /^[0-9a-z]{20,50}$/;
+    var m = regex.exec(last);
+    if (m) {
+        manager.loadUUID(m);
+    }
+
 });
 
 /* HANDLE WINDOW RESIZE */
@@ -166,7 +175,7 @@ var sidebar_rules = {
     'merge': '<li class="dropdown">\
         <a href="#" class="dropdown-toggle">\
     <i class="fa fa-cloud-download"></i>\
-    <span class="hidden-xs">Merge RSS</span>\
+    <span class="hidden-xs">Merge query</span>\
     <div class="btn-sidebar-container">\
         <button class="btn btn-sidebar pull-right query-rule-remove" type="button">\
             <i class="fa fa-trash-o"></i>\
@@ -179,9 +188,9 @@ var sidebar_rules = {
     <ul data-value="merge" class="dropdown-menu query-rule">\
         <li class="no-sortable">\
             <div class="nav-option-textbox">\
-                <input type="text" placeholder="http://" class="pull-right" style="width: calc(100% - 70px); text-align: left;" />\
+                <input type="text" placeholder=" UUID" class="pull-right" style="width: calc(100% - 80px); text-align: left;" />\
             </div>\
-            <a class="nav-option" href="#"><i class="fa fa-link"></i> URL</a>\
+            <a class="nav-option" href="#"><i class="fa fa-link"></i> Query</a>\
         </li>\
     </ul>\
 </li>',

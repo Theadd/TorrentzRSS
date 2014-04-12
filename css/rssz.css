@@ -218,6 +218,60 @@ li.no-apply a {
     color: rgba(0, 0, 0, 0.35) !important;
 }
 
+    /* EMPTY RULES BOX */
+
+#no-selected-rule {
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.5);
+    margin: 10px;
+    font-size: 13px;
+    text-shadow: 1px 1px 1px #999999;
+    color: rgba(0,0,0,0.2);
+    border-radius: 4px;
+    letter-spacing: 0.35em;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    cursor: default;
+    -webkit-transition: 0.5s;
+    -moz-transition: 0.5s;
+    -o-transition: 0.5s;
+    transition: 0.5s;
+    height: 40px;
+}
+
+#no-selected-rule .on-hover {
+    opacity: 0;
+    -webkit-transition: 0.5s;
+    -moz-transition: 0.5s;
+    -o-transition: 0.5s;
+    transition: 0.5s;
+    position: absolute;
+    width: 100%;
+    text-align: center;
+}
+
+#no-selected-rule .on-no-hover {
+    opacity: 1;
+    -webkit-transition: 0.5s;
+    -moz-transition: 0.5s;
+    -o-transition: 0.5s;
+    transition: 0.5s;
+    position: absolute;
+    width: 100%;
+    text-align: center;
+}
+
+#no-selected-rule:hover {
+    box-shadow: 0 0 13px rgba(255, 255, 255, 0.6);
+}
+
+#no-selected-rule:hover .on-no-hover {
+    opacity: 0;
+}
+
+#no-selected-rule:hover .on-hover {
+    opacity: 1;
+}
+
 /* SORTABLE JQUERY PLUGIN */
 
 body.dragging, body.dragging * {
@@ -277,4 +331,22 @@ ul.main-menu li.placeholder {
 
 .box {
     z-index: 1030;
+}
+
+/* RSS Feed & JSON BUTTONS */
+
+.btn-warning {
+    background: #a2a2a2 -moz-linear-gradient(top, #F9CB45, #F48501);
+    background: #a2a2a2 -webkit-gradient(linear, 0% 0%, 0% 100%, from(#F9CB45), to(#F48501));
+}
+
+.btn-primary {
+    background: #a2a2a2 -moz-linear-gradient(top, #6c8df9, #026ef4);
+    background: #a2a2a2 -webkit-gradient(linear, 0% 0%, 0% 100%, from(#6c8df9), to(#026ef4));
+}
+
+.btn {
+    font-size: 18px;
+    line-height: 30px;
+    font-family: Verdana,"Lucida Sans","Lucida Sans Unicode","Segoe UI",sans-serif;
 }

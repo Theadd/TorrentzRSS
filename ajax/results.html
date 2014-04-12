@@ -17,11 +17,12 @@
                     Min seeds: 42
 				</div>
 				<div class="col-xs-6 text-right pull-right" style="max-width: 300px;">
-                    <strong>Copy your RSS url!</strong><br>
-                    <div class="input-group">
+                    <a id="rss-url" href="#" class="btn btn-warning btn-label-left"><span><i class="fa fa-lg fa-rss"></i></span>RSS Feed</a>
+                    <a id="json-url" href="#" class="btn btn-primary btn-label-left"><span><i class="fa fa-lg fa-puzzle-piece"></i></span>JSON</a>
+                    <!--<div class="input-group">
                         <input id="rss-url" type="text" value="magnet:?xt=urn:btih:07530481732dd7f2c519dad9420314e8c1216fea" class="form-control" data-original-title="" title="">
                         <span class="input-group-addon"><a href="#" id="copy-rss-url" data-clipboard-target="rss-url"><i class="fa fa-clipboard"></i></a></span>
-                    </div>
+                    </div>-->
 				</div>
 				<div class="clearfix"></div>
 				<div class="col-xs-12">
@@ -40,7 +41,7 @@
 
                         </tbody>
                     </table>
-					<small>* <a href="#">Permalink</a></small>
+					<small id="uuid-container">* Click <a id="get-uuid" data-query="" href="#">here</a> to generate a unique ID of this search to be able to merge it in another search.</small>
 				</div>
 				<div class="clearfix"></div>
 
