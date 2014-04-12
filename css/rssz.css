@@ -345,7 +345,7 @@ ul.main-menu li.placeholder {
     background: #a2a2a2 -webkit-gradient(linear, 0% 0%, 0% 100%, from(#6c8df9), to(#026ef4));
 }
 
-.btn {
+.big-buttons .btn {
     font-size: 18px;
     line-height: 30px;
     font-family: Verdana,"Lucida Sans","Lucida Sans Unicode","Segoe UI",sans-serif;

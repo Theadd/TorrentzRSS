@@ -2,9 +2,6 @@
 
 /* CONFIGURATION PARAMETERS */
 
-//TODO: remove this line
-set_time_limit(5);
-
 define("RSSZ_USE_PROXY", false);
 define("RSSZ_PROXY", 'localhost:8118');
 /* Allow web browsers to get content from this file (Your TorrentzRSS back end) if its not located in the same domain as the requesting web page. */
@@ -559,13 +556,13 @@ function run($p, $r, $q) {
 	return $channel;
 }
 
-function triggerOnShutdown($total, $excluded) {
+function triggerOnShutdown($total, $excluded, $statsfile) {
 
     //UPDATE STATS FILE:
     $lockwait = 2;       // seconds to wait for lock
     $waittime = 250000;  // microseconds to wait between lock attempts
     // 2s / 250000us = 8 attempts.
-    $statsfile = 'C:/Users/Admin/TorrentzRSS/data/stats';
+
 
     if (!file_exists($statsfile)) {
         $stats = array('total' => 0, 'excluded' => 0, 'queries' => 0);
@@ -663,7 +660,7 @@ if (isset($_REQUEST['tiny'])) {
 		}
 	}
 
-    register_shutdown_function('triggerOnShutdown', $data['channel']["total"], $data['channel']["excluded"]);
+    register_shutdown_function('triggerOnShutdown', $data['channel']["total"], $data['channel']["excluded"], getcwd().'/data/stats');
 
 }
 
