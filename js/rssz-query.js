@@ -27,6 +27,9 @@ function queryManager(config_params) {
     /** Sets the relation between the named parameters on the web and the required parameter names at the back end. */
     var related = { 'good': 'feed', 'any': 'feed_any', 'verified': 'feed_verified', 'rating': 'N', 'date': 'A', 'size': 'S', 'peers': '' };
     var log = null;
+    var last_p = '';
+    var last_r = '';
+    var last_q = '';
 
     /** @constructs */
     (function() {
@@ -62,8 +65,37 @@ function queryManager(config_params) {
             } else {
                 rule.data('value', rule.data('original'));
             }
-
         });
+
+        body.on("click","#get-uuid", function(e) {
+            if (!this_qm.isBusy()) {
+                this_qm.setBusy(true);
+
+                var request = $.ajax({
+                    type: 'GET',
+                    url: config['process_url'],
+                    data: { f: 'json', 'p': last_p, 'r': last_r, 'q': last_q, 'tiny': true },
+                    async: true,
+                    xhrFields: {
+                        withCredentials: false
+                    },
+                    crossDomain: true
+                });
+
+                request.success(function(data) {
+                    $("#uuid-container").html("* <b>UUID</b>: " + data);
+                    this_qm.setBusy(false);
+                });
+                request.fail(function(data) {
+                    log.warn("Fail: "+data);
+                    this_qm.setBusy(false);
+                });
+            } else {
+                log.warn("Either busy or disabled!");
+            }
+            e.preventDefault();
+        });
+
     })();
 
     /** Sets an instance of alertManager as logger.
@@ -93,11 +125,6 @@ function queryManager(config_params) {
         return busy;
     };
 
-    /** Get object's busy state.
-     *
-     * @see {@link setBusy}
-     * @returns {boolean} is either busy or not.
-     */
     this.updateStats = function() {
 
         var request = $.ajax({
@@ -146,6 +173,10 @@ function queryManager(config_params) {
 
 
             var process_params = related[this.quality] + related[this.orderby] + '-' + this.pages;
+
+            last_p = process_params;
+            last_r = this.rules;
+            last_q = this.query;
 
             var request = $.ajax({
                 type: 'GET',
@@ -210,10 +241,6 @@ function queryManager(config_params) {
             this.orderby = $('#order').data('value');
             this.pages = $('#pages').data('value');
             this.query = $('#search-query').val();
-            //this.query = this.query.replace(' ', '+');
-            /*this.query = this.query.replace(/[\u00A0-\u99999<>\&]/gim, function(i) {
-                return '&#'+i.charCodeAt(0)+';';
-            });*/
 
             this.setBusy(false);
         } else {
