@@ -120,6 +120,15 @@ jQuery(window).ready(function () {
     manager = new queryManager(globals);
     manager.setLogger(abox);
     appResize();
+    var params = window.location.href.split("/"),
+        last = params[params.length - 1];
+
+    var regex = /^[0-9a-z]{20,50}$/;
+    var m = regex.exec(last);
+    if (m) {
+        manager.loadUUID(m);
+    }
+
 });
 
 /* HANDLE WINDOW RESIZE */

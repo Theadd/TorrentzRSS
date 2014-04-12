@@ -158,6 +158,36 @@ function queryManager(config_params) {
         return num;
     }
 
+    this.loadUUID = function(uuid) {
+        this_qm.setBusy(true);
+
+        var request = $.ajax({
+            type: 'GET',
+            url: config['process_url'],
+            data: { uuid: uuid },
+            async: true,
+            xhrFields: {
+                withCredentials: false
+            },
+            crossDomain: true
+        });
+
+        request.success(function(data) {
+
+            //load query, parameters and rules
+            var query = data['q'];
+
+
+            this_qm.setBusy(false);
+            //run query
+        });
+        request.fail(function(data) {
+
+            log.warn("Fail: "+data);
+            this_qm.setBusy(false);
+        });
+    };
+
     /** Performs current search query if possible.
      *
      * @param tbody {object} target tbody container for results.
@@ -188,6 +218,9 @@ function queryManager(config_params) {
                 },
                 crossDomain: true
             });
+
+            $("#rss-url").attr("href", config['process_url'] + "?f=rss&p=" + process_params + "&r=" + this.rules + "&q=" + this.query);
+            $("#json-url").attr("href", config['process_url'] + "?f=json&p=" + process_params + "&r=" + this.rules + "&q=" + this.query);
 
             request.success(function(data) {
 
@@ -261,7 +294,7 @@ function queryManager(config_params) {
             });
 
             this_qm.rules = this_qm.rules.substr(this.rule_delimiter.length);
-            log.warn(this_qm.rules);
+            //log.warn(this_qm.rules);
             this_qm.setBusy(false);
         } else {
             log.warn("Either busy or disabled!");

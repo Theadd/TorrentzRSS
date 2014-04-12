@@ -606,6 +606,10 @@ if (isset($_REQUEST['tiny'])) {
 } else if (isset($_REQUEST['stats'])) {
     header('Content-Type: application/json');
     echo json_encode(unserialize(file_get_contents("data/stats")), JSON_PRETTY_PRINT);
+} else if (isset($_REQUEST['uuid'])) {
+    $_REQUEST['uuid'] = addslashes(stripslashes($_REQUEST['uuid']));
+    header('Content-Type: application/json');
+    echo json_encode(unserialize(file_get_contents("data/".$_REQUEST['uuid'])), JSON_PRETTY_PRINT);
 } else {
 
 	$data['channel'] = array(
@@ -616,6 +620,9 @@ if (isset($_REQUEST['tiny'])) {
 		"author"  => "Theadd",
 		"version"  => "1.0",
 		"license"  => "GPL v2",
+		"params"  => $_REQUEST['p'],
+		"rules"  => $_REQUEST['r'],
+		"query"  => $_REQUEST['q'],
 		"ttl"  => RSSZ_TTL,
 		"total" => 0,
 		"excluded" => 0
