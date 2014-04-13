@@ -278,7 +278,7 @@ jQuery(window).ready(function () {
     manager.setLogger(abox);
     appResize();
     //test query for testing
-    if (document.domain.substring(document.domain.length - 7, document.domain.length) != "local.com") {
+    if (document.domain.substring(document.domain.length - 9, document.domain.length) == "local.com") {
         $("#search-query").val('"da vincis demons" | "falling skies" | continuum | defiance | "doctor who" | vikings | revolution | fringe | "game of thrones" | "marvel agents" | "orphan black" size > 500m size < 2g');
     }
     //load query, params and rules from url
