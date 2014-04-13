@@ -178,7 +178,7 @@ function queryManager(config_params) {
 
             //load query, parameters and rules
             var query = data['q'];
-
+            //TODO: Not implemented
 
             this_qm.setBusy(false);
             //run query

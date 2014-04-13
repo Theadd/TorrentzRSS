@@ -160,21 +160,6 @@ function getTVShowQualityRate($title) {
     return $rate;
 }
 
-/*function getTVShowEpisode($title) {
-    if (preg_match("/[[:space:]]s([0-9]+)e([0-9]+)[[:space:]]/", $title, $m)) {
-        $num = intval($m[1]) * 1000 + intval($m[2]);
-    } else if (preg_match("/[[:space:]]([0-9]+)x([0-9]+)[[:space:]]/", $title, $m)) {
-        $num = intval($m[1]) * 1000 + intval($m[2]);
-    } else if (preg_match_all("/[[:space:]]([0-9]+?)[[:space:]]/", $title, $m, PREG_SET_ORDER)) {
-        $num = intval($m[count($m) - 1][1]);
-    } else if (preg_match("/[[:space:]]special[[:space:]]/", $title, $m)) {
-        $num = 0;   //special episode
-    } else {
-        $num = 1;   //invalid result
-    }
-    return $num;
-}*/
-
 function getTVShowInfo($title) {
     $info = array('name' => '', 'episode' => -1);
     if (preg_match("/[[:space:]]s([0-9]+)e([0-9]+)[[:space:]]/", $title, $m, PREG_OFFSET_CAPTURE)) {
