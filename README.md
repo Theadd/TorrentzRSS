@@ -16,9 +16,9 @@ The back end (API) is only composed by a single *process.php* and optionally, th
 * Merge results from another TorrentzRSS query ID
 * Sort results in several ways
 * Exclude duplicates from searches containing movies or TV shows
+* Exclude by patterns on title or category field (Using REGEX or string literals)
 
 *Not yet implemented:*
-* Exclude by patterns on title or category field (Using REGEX or string literals)
 * Exclude by evaluating variable based expressions
 * *More...*
 

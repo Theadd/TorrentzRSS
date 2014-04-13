@@ -307,7 +307,7 @@ jQuery(window).resize(function () {
 });
 
 
-
+$(function () { $("[data-toggle='tooltip']").tooltip(); });
 
 
 /* HANDLES FOR SIDEBAR MANAGER */
@@ -460,6 +460,29 @@ var sidebar_rules = {
         <li class="no-sortable"><a data-value="" data-group="match" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Non-matching</a></li>\
         <li class="no-sortable"><a data-value="t" data-group="field" class="nav-option nav-option-radio selected" href="#"><i class="fa fa-check"></i> From title field</a></li>\
         <li class="no-sortable"><a data-value="" data-group="field" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> From category field</a></li>\
+    </ul>\
+</li>',
+    'eval': '<li class="dropdown">\
+        <a href="#" class="dropdown-toggle">\
+    <i class="fa fa-question"></i>\
+    <span class="hidden-xs">Evaluate condition</span>\
+    <div class="btn-sidebar-container">\
+        <button class="btn btn-sidebar pull-right query-rule-remove" type="button">\
+            <i class="fa fa-trash-o"></i>\
+        </button>\
+        <button class="btn btn-sidebar pull-right query-rule-toggle" type="button">\
+            <i class="fa fa-eye"></i>\
+        </button>\
+    </div>\
+</a>\
+    <ul data-value="eval" class="dropdown-menu query-rule">\
+        <li class="no-sortable">\
+            <div class="nav-option-textbox">\
+                <input type="text" placeholder=" seeds > leechers * 2" class="pull-right" style="width: 100%; text-align: left;" data-toggle="tooltip" data-placement="right" data-html="true"\
+                title="<b>Available parameters:</b><br><ul><li><b>seeds</b>: People sharing.</li><li><b>leechers</b>: People downloading.</li><li><b>peers</b>: All, seeds + leechers</li><li><b>size</b>: Torrent size (in MB).</li></ul><br><b>Operators:</b><ul><li><b>Arithmetic</b>: + - * / %</li><li><b>Comparison</b>: == != &lt; &gt; &lt;= &gt;=</li><li><b>Logic</b>: ! &amp;&amp; ||</li><li><b>Bitwise</b>: &amp; | ^ ~ &lt;&lt; &gt;&gt;</li></ul>" />\
+            </div>\
+            <a class="nav-option" href="#">&nbsp;</a>\
+        </li>\
     </ul>\
 </li>'
 };

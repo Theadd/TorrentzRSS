@@ -412,3 +412,16 @@ ul.main-menu li.placeholder {
     line-height: 30px;
     font-family: Verdana,"Lucida Sans","Lucida Sans Unicode","Segoe UI",sans-serif;
 }
+
+/* TOOLTIPS */
+
+.tooltip-inner {
+    max-width: 250px;
+    min-width: 250px;
+    background-color: rgba(0,0,0,0.75);
+    text-align: left;
+}
+
+.tooltip-inner ul {
+    padding-left: 25px;
+}

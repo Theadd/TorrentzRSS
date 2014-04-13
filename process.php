@@ -103,10 +103,10 @@ function process_url($url, &$channel) {
         $item['size'] = $m[1];
         $item['size_raw'] = intval($m[1]);
         $item['hash'] = strtoupper($m[4]);
-        $item['seeds'] = $m[2];
-        $item['peers'] = $m[2] + $m[3];
-        $item['leechers'] = $m[3];
-        $item['seeds-leechers'] = $m[2] - $m[3];
+        $item['seeds'] = intval($m[2]);
+        $item['peers'] = intval($m[2]) + intval($m[3]);
+        $item['leechers'] = intval($m[3]);
+        $item['seeds-leechers'] = intval($m[2]) - intval($m[3]);
         @$item['pubtimestamp'] = strtotime($item['pubdate']);
         $channel[] = $item;
     }
@@ -566,6 +566,28 @@ function run($p, $r, $q) {
                     if ($match && $matching) {
                         unset($channel[$i]);
                     } else if (!$match && !$matching) {
+                        unset($channel[$i]);
+                    }
+                    ++$i;
+                }
+                $channel = array_values($channel);  //reindex
+                break;
+            case 'c':
+                //Evaluate condition
+                $unsafe = base64_decode(substr($rule, 1));
+                $condition = preg_replace('/[^(?:seeds)(?:peers)(?:leechers)(?:size)\+\-\*\/%(?:==)(?:!=)<>(?:<=)(?:>=)!&\|\^\~\(\)\s0-9\.]/', '', $unsafe);
+                if (!strlen($condition))
+                    break;
+                if ($unsafe != $condition) {
+                    $GLOBALS['errors'][] = "Input from 'Evaluate condition' rule was reinterpreted as: ".$condition;
+                }
+
+                $i = 0;
+                $channels = count($channel);
+                while ($i < $channels) {
+                    $condition_i = str_replace(array('seeds', 'peers', 'leechers', 'size'), array(strval($channel[$i]['seeds']), strval($channel[$i]['peers']), strval($channel[$i]['leechers']), strval($channel[$i]['size_raw'])), $condition);
+                    $condition_i = preg_replace('/[^\+\-\*\/%(?:==)(?:!=)<>(?:<=)(?:>=)!&\|\^\~\(\)\s0-9\.]/', '', $condition_i);
+                    if (!@eval("return (".$condition_i.");")) {
                         unset($channel[$i]);
                     }
                     ++$i;

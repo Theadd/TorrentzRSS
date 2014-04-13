@@ -344,6 +344,10 @@ function queryManager(config_params) {
                 });
                 value += 'p'+pattern;
                 break;
+            case "eval":
+                var condition = Base64.encode(rule.find('input').val());
+                value = 'c'+condition;
+                break;
         }
 
         return value;
