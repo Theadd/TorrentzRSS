@@ -19,28 +19,7 @@
 	</head>
 <body>
 <!--Start Header-->
-<div id="screensaver">
-	<canvas id="canvas"></canvas>
-	<i class="fa fa-lock" id="screen_unlock"></i>
-</div>
-<div id="modalbox">
-	<div class="devoops-modal">
-		<div class="devoops-modal-header">
-			<div class="modal-header-name">
-				<span>Basic table</span>
-			</div>
-			<div class="box-icons">
-				<a class="close-link">
-					<i class="fa fa-times"></i>
-				</a>
-			</div>
-		</div>
-		<div class="devoops-modal-inner">
-		</div>
-		<div class="devoops-modal-bottom">
-		</div>
-	</div>
-</div>
+
 <header class="navbar">
 	<div class="container-fluid expanded-panel">
 		<div class="row">
@@ -53,16 +32,13 @@
 						<a href="#" class="show-sidebar">
 						  <i class="fa fa-bars"></i>
 						</a>
-
-                                <div class="input-group" id="search-box">
-                                    <input id="search-query" type="text" placeholder="Torrentz.eu Search Query" class="form-control" value="español | spanish | castellano movies | video seed > 20 size > 600m size <  6000m -hdtv -screener -latino -xxx" />
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-default" type="button"><i class="fa fa-search fa-lg"></i></button>
-                                    </span>
-                                </div>
-
+                        <div class="input-group" id="search-box">
+                            <input id="search-query" type="text" placeholder="Torrentz.eu Search Query" class="form-control" value="" />
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button"><i class="fa fa-search fa-lg"></i></button>
+                            </span>
+                        </div>
 					</div>
-
                 </div>
 			</div>
 		</div>
@@ -115,131 +91,8 @@
 
                 <li id="no-selected-rule" class="no-sortable"><span class="on-no-hover">EMPTY</span><span class="on-hover">ADD RULES HERE</span></li>
 
-                <!--
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle">
-                        <i class="fa fa-unlink"></i>
-                        <span class="hidden-xs">Limit results</span>
-                        <div class="btn-sidebar-container">
-                            <button class="btn btn-sidebar pull-right query-rule-remove" type="button">
-                                <i class="fa fa-trash-o"></i>
-                            </button>
-                            <button class="btn btn-sidebar pull-right query-rule-toggle" type="button">
-                                <i class="fa fa-eye"></i>
-                            </button>
-                        </div>
-                    </a>
-                    <ul data-value="limit" class="dropdown-menu query-rule">
-                        <li class="no-sortable">
-                            <div class="nav-option-textbox">
-                                <input type="text" placeholder="Limit" class="pull-right" value="25"  style="width: calc(100% - 130px);" />
-                            </div>
-                            <a class="nav-option" href="#"><i class="fa fa-th-list"></i> Max shown</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle">
-                        <i class="fa fa-cloud-download"></i>
-                        <span class="hidden-xs">Merge RSS</span>
-                        <div class="btn-sidebar-container">
-                            <button class="btn btn-sidebar pull-right query-rule-remove" type="button">
-                                <i class="fa fa-trash-o"></i>
-                            </button>
-                            <button class="btn btn-sidebar pull-right query-rule-toggle" type="button">
-                                <i class="fa fa-eye"></i>
-                            </button>
-                        </div>
-                    </a>
-                    <ul data-value="merge" class="dropdown-menu query-rule">
-                        <li class="no-sortable">
-                            <div class="nav-option-textbox">
-                                <input type="text" placeholder="http://" class="pull-right" style="width: calc(100% - 70px); text-align: left;" />
-                            </div>
-                            <a class="nav-option" href="#"><i class="fa fa-link"></i> URL</a>
-                        </li>
-                    </ul>
-                </li>
 
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle">
-                        <i class="fa fa-sort"></i>
-                        <span class="hidden-xs">Sort by</span>
-                        <div class="btn-sidebar-container">
-                            <button class="btn btn-sidebar pull-right query-rule-remove" type="button">
-                                <i class="fa fa-trash-o"></i>
-                            </button>
-                            <button class="btn btn-sidebar pull-right query-rule-toggle" type="button">
-                                <i class="fa fa-eye"></i>
-                            </button>
-                        </div>
-                    </a>
-                    <ul data-value="sort" class="dropdown-menu no-sortable query-rule">
-                        <ul class="dropdown-menu dropdown-persistent">
-                            <li class="no-sortable"><a data-value="t" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Title</a></li>
-                            <li class="no-sortable"><a data-value="d" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Date</a></li>
-                            <li class="no-sortable"><a data-value="s" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Size</a></li>
-                            <li class="no-sortable"><a data-value="p" class="nav-option nav-option-radio selected" href="#"><i class="fa fa-check"></i> Peers (S+L)</a></li>
-                            <li class="no-sortable"><a data-value="e" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Seeds</a></li>
-                            <li class="no-sortable"><a data-value="l" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Leechers</a></li>
-                            <li class="no-sortable"><a data-value="m" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Seeds - Leechers</a></li>
-                        </ul>
-                        <ul class="dropdown-menu dropdown-persistent">
-                            <li class="divider inner-divider no-sortable">OPTIONS</li>
-                            <li class="no-sortable"><a data-value="A" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Ascending</a></li>
-                            <li class="no-sortable"><a data-value="D" class="nav-option nav-option-radio selected" href="#"><i class="fa fa-check"></i> Descending</a></li>
-                        </ul>
-                    </ul>
-                </li>
 
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle">
-                        <i class="fa fa-film"></i>
-                        <span class="hidden-xs">Handle duplicates <span class="superscript hidden-sm hidden-md">MOVIES</span></span>
-                        <div class="btn-sidebar-container">
-                            <button class="btn btn-sidebar pull-right query-rule-remove" type="button">
-                                <i class="fa fa-trash-o"></i>
-                            </button>
-                            <button class="btn btn-sidebar pull-right query-rule-toggle" type="button">
-                                <i class="fa fa-eye"></i>
-                            </button>
-                        </div>
-                    </a>
-                    <ul data-value="dupe-movies" class="dropdown-menu sortable-inner query-rule">
-                        <li class="divider inner-divider no-sortable no-sortable-inner">CHECK &amp; REORDER BY PREFERENCE <i class="fa fa-lg fa-angle-double-down"></i></li>
-                        <li class="no-sortable"><a data-value="Q" data-group="quality" class="nav-option nav-option-radio-optional selected" href="#"><i class="fa fa-check"></i> Better quality</a></li>
-                        <li class="no-sortable"><a data-value="q" data-group="quality" class="nav-option nav-option-radio-optional" href="#"><i class="fa fa-check"></i> Poorer quality</a></li>
-                        <li class="no-sortable"><a data-value="S" data-group="peers" class="nav-option nav-option-radio-optional selected" href="#"><i class="fa fa-check"></i> Quite more seeds</a></li>
-                        <li class="no-sortable"><a data-value="P" data-group="peers" class="nav-option nav-option-radio-optional" href="#"><i class="fa fa-check"></i> Quite more peers</a></li>
-                        <li class="no-sortable"><a data-value="L" data-group="size" class="nav-option nav-option-radio-optional" href="#"><i class="fa fa-check"></i> Larger sizes</a></li>
-                        <li class="no-sortable"><a data-value="s" data-group="size" class="nav-option nav-option-radio-optional selected" href="#"><i class="fa fa-check"></i> Smaller sizes</a></li>
-                    </ul>
-                </li>
-
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle">
-                        <i class="fa fa-youtube-play"></i>
-                        <span class="hidden-xs">Handle duplicates <span class="superscript hidden-sm hidden-md">TV</span></span>
-                        <div class="btn-sidebar-container">
-                            <button class="btn btn-sidebar pull-right query-rule-remove" type="button">
-                                <i class="fa fa-trash-o"></i>
-                            </button>
-                            <button class="btn btn-sidebar pull-right query-rule-toggle" type="button">
-                                <i class="fa fa-eye"></i>
-                            </button>
-                        </div>
-                    </a>
-                    <ul data-value="dupe-tv" class="dropdown-menu sortable-inner query-rule">
-                        <li class="divider inner-divider no-sortable no-sortable-inner">CHECK &amp; REORDER BY PREFERENCE <i class="fa fa-lg fa-angle-double-down"></i></li>
-                        <li class="no-sortable"><a data-value="Q" data-group="quality" class="nav-option nav-option-radio-optional selected" href="#"><i class="fa fa-check"></i> Better quality</a></li>
-                        <li class="no-sortable"><a data-value="q" data-group="quality" class="nav-option nav-option-radio-optional" href="#"><i class="fa fa-check"></i> Poorer quality</a></li>
-                        <li class="no-sortable"><a data-value="S" data-group="peers" class="nav-option nav-option-radio-optional selected" href="#"><i class="fa fa-check"></i> Quite more seeds</a></li>
-                        <li class="no-sortable"><a data-value="P" data-group="peers" class="nav-option nav-option-radio-optional" href="#"><i class="fa fa-check"></i> Quite more peers</a></li>
-                        <li class="no-sortable"><a data-value="L" data-group="size" class="nav-option nav-option-radio-optional" href="#"><i class="fa fa-check"></i> Larger sizes</a></li>
-                        <li class="no-sortable"><a data-value="s" data-group="size" class="nav-option nav-option-radio-optional selected" href="#"><i class="fa fa-check"></i> Smaller sizes</a></li>
-                    </ul>
-                </li>
-                -->
 
                 <li id="sidebar-rules-delimiter" class="divider no-sortable">ACTIONS</li>
                 <li class="dropdown no-sortable">
@@ -302,6 +155,28 @@
                         </li>
                         <li class="no-sortable">
                             <a href="#" class="dropdown-toggle nav-option">
+                                <i class="fa fa-reply"></i>
+                                <span class="hidden-xs">Exclude results</span>
+                                <div class="btn-sidebar-container">
+                                    <button data-value="exclude" class="btn btn-sidebar pull-right add-new-rule" type="button">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="no-sortable">
+                            <a href="#" class="dropdown-toggle nav-option">
+                                <i class="fa fa-question"></i>
+                                <span class="hidden-xs">Evaluate condition</span>
+                                <div class="btn-sidebar-container">
+                                    <button data-value="eval" class="btn btn-sidebar pull-right add-new-rule" type="button">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="no-sortable">
+                            <a href="#" class="dropdown-toggle nav-option">
                                 <i class="fa fa-sort"></i>
                                 <span class="hidden-xs">Sort by</span>
                                 <div class="btn-sidebar-container">
@@ -313,7 +188,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class="no-sortable"><a href="results" class="nav-option-submit ajax-link"><i class="fa fa-cogs"></i><span class="hidden-xs"> Apply query &amp; rules!</span></a></li>
+                <li class="no-sortable"><a href="results" class="ajax-link btn btn-sidebar-submit">Apply query &amp; rules!</span></a></li>
                 <li class="no-sortable">
 
                 </li>

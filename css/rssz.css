@@ -10,6 +10,26 @@ a {
     text-decoration: none !important;
 }
 
+/*input:-moz-placeholder {
+    color: #ffffff;
+    opacity: 0.65;
+}*/
+
+input::-moz-placeholder {
+    color: #ffffff;
+    opacity: 0.65;
+}
+
+input:-ms-input-placeholder {
+    color: #ffffff;
+    opacity: 0.65;
+}
+
+input::-webkit-input-placeholder {
+    color: #ffffff;
+    opacity: 0.65;
+}
+
 #content {
     margin-bottom: auto !important;
     padding-bottom: 0 !important;
@@ -175,6 +195,10 @@ li.no-apply a {
     color: rgba(255, 255, 255, 0.9);
 }
 
+.nav > li span {
+    text-shadow: 1px 1px 1px #ccc;
+}
+
 /* SIDEBAR BUTTONS */
 
 .btn-sidebar-container {
@@ -205,6 +229,27 @@ li.no-apply a {
     opacity: 1;
 }
 
+.btn-sidebar-submit {
+    margin: 10px 15px;
+    border-color: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.3);
+    line-height: inherit;
+    opacity: 0.85;
+    text-align: center !important;
+    font-weight: normal;
+    font-size: 13px;
+    color: #fff !important;
+    text-shadow: 1px 1px 1px #ddd;
+}
+
+.btn-sidebar-submit:hover {
+    opacity: 1;
+    background-color: rgba(255,255,255,0.2) !important;
+    color: #555 !important;
+    text-shadow: 1px 1px 1px #888;
+}
+
 .main-menu > li > a {
     padding-right: 10px;
 }
@@ -213,15 +258,10 @@ li.no-apply a {
     display: inherit;
 }
 
-.nav-option-submit {
-    background-color: rgba(255, 255, 255, 0.2);
-    color: rgba(0, 0, 0, 0.35) !important;
-}
-
     /* EMPTY RULES BOX */
 
 #no-selected-rule {
-    padding: 10px;
+    /*padding: 10px;
     background-color: rgba(255, 255, 255, 0.5);
     margin: 10px;
     font-size: 13px;
@@ -235,7 +275,28 @@ li.no-apply a {
     -moz-transition: 0.5s;
     -o-transition: 0.5s;
     transition: 0.5s;
-    height: 40px;
+    height: 40px;*/
+    position: relative;
+    top: -1px;
+    height: 36px;
+    border-top: 1px solid rgba(0,0,0,0.42);
+    border-bottom: 1px solid rgba(0,0,0,0.3);
+    background-color: rgba(255,255,255,0.4);
+    -webkit-box-shadow: 0px 0px 10px rgba(255,255,255,0.6);
+    -moz-box-shadow: 0px 0px 10px rgba(255,255,255,0.6);
+    box-shadow: 0px 0px 10px rgba(255,255,255,0.6);
+    opacity: 0.8;
+    /*  old  */
+    font-size: 13px;
+    text-shadow: 1px 1px 1px #999999;
+    color: rgba(0,0,0,0.2);
+    letter-spacing: 0.35em;
+    cursor: default;
+    -webkit-transition: 0.5s;
+    -moz-transition: 0.5s;
+    -o-transition: 0.5s;
+    transition: 0.5s;
+    line-height: 34px;
 }
 
 #no-selected-rule .on-hover {
@@ -261,7 +322,8 @@ li.no-apply a {
 }
 
 #no-selected-rule:hover {
-    box-shadow: 0 0 13px rgba(255, 255, 255, 0.6);
+    /*box-shadow: 0 0 13px rgba(255, 255, 255, 0.6);*/
+    opacity: 1;
 }
 
 #no-selected-rule:hover .on-no-hover {
@@ -349,4 +411,17 @@ ul.main-menu li.placeholder {
     font-size: 18px;
     line-height: 30px;
     font-family: Verdana,"Lucida Sans","Lucida Sans Unicode","Segoe UI",sans-serif;
+}
+
+/* TOOLTIPS */
+
+.tooltip-inner {
+    max-width: 250px;
+    min-width: 250px;
+    background-color: rgba(0,0,0,0.75);
+    text-align: left;
+}
+
+.tooltip-inner ul {
+    padding-left: 25px;
 }

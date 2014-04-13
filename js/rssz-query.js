@@ -1,5 +1,5 @@
 
-var globals = { 'process_url': 'http://mation.byethost15.com/process.php' };
+var globals = { 'process_url': 'http://mation.byethost15.com/process.php' /*'http://37.187.9.5/rssz/process.php'*/ };
 
 /** Class to manage search queries.
  * @constructor
@@ -34,6 +34,7 @@ function queryManager(config_params) {
     /** @constructs */
     (function() {
         body.on("click","button.add-new-rule", function() {
+            //$('#no-selected-rule').before().css('border-bottom', "1px solid rgba(255, 255, 255, 0.5) !important");
             $('#no-selected-rule').hide();
             $('#sidebar-rules-delimiter').before(sidebar_rules[$(this).data("value")]);
             $("ul.sortable-inner").sortable({
@@ -47,6 +48,7 @@ function queryManager(config_params) {
         body.on("click","button.query-rule-remove", function() {
             $(this).closest("li").remove();
             if (!$('.query-rule').size()) {
+                //$('#no-selected-rule').before().css('border-bottom', 0);
                 $('#no-selected-rule').show();
             }
         });
@@ -229,9 +231,7 @@ function queryManager(config_params) {
 
                 $.each(data, function(i_channel, channel) {
                     $.each(channel, function(i, item) {
-                        console.log(i + " = " + JSON.stringify(item));
                         if (item['title'] !== undefined) {
-
                             tbody.append('<tr><td><a href="'+item['link']+'">'+item['title']+'</a> <i class="fa fa-angle-double-right"></i> '+item['category']+'</td><td>'+jQuery.timeago(item['pubtimestamp'].toString())+'</td><td>'+item['size']+'</td><td>'+item['seeds']+'</td><td>'+item['leechers']+'</td></tr>');
                         }
                     });
@@ -335,6 +335,18 @@ function queryManager(config_params) {
                 rule.find('a.selected').each(function() {
                     value += $(this).data('value');
                 });
+                break;
+            case "exclude":
+                var pattern = Base64.encode(rule.find('input').val());
+                value = 'e';
+                rule.find('a.selected').each(function() {
+                    value += $(this).data('value');
+                });
+                value += 'p'+pattern;
+                break;
+            case "eval":
+                var condition = Base64.encode(rule.find('input').val());
+                value = 'c'+condition;
                 break;
         }
 
