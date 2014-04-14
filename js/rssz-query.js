@@ -1,5 +1,5 @@
 
-var globals = { 'process_url': 'http://mation.byethost15.com/process.php' /*'http://37.187.9.5/rssz/process.php'*/ };
+var globals = { 'process_url': 'process.php', 'title': 'TorrentzRSS!' };
 
 /** Class to manage search queries.
  * @constructor
@@ -30,6 +30,8 @@ function queryManager(config_params) {
     var last_p = '';
     var last_r = '';
     var last_q = '';
+    var temp_p = '';
+    var skip_refresh = false;
 
     /** @constructs */
     (function() {
@@ -178,7 +180,7 @@ function queryManager(config_params) {
 
             //load query, parameters and rules
             var query = data['q'];
-
+            //TODO: Not implemented
 
             this_qm.setBusy(false);
             //run query
@@ -188,6 +190,14 @@ function queryManager(config_params) {
             log.warn("Fail: "+data);
             this_qm.setBusy(false);
         });
+    };
+
+    this.loadSearch = function(p, r, q) {
+        skip_refresh = true;
+
+        temp_p = p;
+        this.rules = r;
+        this.query = q;
     };
 
     /** Performs current search query if possible.
@@ -200,11 +210,19 @@ function queryManager(config_params) {
 
         if (!busy && this.enabled) {
 
-            this.refresh();
+            var process_params = '';
+            if (!skip_refresh) {
+                this.refresh();
+                process_params = related[this.quality] + related[this.orderby] + '-' + this.pages;
+            } else {
+                skip_refresh = false;
+                process_params = temp_p;
+            }
+
+            var title2 = decodeURIComponent(this.query).replace(/\+/g, ' ');
+            $(document).attr("title", config['title'] + " " + title2);
+
             busy = true;
-
-
-            var process_params = related[this.quality] + related[this.orderby] + '-' + this.pages;
 
             last_p = process_params;
             last_r = this.rules;
@@ -223,6 +241,7 @@ function queryManager(config_params) {
 
             $("#rss-url").attr("href", config['process_url'] + "?f=rss&p=" + process_params + "&r=" + this.rules + "&q=" + this.query);
             $("#json-url").attr("href", config['process_url'] + "?f=json&p=" + process_params + "&r=" + this.rules + "&q=" + this.query);
+            $("#web-url").attr("href", "?p=" + process_params + "&r=" + this.rules + "&q=" + this.query + "#results");
 
             request.success(function(data) {
 
