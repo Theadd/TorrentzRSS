@@ -312,7 +312,7 @@ jQuery(window).ready(function () {
     //load query, params and rules from url
     //var params = window.location.href.split("/"),
     //    last = params[params.length - 1];
-
+//http://local.com:63342/TorrentzRSS/?p=feed_verifiedS-2&r=&q=%22da%20vincis%20demons%22%20|%20%22falling%20skies%22%20|%20continuum%20|%20defiance%20|%20%22doctor%20who%22%20|%20vikings%20|%20revolution%20|%20fringe%20|%20%22game%20of%20thrones%22%20|%20%22marvel%20agents%22%20|%20%22orphan%20black%22%20size%20%3E%20500m%20size%20%3C%202g#results
     var params = new URLParameters();
     var pval = params.get('p');
     var rval = params.get('r');
@@ -321,6 +321,75 @@ jQuery(window).ready(function () {
         manager.loadSearch(pval, rval, qval);
         var query = decodeURIComponent(qval).replace(/\+/g, ' ');
         $('#search-query').val(query);
+
+        var regex = /feed([a-z_]*)([A-Z]*)-([0-9]+)/g;
+        var result;
+        result = regex.exec(pval);
+        if (result[3].length) {
+            var page_element = {'1': 1, '2': 2, '5': 3, '10': 4, '100': 5 };
+            $("#pages > li:nth-child(" + page_element[result[3]] + ") > a").click();
+        }
+        if (result[1].length) {
+            if (result[1] == '_any') {
+                $("#quality > li:nth-child(1) > a").click();
+            } else {
+                $("#quality > li:nth-child(3) > a").click();
+            }
+        }
+        //var related = { 'good': 'feed', 'any': 'feed_any', 'verified': 'feed_verified', 'rating': 'N', 'date': 'A', 'size': 'S', 'peers': '' };
+        if (result[2].length) {
+            if (result[2] == 'N') {
+                $("#order > li:nth-child(1) > a").click();
+            } else if (result[2] == 'A') {
+                $("#order > li:nth-child(2) > a").click();
+            } else if (result[2] == 'S') {
+                $("#order > li:nth-child(3) > a").click();
+            }
+        }
+        /******/
+        if (rval.length) {
+            $('#no-selected-rule').hide();
+            var bottom = $('#sidebar-rules-delimiter');
+            var rules = rval.split(manager.rule_delimiter),
+                i = 0,
+                rev_rule = {'l': 'limit', 'm': 'merge', 'd': 'dupe-movies', 't': 'dupe-tv', 's': 'sort', 'e': 'exclude', 'c': 'eval' };
+            //limit=l;merge=m;dupe-movies=d;dupe-tv=t;sort=s;exclude=e;eval=c
+            for (; i < rules.length; ++i) {
+                var name = rev_rule[rules[i].substring(0, 1)];
+                bottom.before(sidebar_rules[name]); //add rule element to DOM
+                var rule = bottom.prev().find(".query-rule");
+                switch (name) {
+                    case "limit":
+                        rule.find('input').val(rules[i].substring(1));
+                        break;
+                    case "merge":
+                        rule.find('input').val(rules[i].substring(1));
+                        break;
+                    case "dupe-movies":
+                    case "dupe-tv":
+                    case "sort":
+                    case "exclude":
+                        var mods = rules[i].substring(1).split("");
+                        for (var e = 0; e < mods.length; ++e) {
+                            if (name == "exclude" && mods[e] == 'p') {
+                                rule.find('input').val(Base64.decode(rules[i].substring(e + 2)));
+                                break;
+                            }
+                            rule.find("a[data-value='" + mods[e] + "']:not(.selected)").click(); //((name == 'sort') ? "" : ":not(.selected)")
+                        }
+                        break;
+                    case "eval":
+                        rule.find('input').val(Base64.decode(rules[i].substring(1)));
+                        break;
+                }
+            }
+            $("ul.sortable-inner").sortable({
+                items: "li:not(.no-sortable-inner)",
+                placeholder: "placeholder"
+            });
+        }
+
+
         //$(document).attr("title", $(document).attr("title") + " " + query);
         //LoadAjaxContent('results');
 
@@ -497,11 +566,11 @@ var sidebar_rules = {
         </li>\
         <li class="divider inner-divider no-sortable no-sortable-inner">OPTIONS</li>\
         <li class="no-sortable"><a data-value="r" data-group="type" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Regular expression</a></li>\
-        <li class="no-sortable"><a data-value="" data-group="type" class="nav-option nav-option-radio selected" href="#"><i class="fa fa-check"></i> String literal</a></li>\
+        <li class="no-sortable"><a data-value="R" data-group="type" class="nav-option nav-option-radio selected" href="#"><i class="fa fa-check"></i> String literal</a></li>\
         <li class="no-sortable"><a data-value="m" data-group="match" class="nav-option nav-option-radio selected" href="#"><i class="fa fa-check"></i> Matching</a></li>\
-        <li class="no-sortable"><a data-value="" data-group="match" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Non-matching</a></li>\
+        <li class="no-sortable"><a data-value="M" data-group="match" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Non-matching</a></li>\
         <li class="no-sortable"><a data-value="t" data-group="field" class="nav-option nav-option-radio selected" href="#"><i class="fa fa-check"></i> From title field</a></li>\
-        <li class="no-sortable"><a data-value="" data-group="field" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> From category field</a></li>\
+        <li class="no-sortable"><a data-value="T" data-group="field" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> From category field</a></li>\
     </ul>\
 </li>',
     'eval': '<li class="dropdown">\
