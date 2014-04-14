@@ -469,6 +469,7 @@ function run($p, $r, $q) {
 	while (($sum = process_url($query.'&p='.$page, $channel_aux)) != 0 && ($params[1] * 2 > $page)) {
         $channel = array_merge($channel, $channel_aux);
         $GLOBALS['results'] += $sum;
+        $channel_aux = array();
 		$page += 2;
 	}
 	$r = explode('-', $r);

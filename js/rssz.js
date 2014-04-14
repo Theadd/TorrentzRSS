@@ -212,6 +212,34 @@ function alertManager() {
 }
 
 
+/**
+ *
+ * @constructor
+ */
+function URLParameters() {
+    var sPageURL = window.location.search.substring(1);
+    var sURLVariables = sPageURL.split('&');
+    /** @constructs */
+    (function() {
+        //Do something here...
+    })();
+
+    /**
+     *
+     * @param sParam
+     * @returns {*}
+     */
+    this.get = function(sParam) {
+        for (var i = 0; i < sURLVariables.length; i++) {
+            var sParameterName = sURLVariables[i].split('=');
+            if (sParameterName[0] == sParam) {
+                return sParameterName[1];
+            }
+        }
+        return "";
+    };
+}
+
 /* SORTABLE SIDEBAR */
 
 $(function  () {
@@ -282,14 +310,28 @@ jQuery(window).ready(function () {
         $("#search-query").val('"da vincis demons" | "falling skies" | continuum | defiance | "doctor who" | vikings | revolution | fringe | "game of thrones" | "marvel agents" | "orphan black" size > 500m size < 2g');
     }
     //load query, params and rules from url
-    var params = window.location.href.split("/"),
-        last = params[params.length - 1];
+    //var params = window.location.href.split("/"),
+    //    last = params[params.length - 1];
 
-    var regex = /^[0-9a-z]{20,50}$/;
+    var params = new URLParameters();
+    var pval = params.get('p');
+    var rval = params.get('r');
+    var qval = params.get('q');
+    if (pval.length && qval.length) {
+        manager.loadSearch(pval, rval, qval);
+        var query = decodeURIComponent(qval).replace(/\+/g, ' ');
+        $('#search-query').val(query);
+        //$(document).attr("title", $(document).attr("title") + " " + query);
+        //LoadAjaxContent('results');
+
+    }
+
+
+   /* var regex = /^[0-9a-z]{20,50}$/;
     var m = regex.exec(last);
     if (m) {
         manager.loadUUID(m);
-    }
+    }*/
 
 
 });
