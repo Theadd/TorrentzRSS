@@ -27,6 +27,8 @@ require_once 'XML/Serializer.php';
 
 $results = 0;
 $errors = array();
+$priority_hashes = array();
+$tiny = '';
 
 if (RSSZ_ALLOW_CROSS_DOMAIN)
     header('Access-Control-Allow-Origin: *');
@@ -316,6 +318,7 @@ function handleDuplicatesAsTVShows($channel, $rule) {
     $items = count($aux);
     $i = 0;
     while ($i + 1 < $items) {
+        $minTimestampForGroup = time();
         $wnd = 1;
         $info1 = false;
         while (true) {
@@ -324,6 +327,10 @@ function handleDuplicatesAsTVShows($channel, $rule) {
             $info1 = getTVShowInfo($aux[$i]['title_lowercase']);
             if ($info1 == false) {
                 break;
+            }
+            //set min timestamp for group
+            if ($minTimestampForGroup > $aux[$i]['pubtimestamp']) {
+                $minTimestampForGroup = $aux[$i]['pubtimestamp'];
             }
             $info2 = getTVShowInfo($aux[$i+$wnd]['title_lowercase']);
             if ($info2 == false) {
@@ -337,13 +344,28 @@ function handleDuplicatesAsTVShows($channel, $rule) {
             //get only last episode
             if ($info1['episode'] < $info2['episode']) {
                 $aux[$i] = $item2;
+                //set min timestamp for group to the later episode
+                $minTimestampForGroup = $aux[$i]['pubtimestamp'];
                 ++$wnd; //next item in group
                 continue;
             } else if ($info1['episode'] > $info2['episode']) {
                 ++$wnd;
                 continue;
             }
-            //
+            //set min timestamp for group
+            if ($minTimestampForGroup > $item2['pubtimestamp']) {
+                $minTimestampForGroup = $item2['pubtimestamp'];
+            }
+            //prioritize already served torrents from last call
+            if (isset($GLOBALS['priority_hashes'][$item1['hash']])) {
+                ++$wnd;
+                continue;
+            } else if (isset($GLOBALS['priority_hashes'][$item2['hash']])) {
+                $aux[$i] = $item2;
+                ++$wnd; //next item in group
+                continue;
+            }
+            //end
             $swapped = false;
             foreach ($args as $arg) {
                 switch ($arg) {
@@ -448,7 +470,7 @@ function handleDuplicatesAsTVShows($channel, $rule) {
             $aux[$i] = $item1;
             ++$wnd; //next item in group
         }
-        if ($info1 != false) {
+        if ($info1 != false && $minTimestampForGroup <= time() - 7200) {    //and any duplicated episode older than 2h
             $hashes[$aux[$i]['hash']] = true;
         }   //save
         $i += $wnd; //next group
@@ -627,6 +649,20 @@ function triggerOnShutdown($total, $excluded, $statsfile) {
 if (!isset($_REQUEST['r']))
     $_REQUEST['r'] = '';
 
+if (isset($_REQUEST['f']) && strtolower($_REQUEST['f']) == 'rss') {
+    $data = array('q' => $_REQUEST['q'], 'p' => $_REQUEST['p'], 'r' => $_REQUEST['r']);
+    $sdata = serialize($data);
+    $tiny = md5($sdata);
+    if (file_exists("data/".$tiny)) {
+        $bdata = unserialize(file_get_contents("data/".$tiny));
+        if (isset($bdata['hashes'])) {
+            $priority_hashes = $bdata['hashes'];
+        }
+    } else {
+        file_put_contents("data/".$tiny, $sdata);
+    }
+}
+
 if (isset($_REQUEST['tiny'])) {
 	$data = array('q' => $_REQUEST['q'], 'p' => $_REQUEST['p'], 'r' => $_REQUEST['r']);
 	$sdata = serialize($data);
@@ -668,7 +704,17 @@ if (isset($_REQUEST['tiny'])) {
 	if (isset($_REQUEST['f']) && strtolower($_REQUEST['f']) == 'json') {
 		header('Content-Type: application/json');
 		echo json_encode($data, JSON_PRETTY_PRINT);
-	} else {
+	} else {    //rss
+
+        //save returned hashes so we'll prioritize them in later rss calls
+        $bdata = unserialize(file_get_contents("data/".$tiny));
+        $priority_hashes = array();
+        foreach ($value as $result) {
+            $priority_hashes[$result['hash']] = true;
+        }
+        $bdata['hashes'] = $priority_hashes;
+        file_put_contents("data/".$tiny, serialize($bdata));
+        //end save
 
         $options = array(
             "indent"          => "    ",
