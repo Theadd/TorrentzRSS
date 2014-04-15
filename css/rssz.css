@@ -199,6 +199,17 @@ li.no-apply a {
     text-shadow: 1px 1px 1px #ccc;
 }
 
+.main-menu input {
+    padding-left: 5px;
+    border-radius: 1px;
+}
+
+.main-menu a.no-link {
+    color: #f0f0f0 !important;
+    cursor: default;
+    pointer-events: none;
+}
+
 /* SIDEBAR BUTTONS */
 
 .btn-sidebar-container {

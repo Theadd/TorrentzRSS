@@ -442,7 +442,7 @@ var sidebar_rules = {
             <div class="nav-option-textbox">\
                 <input type="text" placeholder="Limit" class="pull-right" value="25"  style="width: calc(100% - 130px);" />\
             </div>\
-            <a class="nav-option" href="#"><i class="fa fa-th-list"></i> Max shown</a>\
+            <a class="nav-option no-link" href="#"><i class="fa fa-th-list"></i> Max shown</a>\
         </li>\
     </ul>\
 </li>',
@@ -464,7 +464,7 @@ var sidebar_rules = {
             <div class="nav-option-textbox">\
                 <input type="text" placeholder=" UUID" class="pull-right" style="width: calc(100% - 80px); text-align: left;" />\
             </div>\
-            <a class="nav-option" href="#"><i class="fa fa-link"></i> Query</a>\
+            <a class="nav-option no-link" href="#"><i class="fa fa-link"></i> Query</a>\
         </li>\
     </ul>\
 </li>',
@@ -562,7 +562,7 @@ var sidebar_rules = {
             <div class="nav-option-textbox">\
                 <input type="text" placeholder=" Pattern (Use lowercase letters!)" class="pull-right" style="width: 100%; text-align: left;" />\
             </div>\
-            <a class="nav-option" href="#">&nbsp;</a>\
+            <a class="nav-option no-link" href="#">&nbsp;</a>\
         </li>\
         <li class="divider inner-divider no-sortable no-sortable-inner">OPTIONS</li>\
         <li class="no-sortable"><a data-value="r" data-group="type" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Regular expression</a></li>\
@@ -592,7 +592,7 @@ var sidebar_rules = {
                 <input type="text" placeholder=" seeds > leechers * 2" class="pull-right" style="width: 100%; text-align: left;" data-toggle="tooltip" data-placement="right" data-html="true"\
                 title="<b>Available parameters:</b><br><ul><li><b>seeds</b>: People sharing.</li><li><b>leechers</b>: People downloading.</li><li><b>peers</b>: All, seeds + leechers</li><li><b>size</b>: Torrent size (in MB).</li></ul><br><b>Operators:</b><ul><li><b>Arithmetic</b>: + - * / %</li><li><b>Comparison</b>: == != &lt; &gt; &lt;= &gt;=</li><li><b>Logic</b>: ! &amp;&amp; ||</li><li><b>Bitwise</b>: &amp; | ^ ~ &lt;&lt; &gt;&gt;</li></ul>" />\
             </div>\
-            <a class="nav-option" href="#">&nbsp;</a>\
+            <a class="nav-option no-link" href="#">&nbsp;</a>\
         </li>\
     </ul>\
 </li>'

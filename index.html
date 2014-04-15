@@ -97,13 +97,14 @@
 
 
 
-                <li id="sidebar-rules-delimiter" class="divider no-sortable">ACTIONS</li>
+
+                <li id="sidebar-rules-delimiter" class="divider no-sortable">ACTIONS &amp; SETTINGS</li>
                 <li class="dropdown no-sortable">
                     <a href="#" class="dropdown-toggle">
                         <i class="fa fa-plus-square"></i>
                         <span class="hidden-xs">Add new rule</span>
                     </a>
-                    <ul class="dropdown-menu no-sortable sortable-inner">
+                    <ul class="dropdown-menu no-sortable">
                         <li class="no-sortable">
                             <a href="#" class="dropdown-toggle nav-option">
                                 <i class="fa fa-unlink"></i>
@@ -191,6 +192,60 @@
                         </li>
                     </ul>
                 </li>
+                <li class="dropdown no-sortable">
+                    <a href="#" class="dropdown-toggle">
+                        <i class="fa fa-gear"></i>
+                        <span class="hidden-xs">General settings</span>
+                    </a>
+                    <ul class="dropdown-menu no-sortable">
+                        <li class="dropdown no-sortable">
+                            <a href="#" class="dropdown-toggle nav-option">
+                                <i class="fa fa-clock-o"></i>
+                                <span class="hidden-xs">Periodic updates <span class="superscript hidden-sm hidden-md">WAIT TIME</span></span>
+                            </a>
+                            <ul id="ttl" class="dropdown-menu" data-value="t">
+                                <li class="no-sortable" data-toggle="tooltip" data-placement="right" data-html="true"
+                                    title="<p>This field tells bittorrent applications the interval in minutes they should wait to request an update of this RSS feed.</p>">
+                                    <div class="nav-option-textbox">
+                                        <a class="nav-option pull-right no-link" style="margin-left: 10px;" href="#">min</a>
+                                        <input type="text" placeholder=" Wait between updating RSS Feed for client apps" value="15" class="pull-right" style="width: calc(100% - 95px); text-align: left;" />
+                                    </div>
+                                    <a class="nav-option no-link" href="#">TTL</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown no-sortable">
+                            <a href="#" class="dropdown-toggle nav-option">
+                                <i class="fa fa-gears"></i>
+                                <span class="hidden-xs">Duplicates</span>
+                            </a>
+                            <ul id="dupe-delay" class="dropdown-menu" data-value="H">
+                                <li class="no-sortable" data-toggle="tooltip" data-placement="right" data-html="true"
+                                    title="<p>Time in minutes since the first release of each group of duplicates to wait before choosing the best result among duplicates of the same episode or movie.</p>">
+                                    <div class="nav-option-textbox">
+                                        <a class="nav-option pull-right no-link" style="margin-left: 10px;" href="#">min</a>
+                                        <input type="text" placeholder=" Delay since first release" value="120" class="pull-right" style="width: calc(100% - 105px); text-align: left;" />
+                                    </div>
+                                    <a class="nav-option no-link" href="#">Delay</a>
+                                </li>
+                                <li class="no-sortable" data-toggle="tooltip" data-placement="right" data-html="true"
+                                    title="<p>If set, the above delay will only be applied in RSS feeds leaving web and JSON with a delay of zero.</p>">
+                                    <a data-value="R" data-group="previous" class="nav-option nav-option-radio-optional selected" href="#">
+                                        <i class="fa fa-check"></i> Only use delay in RSS</span>
+                                    </a>
+                                </li>
+                                <li class="no-sortable" data-toggle="tooltip" data-placement="right" data-html="true"
+                                    title="<p>If set, hashes returned by this RSS feed will be stored and they will be prioritized in the forthcoming requests in order to avoid downloading the same movie or episode.</p>">
+                                    <a data-value="K" data-group="previous" class="nav-option nav-option-radio-optional selected" href="#">
+                                        <i class="fa fa-check"></i> Keep previous results <span class="superscript hidden-sm hidden-md">RSS ONLY</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+
+
                 <li class="no-sortable"><a href="results" class="ajax-link btn btn-sidebar-submit">Apply query &amp; rules!</span></a></li>
                 <li class="no-sortable">
 
