@@ -231,6 +231,7 @@ function URLParameters() {
      */
     this.get = function(sParam) {
         for (var i = 0; i < sURLVariables.length; i++) {
+            //TODO: fix '=' in base64 encoded string as in: ?p=feedA-1-t30-d120-rk&r=cc2VlZHMgPj0gMTA=-tQSs&q=tv#results
             var sParameterName = sURLVariables[i].split('=');
             if (sParameterName[0] == sParam) {
                 return sParameterName[1];
@@ -352,7 +353,7 @@ jQuery(window).ready(function () {
             var bottom = $('#sidebar-rules-delimiter');
             var rules = rval.split(manager.rule_delimiter),
                 i = 0,
-                rev_rule = {'l': 'limit', 'm': 'merge', 'd': 'dupe-movies', 't': 'dupe-tv', 's': 'sort', 'e': 'exclude', 'c': 'eval' };
+                rev_rule = {'l': 'limit', 'm': 'merge', 'd': 'dupe-movies', 't': 'dupe-tv', 's': 'sort', 'e': 'exclude', 'c': 'eval', 'i': 'intersection' };
             //limit=l;merge=m;dupe-movies=d;dupe-tv=t;sort=s;exclude=e;eval=c
             for (; i < rules.length; ++i) {
                 var name = rev_rule[rules[i].substring(0, 1)];
@@ -363,6 +364,7 @@ jQuery(window).ready(function () {
                         rule.find('input').val(rules[i].substring(1));
                         break;
                     case "merge":
+                    case "intersection":
                         rule.find('input').val(rules[i].substring(1));
                         break;
                     case "dupe-movies":
@@ -387,6 +389,7 @@ jQuery(window).ready(function () {
                 items: "li:not(.no-sortable-inner)",
                 placeholder: "placeholder"
             });
+            $("[data-toggle='tooltip']").tooltip();
         }
 
 
@@ -442,7 +445,7 @@ var sidebar_rules = {
             <div class="nav-option-textbox">\
                 <input type="text" placeholder="Limit" class="pull-right" value="25"  style="width: calc(100% - 130px);" />\
             </div>\
-            <a class="nav-option" href="#"><i class="fa fa-th-list"></i> Max shown</a>\
+            <a class="nav-option no-link" href="#"><i class="fa fa-th-list"></i> Max shown</a>\
         </li>\
     </ul>\
 </li>',
@@ -464,7 +467,29 @@ var sidebar_rules = {
             <div class="nav-option-textbox">\
                 <input type="text" placeholder=" UUID" class="pull-right" style="width: calc(100% - 80px); text-align: left;" />\
             </div>\
-            <a class="nav-option" href="#"><i class="fa fa-link"></i> Query</a>\
+            <a class="nav-option no-link" href="#"><i class="fa fa-link"></i> Query</a>\
+        </li>\
+    </ul>\
+</li>',
+    'intersection': '<li class="dropdown">\
+        <a href="#" class="dropdown-toggle">\
+    <i class="fa fa-random"></i>\
+    <span class="hidden-xs">Query intersection</span>\
+    <div class="btn-sidebar-container">\
+        <button class="btn btn-sidebar pull-right query-rule-remove" type="button">\
+            <i class="fa fa-trash-o"></i>\
+        </button>\
+        <button class="btn btn-sidebar pull-right query-rule-toggle" type="button">\
+            <i class="fa fa-eye"></i>\
+        </button>\
+    </div>\
+</a>\
+    <ul data-value="intersection" class="dropdown-menu query-rule">\
+        <li class="no-sortable">\
+            <div class="nav-option-textbox">\
+                <input type="text" placeholder=" UUID" class="pull-right" style="width: calc(100% - 80px); text-align: left;" />\
+            </div>\
+            <a class="nav-option no-link" href="#"><i class="fa fa-link"></i> Query</a>\
         </li>\
     </ul>\
 </li>',
@@ -562,7 +587,7 @@ var sidebar_rules = {
             <div class="nav-option-textbox">\
                 <input type="text" placeholder=" Pattern (Use lowercase letters!)" class="pull-right" style="width: 100%; text-align: left;" />\
             </div>\
-            <a class="nav-option" href="#">&nbsp;</a>\
+            <a class="nav-option no-link" href="#">&nbsp;</a>\
         </li>\
         <li class="divider inner-divider no-sortable no-sortable-inner">OPTIONS</li>\
         <li class="no-sortable"><a data-value="r" data-group="type" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Regular expression</a></li>\
@@ -592,7 +617,7 @@ var sidebar_rules = {
                 <input type="text" placeholder=" seeds > leechers * 2" class="pull-right" style="width: 100%; text-align: left;" data-toggle="tooltip" data-placement="right" data-html="true"\
                 title="<b>Available parameters:</b><br><ul><li><b>seeds</b>: People sharing.</li><li><b>leechers</b>: People downloading.</li><li><b>peers</b>: All, seeds + leechers</li><li><b>size</b>: Torrent size (in MB).</li></ul><br><b>Operators:</b><ul><li><b>Arithmetic</b>: + - * / %</li><li><b>Comparison</b>: == != &lt; &gt; &lt;= &gt;=</li><li><b>Logic</b>: ! &amp;&amp; ||</li><li><b>Bitwise</b>: &amp; | ^ ~ &lt;&lt; &gt;&gt;</li></ul>" />\
             </div>\
-            <a class="nav-option" href="#">&nbsp;</a>\
+            <a class="nav-option no-link" href="#">&nbsp;</a>\
         </li>\
     </ul>\
 </li>'
