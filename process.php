@@ -552,6 +552,15 @@ function run($p, $r, $q) {
                     );
                     //$GLOBALS['session'][$GLOBALS['SQI']]['priority_hashes'] = (isset($request['hashes'])) ? $request['hashes'] : array();
 					$aux = run($request['p'], $request['r'], $request['q']);
+                    //save hashes back
+                    $bdata = unserialize(file_get_contents("data/".$tiny));
+                    $GLOBALS['session'][$GLOBALS['SQI']]['priority_hashes'] = array();
+                    foreach ($aux as $result) {
+                        $GLOBALS['session'][$GLOBALS['SQI']]['priority_hashes'][$result['hash']] = true;
+                    }
+                    $bdata['hashes'] = $GLOBALS['session'][$GLOBALS['SQI']]['priority_hashes'];
+                    file_put_contents("data/".$tiny, serialize($bdata));
+                    //end save
                     $GLOBALS['SQI']--;
 					$channel = array_merge($channel, $aux);
 				}
@@ -571,6 +580,15 @@ function run($p, $r, $q) {
                     );
                     //$GLOBALS['session'][$GLOBALS['SQI']]['priority_hashes'] = (isset($request['hashes'])) ? $request['hashes'] : array();
 					$aux = run($request['p'], $request['r'], $request['q']);
+                    //save hashes back
+                    $bdata = unserialize(file_get_contents("data/".$tiny));
+                    $GLOBALS['session'][$GLOBALS['SQI']]['priority_hashes'] = array();
+                    foreach ($aux as $result) {
+                        $GLOBALS['session'][$GLOBALS['SQI']]['priority_hashes'][$result['hash']] = true;
+                    }
+                    $bdata['hashes'] = $GLOBALS['session'][$GLOBALS['SQI']]['priority_hashes'];
+                    file_put_contents("data/".$tiny, serialize($bdata));
+                    //end save
                     $GLOBALS['SQI']--;
                     $channel = array_uintersect($channel, $aux, 'compareHash');
 				}
