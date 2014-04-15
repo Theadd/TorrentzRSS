@@ -45,6 +45,7 @@ function queryManager(config_params) {
                 placeholder: "placeholder"
             });
             this_qm.validate();
+            $("[data-toggle='tooltip']").tooltip();
         });
 
 
@@ -343,6 +344,9 @@ function queryManager(config_params) {
                 break;
             case "merge":
                 value = 'm' + rule.find('input').val();
+                break;
+            case "intersection":
+                value = 'i' + rule.find('input').val();
                 break;
             case "dupe-movies":
                 value = 'd';

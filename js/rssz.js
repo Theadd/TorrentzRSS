@@ -353,7 +353,7 @@ jQuery(window).ready(function () {
             var bottom = $('#sidebar-rules-delimiter');
             var rules = rval.split(manager.rule_delimiter),
                 i = 0,
-                rev_rule = {'l': 'limit', 'm': 'merge', 'd': 'dupe-movies', 't': 'dupe-tv', 's': 'sort', 'e': 'exclude', 'c': 'eval' };
+                rev_rule = {'l': 'limit', 'm': 'merge', 'd': 'dupe-movies', 't': 'dupe-tv', 's': 'sort', 'e': 'exclude', 'c': 'eval', 'i': 'intersection' };
             //limit=l;merge=m;dupe-movies=d;dupe-tv=t;sort=s;exclude=e;eval=c
             for (; i < rules.length; ++i) {
                 var name = rev_rule[rules[i].substring(0, 1)];
@@ -364,6 +364,7 @@ jQuery(window).ready(function () {
                         rule.find('input').val(rules[i].substring(1));
                         break;
                     case "merge":
+                    case "intersection":
                         rule.find('input').val(rules[i].substring(1));
                         break;
                     case "dupe-movies":
@@ -388,6 +389,7 @@ jQuery(window).ready(function () {
                 items: "li:not(.no-sortable-inner)",
                 placeholder: "placeholder"
             });
+            $("[data-toggle='tooltip']").tooltip();
         }
 
 
@@ -461,6 +463,28 @@ var sidebar_rules = {
     </div>\
 </a>\
     <ul data-value="merge" class="dropdown-menu query-rule">\
+        <li class="no-sortable">\
+            <div class="nav-option-textbox">\
+                <input type="text" placeholder=" UUID" class="pull-right" style="width: calc(100% - 80px); text-align: left;" />\
+            </div>\
+            <a class="nav-option no-link" href="#"><i class="fa fa-link"></i> Query</a>\
+        </li>\
+    </ul>\
+</li>',
+    'intersection': '<li class="dropdown">\
+        <a href="#" class="dropdown-toggle">\
+    <i class="fa fa-random"></i>\
+    <span class="hidden-xs">Query intersection</span>\
+    <div class="btn-sidebar-container">\
+        <button class="btn btn-sidebar pull-right query-rule-remove" type="button">\
+            <i class="fa fa-trash-o"></i>\
+        </button>\
+        <button class="btn btn-sidebar pull-right query-rule-toggle" type="button">\
+            <i class="fa fa-eye"></i>\
+        </button>\
+    </div>\
+</a>\
+    <ul data-value="intersection" class="dropdown-menu query-rule">\
         <li class="no-sortable">\
             <div class="nav-option-textbox">\
                 <input type="text" placeholder=" UUID" class="pull-right" style="width: calc(100% - 80px); text-align: left;" />\

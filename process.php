@@ -496,6 +496,12 @@ function handleDuplicatesAsTVShows($channel, $rule) {
     return $hashes;
 }
 
+/** Used in query intersection rule. */
+function compareHash($val1, $val2)
+{
+    return strcmp($val1['hash'], $val2['hash']);
+}
+
 function run($p, $r, $q) {
 	$channel = array();
 	$params = explode('-', $p);
@@ -548,6 +554,25 @@ function run($p, $r, $q) {
 					$aux = run($request['p'], $request['r'], $request['q']);
                     $GLOBALS['SQI']--;
 					$channel = array_merge($channel, $aux);
+				}
+				break;
+			case 'i':
+				//intersection
+				$tiny = substr($rule, 1);
+				if (strlen($tiny) > 10 && file_exists("data/".$tiny)) {
+					$request = unserialize(file_get_contents("data/".$tiny));
+                    $GLOBALS['SQI']++;
+                    //Initialize session for this nested search query and load hashes
+                    $GLOBALS['session'][$GLOBALS['SQI']] = array(
+                        'duplicatesDelay' => 0,   //overwritten
+                        'duplicatesDelayOnlyRSS' => false,   //overwritten
+                        'keepPreviousResults' => false,   //RSS only
+                        'priority_hashes' => (isset($request['hashes'])) ? $request['hashes'] : array()
+                    );
+                    //$GLOBALS['session'][$GLOBALS['SQI']]['priority_hashes'] = (isset($request['hashes'])) ? $request['hashes'] : array();
+					$aux = run($request['p'], $request['r'], $request['q']);
+                    $GLOBALS['SQI']--;
+                    $channel = array_uintersect($channel, $aux, 'compareHash');
 				}
 				break;
 			case 's':
