@@ -9,7 +9,7 @@ define("RSSZ_ALLOW_CROSS_DOMAIN", true);
 define("RSSZ_SITE_NAME", "TorrentzRSS!");
 define("RSSZ_SITE_URL", "http://Theadd.github.io/TorrentzRSS/");
 /* Time in minutes for torrent applications to wait between requests. */
-define("RSSZ_TTL", 15);
+define("RSSZ_MIN_TTL", 15);
 
 /* END OF CONFIGURATION PARAMETERS */
 
@@ -27,8 +27,16 @@ require_once 'XML/Serializer.php';
 
 $results = 0;
 $errors = array();
-$priority_hashes = array();
+//$priority_hashes = array();
 $tiny = '';
+$userTTL = 0;   //overwritten, use RSSZ_MIN_TTL instead
+$session = array( 0 => array(
+    'duplicatesDelay' => 0,   //overwritten
+    'duplicatesDelayOnlyRSS' => false,   //overwritten
+    'keepPreviousResults' => false,   //RSS only
+    'priority_hashes' => array()
+));
+$SQI = 0;   //Search Query Index: Identifies current search among nested search queries due to merge query rule
 
 if (RSSZ_ALLOW_CROSS_DOMAIN)
     header('Access-Control-Allow-Origin: *');
@@ -356,16 +364,17 @@ function handleDuplicatesAsTVShows($channel, $rule) {
             if ($minTimestampForGroup > $item2['pubtimestamp']) {
                 $minTimestampForGroup = $item2['pubtimestamp'];
             }
-            //prioritize already served torrents from last call
-            if (isset($GLOBALS['priority_hashes'][$item1['hash']])) {
-                ++$wnd;
-                continue;
-            } else if (isset($GLOBALS['priority_hashes'][$item2['hash']])) {
-                $aux[$i] = $item2;
-                ++$wnd; //next item in group
-                continue;
+
+            if ($GLOBALS['session'][$GLOBALS['SQI']]['keepPreviousResults']) {  //prioritize already served torrents from last call
+                if (isset($GLOBALS['session'][$GLOBALS['SQI']]['priority_hashes'][$item1['hash']])) {
+                    ++$wnd;
+                    continue;
+                } else if (isset($GLOBALS['session'][$GLOBALS['SQI']]['priority_hashes'][$item2['hash']])) {
+                    $aux[$i] = $item2;
+                    ++$wnd; //next item in group
+                    continue;
+                }
             }
-            //end
             $swapped = false;
             foreach ($args as $arg) {
                 switch ($arg) {
@@ -470,9 +479,15 @@ function handleDuplicatesAsTVShows($channel, $rule) {
             $aux[$i] = $item1;
             ++$wnd; //next item in group
         }
-        if ($info1 != false && $minTimestampForGroup <= time() - 7200) {    //and any duplicated episode older than 2h
-            $hashes[$aux[$i]['hash']] = true;
-        }   //save
+        if ($info1 != false) {     //save
+            if (($GLOBALS['session'][$GLOBALS['SQI']]['duplicatesDelayOnlyRSS'] && strtolower($_REQUEST['f']) == 'rss') || !$GLOBALS['session'][$GLOBALS['SQI']]['duplicatesDelayOnlyRSS']) {
+                if ($minTimestampForGroup <= time() - (60 * $GLOBALS['session'][$GLOBALS['SQI']]['duplicatesDelay'])) {
+                    $hashes[$aux[$i]['hash']] = true;
+                }
+            } else {
+                $hashes[$aux[$i]['hash']] = true;
+            }
+        }
         $i += $wnd; //next group
     }
 
@@ -485,6 +500,17 @@ function run($p, $r, $q) {
 	$cin = array("ñ", "Ñ", "ç", "Ç", " ", ">", "<");
 	$cout = array("%C3%B1", "%C3%91", "%C3%A7", "%C3%87", "+", "%3E", "%3C");
 	$q = str_replace($cin, $cout, $q);
+
+    //General settings
+    if (isset($params[2])) {
+        if ($GLOBALS['SQI'] == 0) { //set TTL to main search query, skip nested ones.
+            $GLOBALS['userTTL'] = intval(substr($params[2], 1));
+        }
+        $GLOBALS['session'][$GLOBALS['SQI']]['duplicatesDelay'] = intval(substr($params[3], 1));
+        $GLOBALS['session'][$GLOBALS['SQI']]['duplicatesDelayOnlyRSS'] = (strpos($params[4], 'r') !== false);
+        $GLOBALS['session'][$GLOBALS['SQI']]['keepPreviousResults'] = (strpos($params[4], 'k') !== false);
+    }
+    //echo "<pre>".print_r($params, true).print_r($GLOBALS, true)."</pre><br>\n";
 	
 	$query = "http://torrentz.eu/" . $params[0] . "?q=" . $q;
 	$page = 0;
@@ -508,7 +534,17 @@ function run($p, $r, $q) {
 				$tiny = substr($rule, 1);
 				if (strlen($tiny) > 10 && file_exists("data/".$tiny)) {
 					$request = unserialize(file_get_contents("data/".$tiny));
+                    $GLOBALS['SQI']++;
+                    //Initialize session for this nested search query and load hashes
+                    $GLOBALS['session'][$GLOBALS['SQI']] = array(
+                        'duplicatesDelay' => 0,   //overwritten
+                        'duplicatesDelayOnlyRSS' => false,   //overwritten
+                        'keepPreviousResults' => false,   //RSS only
+                        'priority_hashes' => (isset($request['hashes'])) ? $request['hashes'] : array()
+                    );
+                    //$GLOBALS['session'][$GLOBALS['SQI']]['priority_hashes'] = (isset($request['hashes'])) ? $request['hashes'] : array();
 					$aux = run($request['p'], $request['r'], $request['q']);
+                    $GLOBALS['SQI']--;
 					$channel = array_merge($channel, $aux);
 				}
 				break;
@@ -656,7 +692,7 @@ if (isset($_REQUEST['f']) && strtolower($_REQUEST['f']) == 'rss') {
     if (file_exists("data/".$tiny)) {
         $bdata = unserialize(file_get_contents("data/".$tiny));
         if (isset($bdata['hashes'])) {
-            $priority_hashes = $bdata['hashes'];
+            $GLOBALS['session'][$GLOBALS['SQI']]['priority_hashes'] = $bdata['hashes'];
         }
     } else {
         file_put_contents("data/".$tiny, $sdata);
@@ -690,7 +726,7 @@ if (isset($_REQUEST['tiny'])) {
 		"rules"  => $_REQUEST['r'],
 		"query"  => $_REQUEST['q'],
 		"errors"  => 0,
-		"ttl"  => RSSZ_TTL,
+		"ttl"  => (($userTTL < RSSZ_MIN_TTL) ? RSSZ_MIN_TTL : $userTTL),
 		"total" => 0,
 		"excluded" => 0
 	);
@@ -708,11 +744,11 @@ if (isset($_REQUEST['tiny'])) {
 
         //save returned hashes so we'll prioritize them in later rss calls
         $bdata = unserialize(file_get_contents("data/".$tiny));
-        $priority_hashes = array();
+        $GLOBALS['session'][$GLOBALS['SQI']]['priority_hashes'] = array();
         foreach ($value as $result) {
-            $priority_hashes[$result['hash']] = true;
+            $GLOBALS['session'][$GLOBALS['SQI']]['priority_hashes'][$result['hash']] = true;
         }
-        $bdata['hashes'] = $priority_hashes;
+        $bdata['hashes'] = $GLOBALS['session'][$GLOBALS['SQI']]['priority_hashes'];
         file_put_contents("data/".$tiny, serialize($bdata));
         //end save
 
