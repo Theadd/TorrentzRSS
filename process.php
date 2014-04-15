@@ -107,7 +107,9 @@ function process_url($url, &$channel) {
     $items = $rss->getItems();
 
     foreach ($items as $item) {
-        preg_match("/Size\:\s(.*?)\sSeeds\:\s(\d+?)\D.*?Peers\:\s(\d+?)\D.*?Hash\:\s(.*?)$/", $item['description'], $m);
+        preg_match("/Size\:\s(.*?)\sSeeds\:\s([\d,]+)\D.*?Peers\:\s([\d,]+)\D.*?Hash\:\s(.*?)$/", $item['description'], $m);
+        $m[2] = str_replace(',', '', $m[2]);
+        $m[3] = str_replace(',', '', $m[3]);
         $item['title_lowercase'] = strtolower(htmlentities($item['title'], ENT_COMPAT, "UTF-8"));
         $item['link'] = "http://torrage.com/torrent/".strtoupper($m[4]).".torrent";
         $item['size'] = $m[1];
