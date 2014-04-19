@@ -436,3 +436,16 @@ ul.main-menu li.placeholder {
 .tooltip-inner ul {
     padding-left: 25px;
 }
+
+/* BOOTSTRO TOUR */
+
+.bootstro-backdrop
+{
+    background-color: transparent;
+    display: none !important;
+    /*z-index: 3000;*/
+}
+
+.popover {
+    z-index: 3001;
+}

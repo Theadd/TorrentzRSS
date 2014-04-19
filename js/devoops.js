@@ -129,8 +129,15 @@ $(document).ready(function () {
 		}
 		if ($(this).hasClass('active') == false) {
 			$(this).parents("ul.dropdown-menu").find('a').removeClass('active');
-			$(this).addClass('active')
+			$(this).addClass('active');
 		}
+
+        if (!$(this).hasClass('dropdown-toggle')) {
+            $(this).removeClass('active');
+            $(this).removeClass('active-parent');
+            $(this).parent('li').removeClass('active');
+            $(this).parent('li').removeClass('active-parent');
+        }
 		if ($(this).hasClass('ajax-link')) {
 			e.preventDefault();
 			if ($(this).hasClass('add-full')) {
@@ -186,12 +193,6 @@ $(document).ready(function () {
 			var content = $(this).closest('div.box');
 			content.remove();
 		});
-	$('#locked-screen').on('click', function (e) {
-		e.preventDefault();
-		$('body').addClass('body-screensaver');
-		$('#screensaver').addClass("show");
-		ScreenSaver();
-	});
 	$('body').on('click', 'a.close-link', function(e){
 		e.preventDefault();
 		CloseModalBox();
@@ -210,22 +211,14 @@ $(document).ready(function () {
 			LoadAjaxContent(url);
 		}
 	});
-	$('#search-query').on('keydown', function(e){
-		if (e.keyCode == 13){
-			e.preventDefault();
-			$('#content').removeClass('full-content');
-			ajax_url = 'results';
-			window.location.hash = ajax_url;
-			LoadAjaxContent(ajax_url);
-		}
-	});
-	$('#screen_unlock').on('mouseover', function(){
-		var header = 'Enter current username and password';
-		var form = $('<div class="form-group"><label class="control-label">Username</label><input type="text" class="form-control" name="username" /></div>'+
-					'<div class="form-group"><label class="control-label">Password</label><input type="password" class="form-control" name="password" /></div>');
-		var button = $('<div class="text-center"><a href="index.html" class="btn btn-primary">Unlock</a></div>');
-		OpenModalBox(header, form, button);
-	});
+    $(".form-search").submit(function( event ) {
+        event.preventDefault();
+        $('#content').removeClass('full-content');
+        ajax_url = 'results';
+        window.location.hash = ajax_url;
+        LoadAjaxContent(ajax_url);
+    });
+
 });
 
 

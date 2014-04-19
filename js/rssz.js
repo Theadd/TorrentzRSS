@@ -1,6 +1,7 @@
 
 var body = $('body');
 
+
 /* BASE64 */
 
 /**
@@ -422,6 +423,35 @@ jQuery(window).resize(function () {
 
 
 $(function () { $("[data-toggle='tooltip']").tooltip(); });
+
+/* GLOBAL DROPDOWN ANIMATING/BUSY STATE */
+
+var dropdowns = $('.dropdown');
+var uiBusyState = false;
+
+$(function  () {
+    dropdowns = $('.dropdown');
+    console.log("Total dropdowns: " + dropdowns.length);
+    dropdowns.on('show.bs.dropdown', function () {
+        console.log("uiBusyState = true;");
+        uiBusyState = true;
+    });
+
+    dropdowns.on('shown.bs.dropdown', function () {
+        console.log("uiBusyState = false;");
+        uiBusyState = false;
+    });
+
+    dropdowns.on('hide.bs.dropdown', function () {
+        console.log("uiBusyState = true;");
+        uiBusyState = true;
+    });
+
+    dropdowns.on('hidden.bs.dropdown', function () {
+        console.log("uiBusyState = false;");
+        uiBusyState = false;
+    });
+});
 
 
 /* HANDLES FOR SIDEBAR MANAGER */

@@ -12,6 +12,7 @@
 		<link href="plugins/bootstrap/bootstrap.css" rel="stylesheet">
 		<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 		<link href='http://fonts.googleapis.com/css?family=Righteous' rel='stylesheet' type='text/css'>
+		<link href="css/bootstro.min.css" rel="stylesheet">
 		<link href="css/style.css" rel="stylesheet">
 		<link href="css/rssz.css" rel="stylesheet">
 		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -35,12 +36,14 @@
 						<a href="#" class="show-sidebar">
 						  <i class="fa fa-bars"></i>
 						</a>
-                        <div class="input-group" id="search-box">
-                            <input id="search-query" type="text" placeholder="Torrentz.eu Search Query" class="form-control" value="" />
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button"><i class="fa fa-search fa-lg"></i></button>
-                            </span>
-                        </div>
+                        <form class="form-search">
+                            <div class="input-group" id="search-box">
+                                <input id="search-query" type="text" placeholder="Torrentz.eu Search Query" class="form-control" value="" />
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="submit"><i class="fa fa-search fa-lg"></i></button>
+                                </span>
+                            </div>
+                        </form>
 					</div>
                 </div>
 			</div>
@@ -53,9 +56,9 @@
 	<div class="row">
 		<div id="sidebar-left" class="col-xs-2 col-sm-2">
 			<ul class="nav main-menu">
-                <li class="divider no-sortable">QUERY PARAMETERS</i></li>
+                <li class="divider no-sortable">QUERY PARAMETERS</li>
                 <li class="dropdown no-sortable">
-                    <a href="#" class="dropdown-toggle no-sortable">
+                    <a href="#" class="dropdown-toggle no-sortable" data-toggle="dropdown">
                         <i class="fa fa-signal no-sortable"></i>
                         <span class="hidden-xs no-sortable">Quality &amp; Safety</span>
                     </a>
@@ -66,7 +69,7 @@
                     </ul>
                 </li>
                 <li class="dropdown no-sortable">
-                    <a href="#" class="dropdown-toggle no-sortable">
+                    <a href="#" class="dropdown-toggle no-sortable" data-toggle="dropdown">
                         <i class="fa fa-sort no-sortable"></i>
                         <span class="hidden-xs no-sortable">Order by</span>
                     </a>
@@ -78,7 +81,7 @@
                     </ul>
                 </li>
                 <li class="dropdown no-sortable">
-                    <a href="#" class="dropdown-toggle no-sortable">
+                    <a href="#" class="dropdown-toggle no-sortable" data-toggle="dropdown">
                         <i class="fa fa-bars no-sortable"></i>
                         <span class="hidden-xs no-sortable">Page requests</span>
                     </a>
@@ -99,8 +102,8 @@
 
 
                 <li id="sidebar-rules-delimiter" class="divider no-sortable">ACTIONS &amp; SETTINGS</li>
-                <li class="dropdown no-sortable">
-                    <a href="#" class="dropdown-toggle">
+                <li id="ui-add-new-rule" class="dropdown no-sortable">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-plus-square"></i>
                         <span class="hidden-xs">Add new rule</span>
                     </a>
@@ -127,7 +130,7 @@
                                 </div>
                             </a>
                         </li>
-                        <li class="no-sortable" data-toggle="tooltip" data-placement="right" data-html="true"
+                        <li id="ui-add-new-query-intersection" class="no-sortable" data-toggle="tooltip" data-placement="right" data-html="true"
                             title="<p>The intersection of two sets A and B is the set that contains all elements of A that also belong to B.</p>">
                             <a href="#" class="dropdown-toggle nav-option">
                                 <i class="fa fa-random"></i>
@@ -139,14 +142,14 @@
                                 </div>
                             </a>
                         </li>
-                        <li class="dropdown no-sortable">
-                            <a href="#" class="dropdown-toggle nav-option">
+                        <li id="ui-add-new-handle-duplicates" class="dropdown no-sortable">
+                            <a href="#" class="dropdown-toggle nav-option" data-toggle="dropdown">
                                 <i class="fa fa-times-circle"></i>
                                 <span class="hidden-xs">Handle duplicates</span>
                             </a>
                             <ul class="dropdown-menu no-sortable">
-                                <li class="no-sortable">
-                                    <a href="#" class="dropdown-toggle nav-option">
+                                <li id="ui-add-new-handle-duplicates-movies" class="no-sortable">
+                                    <a href="#" class="nav-option">
                                         <i class="fa fa-film"></i>
                                         <span class="hidden-xs">Treat as movies</span>
                                         <div class="btn-sidebar-container">
@@ -156,8 +159,8 @@
                                         </div>
                                     </a>
                                 </li>
-                                <li class="no-sortable">
-                                    <a href="#" class="dropdown-toggle nav-option">
+                                <li id="ui-add-new-handle-duplicates-tv" class="no-sortable">
+                                    <a href="#" class="nav-option">
                                         <i class="fa fa-video-camera"></i>
                                         <span class="hidden-xs">Treat as TV shows</span>
                                         <div class="btn-sidebar-container">
@@ -205,13 +208,13 @@
                     </ul>
                 </li>
                 <li class="dropdown no-sortable">
-                    <a href="#" class="dropdown-toggle">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-gear"></i>
                         <span class="hidden-xs">General settings</span>
                     </a>
                     <ul class="dropdown-menu no-sortable">
                         <li class="dropdown no-sortable">
-                            <a href="#" class="dropdown-toggle nav-option">
+                            <a href="#" class="dropdown-toggle nav-option" data-toggle="dropdown">
                                 <i class="fa fa-clock-o"></i>
                                 <span class="hidden-xs">Periodic updates <span class="superscript hidden-sm hidden-md">WAIT TIME</span></span>
                             </a>
@@ -227,7 +230,7 @@
                             </ul>
                         </li>
                         <li class="dropdown no-sortable">
-                            <a href="#" class="dropdown-toggle nav-option">
+                            <a href="#" class="dropdown-toggle nav-option" data-toggle="dropdown">
                                 <i class="fa fa-gears"></i>
                                 <span class="hidden-xs">Duplicates</span>
                             </a>
@@ -271,7 +274,7 @@
                 <br />
                 <a href="https://github.com/Theadd/TorrentzRSS/issues">Suggestions, Feedback, and Bugs</a><br />
                 Licensed under <a href="https://github.com/Theadd/TorrentzRSS/blob/master/LICENSE">GPL v2</a><br />
-                Version 1.0
+                Version 1.1
             </p>
 		</div>
 		<!--Start Content-->
@@ -288,13 +291,15 @@
 
 <script src="plugins/jquery/jquery-2.1.0.min.js"></script>
 <script src="plugins/jquery-ui.min.js"></script>
-<script src="plugins/bootstrap/bootstrap.min.js"></script>
+<script src="plugins/bootstrap/bootstrap.js"></script>
 <!--<script src="plugins/jquery-sortable.js"></script>-->
 <script src="plugins/jquery.timeago.js"></script>
 <script src="plugins/bootstrap-growl.min.js"></script>
+<script src="plugins/bootstro.js"></script>
 <script src="js/devoops.js"></script>
 <script src="js/rssz.js"></script>
 <script src="js/rssz-query.js"></script>
+<script src="js/rssz-tour.js"></script>
 <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
