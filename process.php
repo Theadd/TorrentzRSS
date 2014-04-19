@@ -4,12 +4,29 @@
 
 define("RSSZ_USE_PROXY", false);
 define("RSSZ_PROXY", 'localhost:8118');
-/* Allow web browsers to get content from this file (Your TorrentzRSS back end) if its not located in the same domain as the requesting web page. */
+/** Allow web browsers to get content from this file (Your TorrentzRSS back end) if its not located in the same domain as the requesting web page. */
 define("RSSZ_ALLOW_CROSS_DOMAIN", true);
 define("RSSZ_SITE_NAME", "TorrentzRSS!");
 define("RSSZ_SITE_URL", "http://Theadd.github.io/TorrentzRSS/");
-/* Time in minutes for torrent applications to wait between requests. */
+/** Time in minutes for torrent applications to wait between requests. */
 define("RSSZ_MIN_TTL", 15);
+/** Does this server/node act as master, delegating (some or all) requests to other API nodes?
+ * NOTE: This only delegates cURL http requests to torrentz.eu, all data processing is still being done in this node. */
+define("RSSZ_MULTIPLE_NODES", false);
+    //EDIT ONLY IF RSSZ_MULTIPLE_NODES IS SET TO TRUE:
+    /** Ratio of this node (e.g.: 0.2 = 20% of requests will be handled by this node). */
+    define("RSSZ_RATIO", 0);
+    /** $_NODES contains an array of nodes within "your" network of API nodes. */
+    $_NODES = array(    //This are valid nodes provided as example
+        array(
+            "http://rssz.netau.net/process.php",    //{string} Remote node url to process.php
+            0.6    //{float} Ratio. (e.g.: 0.2 = 20% of requests will be handled by this node)
+        ),
+        array(
+            "http://mation.byethost15.com/process.php",
+            0.4
+        )
+    );
 
 /* END OF CONFIGURATION PARAMETERS */
 
@@ -24,6 +41,11 @@ if (!function_exists('curl_setopt') || !function_exists('curl_setopt')) {   //TO
 
 require_once 'XML/RSS.php';
 require_once 'XML/Serializer.php';
+
+//XDEBUGrequire_once 'FirePHPCore/FirePHP.class.php';
+//XDEBUGob_start();
+
+
 
 $results = 0;
 $errors = array();
@@ -40,6 +62,15 @@ $SQI = 0;   //Search Query Index: Identifies current search among nested search 
 
 if (RSSZ_ALLOW_CROSS_DOMAIN)
     header('Access-Control-Allow-Origin: *');
+/*
+$_REQUEST['f']='json';
+$_REQUEST['p']='feed-1-t15-d120-rk';
+$_REQUEST['r']='';
+$_REQUEST['q']='superman';*/
+
+function json_get_encoded($data) {
+    return ((version_compare(phpversion(), '5.4.0', '>=')) ? json_encode($data, JSON_PRETTY_PRINT) : json_encode($data));
+}
 
 function array_orderby()
 {
@@ -127,6 +158,34 @@ function process_url($url, &$channel) {
     unlink("data/".$filename.".xml");
 
     return count($items);
+}
+
+/** Get results from a remote node running this script.
+ * @param $url
+ * @param $channel
+ * @return int
+ */
+function remote_process_url($url, &$channel) {
+    $url = addslashes(stripslashes($url));
+
+    $result = file_get_contents($url);
+    $content = json_decode($result, true);
+    $count = 0;
+
+    if (!empty($content['channel']['errors'])) {
+        foreach ($content['channel']['errors'] as $error) {
+            $GLOBALS['errors'][] = $error;
+        }
+    }
+
+    foreach ($content['channel'] as $item) {
+        if (isset($item['title'])) {
+            ++$count;
+            $channel[] = $item;
+        }
+    }
+
+    return $count;
 }
 
 function getMovieQualityRate($title) {
@@ -518,16 +577,33 @@ function run($p, $r, $q) {
         $GLOBALS['session'][$GLOBALS['SQI']]['duplicatesDelayOnlyRSS'] = (strpos($params[4], 'r') !== false);
         $GLOBALS['session'][$GLOBALS['SQI']]['keepPreviousResults'] = (strpos($params[4], 'k') !== false);
     }
-    //echo "<pre>".print_r($params, true).print_r($GLOBALS, true)."</pre><br>\n";
-	
-	$query = "http://torrentz.eu/" . $params[0] . "?q=" . $q;
-	$page = 0;
-	while (($sum = process_url($query.'&p='.$page, $channel_aux)) != 0 && ($params[1] * 2 > $page)) {
-        $channel = array_merge($channel, $channel_aux);
-        $GLOBALS['results'] += $sum;
-        $channel_aux = array();
-		$page += 2;
-	}
+
+    $left = rand(1, 100) / 100;
+    //XDEBUG$firephp = FirePHP::getInstance(true);
+    //XDEBUG$firephp->log($left, 'left');
+    if (RSSZ_MULTIPLE_NODES && $left > RSSZ_RATIO) {
+        //HANDLING RSSZ_MULTIPLE_NODES:
+        $left -= RSSZ_RATIO;
+        foreach ($GLOBALS['_NODES'] as $slave) {
+            if (($left -= $slave[1]) <= 0) {
+                //remote request
+                $query = $slave[0] . "?f=json&p=" . $p . "&r=&q=" . $q;
+                $GLOBALS['results'] += remote_process_url($query, $channel);
+                //XDEBUG$firephp->log($query, 'query');
+                break;
+            }
+        }
+    } else {
+        $query = "http://torrentz.eu/" . $params[0] . "?q=" . $q;
+        $page = 0;
+        while (($sum = process_url($query.'&p='.$page, $channel_aux)) != 0 && ($params[1] * 2 > $page)) {
+            $channel = array_merge($channel, $channel_aux);
+            $GLOBALS['results'] += $sum;
+            $channel_aux = array();
+            $page += 2;
+        }
+    }
+
 	$r = explode('-', $r);
 	foreach ($r as $rule) {
 		switch (substr($rule, 0, 1)) {
@@ -689,6 +765,7 @@ function run($p, $r, $q) {
 	return $channel;
 }
 
+
 function triggerOnShutdown($total, $excluded, $statsfile) {
 
     //UPDATE STATS FILE:
@@ -751,12 +828,12 @@ if (isset($_REQUEST['tiny'])) {
 	file_put_contents("data/".$tiny, $sdata);
 	echo $tiny;
 } else if (isset($_REQUEST['stats'])) {
-    header('Content-Type: application/json');
-    echo json_encode(unserialize(file_get_contents("data/stats")), JSON_PRETTY_PRINT);
+    header('Content-Type: application/json; charset=utf-8', true,200);
+    echo json_get_encoded(unserialize(file_get_contents("data/stats")));
 } else if (isset($_REQUEST['uuid'])) {
     $_REQUEST['uuid'] = addslashes(stripslashes($_REQUEST['uuid']));
-    header('Content-Type: application/json');
-    echo json_encode(unserialize(file_get_contents("data/".$_REQUEST['uuid'])), JSON_PRETTY_PRINT);
+    header('Content-Type: application/json; charset=utf-8', true,200);
+    echo json_get_encoded(unserialize(file_get_contents("data/".$_REQUEST['uuid'])));
 } else {
 
 	$data['channel'] = array(
@@ -765,7 +842,7 @@ if (isset($_REQUEST['tiny'])) {
 		"dataSource"  => "http://torrentz.eu/",
 		"project"  => "https://github.com/Theadd/TorrentzRSS",
 		"author"  => "Theadd",
-		"version"  => "1.0",
+		"version"  => "1.1",
 		"license"  => "GPL v2",
 		"params"  => $_REQUEST['p'],
 		"rules"  => $_REQUEST['r'],
@@ -783,8 +860,9 @@ if (isset($_REQUEST['tiny'])) {
 	$data['channel']["errors"] = $errors;
 
 	if (isset($_REQUEST['f']) && strtolower($_REQUEST['f']) == 'json') {
-		header('Content-Type: application/json');
-		echo json_encode($data, JSON_PRETTY_PRINT);
+		//header('Content-Type: application/json');
+        header('Content-Type: application/json; charset=utf-8', true,200);
+		echo json_get_encoded($data);
 	} else {    //rss
 
         //save returned hashes so we'll prioritize them in later rss calls
