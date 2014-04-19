@@ -1,5 +1,5 @@
 
-var globals = { 'process_url': 'http://mation.byethost15.com/process.php', 'title': 'TorrentzRSS!' };
+var globals = { 'process_url': 'http://37.187.9.5/rssz/process.php', 'title': 'TorrentzRSS!' };
 
 /** Class to manage search queries.
  * @constructor
