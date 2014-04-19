@@ -1,6 +1,7 @@
 
 var body = $('body');
 
+
 /* BASE64 */
 
 /**
@@ -423,12 +424,41 @@ jQuery(window).resize(function () {
 
 $(function () { $("[data-toggle='tooltip']").tooltip(); });
 
+/* GLOBAL DROPDOWN ANIMATING/BUSY STATE */
+
+var dropdowns = $('.dropdown');
+var uiBusyState = false;
+
+$(function  () {
+    dropdowns = $('.dropdown');
+    console.log("Total dropdowns: " + dropdowns.length);
+    dropdowns.on('show.bs.dropdown', function () {
+        console.log("uiBusyState = true;");
+        uiBusyState = true;
+    });
+
+    dropdowns.on('shown.bs.dropdown', function () {
+        console.log("uiBusyState = false;");
+        uiBusyState = false;
+    });
+
+    dropdowns.on('hide.bs.dropdown', function () {
+        console.log("uiBusyState = true;");
+        uiBusyState = true;
+    });
+
+    dropdowns.on('hidden.bs.dropdown', function () {
+        console.log("uiBusyState = false;");
+        uiBusyState = false;
+    });
+});
+
 
 /* HANDLES FOR SIDEBAR MANAGER */
 
 var sidebar_rules = {
-    'limit': '<li class="dropdown">\
-    <a href="#" class="dropdown-toggle">\
+    'limit': '<li class="dropdown rule-limit">\
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">\
     <i class="fa fa-unlink"></i>\
     <span class="hidden-xs">Limit results</span>\
     <div class="btn-sidebar-container">\
@@ -449,8 +479,8 @@ var sidebar_rules = {
         </li>\
     </ul>\
 </li>',
-    'merge': '<li class="dropdown">\
-        <a href="#" class="dropdown-toggle">\
+    'merge': '<li class="dropdown rule-merge">\
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">\
     <i class="fa fa-cloud-download"></i>\
     <span class="hidden-xs">Merge query</span>\
     <div class="btn-sidebar-container">\
@@ -471,8 +501,8 @@ var sidebar_rules = {
         </li>\
     </ul>\
 </li>',
-    'intersection': '<li class="dropdown">\
-        <a href="#" class="dropdown-toggle">\
+    'intersection': '<li class="dropdown rule-intersection">\
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">\
     <i class="fa fa-random"></i>\
     <span class="hidden-xs">Query intersection</span>\
     <div class="btn-sidebar-container">\
@@ -493,8 +523,8 @@ var sidebar_rules = {
         </li>\
     </ul>\
 </li>',
-    'dupe-movies': '<li class="dropdown">\
-        <a href="#" class="dropdown-toggle">\
+    'dupe-movies': '<li class="dropdown rule-dupe-movies">\
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">\
     <i class="fa fa-film"></i>\
     <span class="hidden-xs">Handle duplicates <span class="superscript hidden-sm hidden-md">MOVIES</span></span>\
     <div class="btn-sidebar-container">\
@@ -516,8 +546,8 @@ var sidebar_rules = {
         <li class="no-sortable"><a data-value="s" data-group="size" class="nav-option nav-option-radio-optional selected" href="#"><i class="fa fa-check"></i> Smaller sizes</a></li>\
     </ul>\
 </li>',
-    'dupe-tv': '<li class="dropdown">\
-        <a href="#" class="dropdown-toggle">\
+    'dupe-tv': '<li class="dropdown rule-dupe-tv">\
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">\
     <i class="fa fa-youtube-play"></i>\
     <span class="hidden-xs">Handle duplicates <span class="superscript hidden-sm hidden-md">TV</span></span>\
     <div class="btn-sidebar-container">\
@@ -539,8 +569,8 @@ var sidebar_rules = {
         <li class="no-sortable"><a data-value="s" data-group="size" class="nav-option nav-option-radio-optional selected" href="#"><i class="fa fa-check"></i> Smaller sizes</a></li>\
     </ul>\
 </li>',
-    'sort': '<li class="dropdown">\
-        <a href="#" class="dropdown-toggle">\
+    'sort': '<li class="dropdown rule-sort">\
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">\
     <i class="fa fa-sort"></i>\
     <span class="hidden-xs">Sort by</span>\
     <div class="btn-sidebar-container">\
@@ -569,8 +599,8 @@ var sidebar_rules = {
         </ul>\
     </ul>\
 </li>',
-    'exclude': '<li class="dropdown">\
-        <a href="#" class="dropdown-toggle">\
+    'exclude': '<li class="dropdown rule-exclude">\
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">\
     <i class="fa fa-reply"></i>\
     <span class="hidden-xs">Exclude results</span>\
     <div class="btn-sidebar-container">\
@@ -598,8 +628,8 @@ var sidebar_rules = {
         <li class="no-sortable"><a data-value="T" data-group="field" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> From category field</a></li>\
     </ul>\
 </li>',
-    'eval': '<li class="dropdown">\
-        <a href="#" class="dropdown-toggle">\
+    'eval': '<li class="dropdown rule-eval">\
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">\
     <i class="fa fa-question"></i>\
     <span class="hidden-xs">Evaluate condition</span>\
     <div class="btn-sidebar-container">\
