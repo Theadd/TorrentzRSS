@@ -2,31 +2,43 @@
 
 /* CONFIGURATION PARAMETERS */
 
+define("RSSZ_DEBUG_MODE", true);
 define("RSSZ_USE_PROXY", false);
 define("RSSZ_PROXY", 'localhost:8118');
-/** Allow web browsers to get content from this file (Your TorrentzRSS back end) if its not located in the same domain as the requesting web page. */
+/** Allow web browsers to get content from this node when the requesting web page is located in another domain. */
 define("RSSZ_ALLOW_CROSS_DOMAIN", true);
 define("RSSZ_SITE_NAME", "TorrentzRSS!");
 define("RSSZ_SITE_URL", "http://Theadd.github.io/TorrentzRSS/");
 /** Time in minutes for torrent applications to wait between requests. */
 define("RSSZ_MIN_TTL", 15);
+/** Timeout in seconds per page requests from this node to torrentz.eu. */
+define("RSSZ_TIMEOUT_PER_PAGE", 3);
 /** Does this server/node act as master, delegating (some or all) requests to other API nodes?
  * NOTE: This only delegates cURL http requests to torrentz.eu, all data processing is still being done in this node. */
 define("RSSZ_MULTIPLE_NODES", false);
     //EDIT ONLY IF RSSZ_MULTIPLE_NODES IS SET TO TRUE:
     /** Ratio of this node (e.g.: 0.2 = 20% of requests will be handled by this node). */
-    define("RSSZ_RATIO", 0);
+    define("RSSZ_RATIO", 0.5);
     /** $_NODES contains an array of nodes within "your" network of API nodes. */
     $_NODES = array(    //This are valid nodes provided as example
         array(
             "http://rssz.netau.net/process.php",    //{string} Remote node url to process.php
-            0.6    //{float} Ratio. (e.g.: 0.2 = 20% of requests will be handled by this node)
+            0.1,    //{float} Ratio. (e.g.: 0.2 = 20% of requests will be handled by this node)
+            1     //timeout per page requests
         ),
         array(
             "http://mation.byethost15.com/process.php",
-            0.4
+            0.15,
+            0.75
+        ),
+        array(
+            "http://rssz.esy.es/process.php",
+            0.25,
+            0.75
         )
     );
+    //NOTE: The sum of all ratios should be 1.0 (RSSZ_RATIO + $_NODES[0][2] + ... + $_NODES[n-1][2]).
+    //      Requests with random (from 0.01 to 1) bigger than sum of ratios will be requested by this node.
 
 /* END OF CONFIGURATION PARAMETERS */
 
@@ -42,11 +54,22 @@ if (!function_exists('curl_setopt') || !function_exists('curl_setopt')) {   //TO
 require_once 'XML/RSS.php';
 require_once 'XML/Serializer.php';
 
-//XDEBUGrequire_once 'FirePHPCore/FirePHP.class.php';
-//XDEBUGob_start();
+function logThis($data, $msg) {
+    if ($_REQUEST['debug']) {
+        if (!class_exists('FirePHP')) {
+            if (!@(include('FirePHPCore/FirePHP.class.php'))) {
+                $_REQUEST['debug'] = false;
+                return;
+            } else {
+                ob_start();
+            }
+        }
+        $firephp = FirePHP::getInstance(true);
+        $firephp->log($data, $msg);
+    }
+}
 
-
-
+$_REQUEST['debug'] = (isset($_REQUEST['debug']) && ($_REQUEST['debug'])) ? true : RSSZ_DEBUG_MODE;
 $results = 0;
 $errors = array();
 //$priority_hashes = array();
@@ -60,8 +83,12 @@ $session = array( 0 => array(
 ));
 $SQI = 0;   //Search Query Index: Identifies current search among nested search queries due to merge query rule
 
+logThis("Init", 'Logger');
+
 if (RSSZ_ALLOW_CROSS_DOMAIN)
     header('Access-Control-Allow-Origin: *');
+
+
 /*
 $_REQUEST['f']='json';
 $_REQUEST['p']='feed-1-t15-d120-rk';
@@ -168,7 +195,10 @@ function process_url($url, &$channel) {
 function remote_process_url($url, &$channel) {
     $url = addslashes(stripslashes($url));
 
-    $result = file_get_contents($url);
+    if (!($result = file_get_contents($url))) {
+        trigger_error($php_errormsg, E_USER_WARNING);
+        return null;
+    }
     $content = json_decode($result, true);
     $count = 0;
 
@@ -579,21 +609,31 @@ function run($p, $r, $q) {
     }
 
     $left = rand(1, 100) / 100;
-    //XDEBUG$firephp = FirePHP::getInstance(true);
-    //XDEBUG$firephp->log($left, 'left');
+    logThis($left, 'left');
+    $using_remote_node = false;
     if (RSSZ_MULTIPLE_NODES && $left > RSSZ_RATIO) {
         //HANDLING RSSZ_MULTIPLE_NODES:
         $left -= RSSZ_RATIO;
         foreach ($GLOBALS['_NODES'] as $slave) {
             if (($left -= $slave[1]) <= 0) {
                 //remote request
+                $using_remote_node = true;
+                ini_set('default_socket_timeout', max(round($slave[2] * $params[1]), 1));
                 $query = $slave[0] . "?f=json&p=" . $p . "&r=&q=" . $q;
-                $GLOBALS['results'] += remote_process_url($query, $channel);
-                //XDEBUG$firephp->log($query, 'query');
+                if (($sum = @remote_process_url($query, $channel)) === null) {
+                    logThis("FALLBACK FROM REMOTE NODE! $query", "FALLBACK!");
+                    $using_remote_node = false;
+                } else {
+                    $GLOBALS['results'] += $sum;
+                }
+                logThis($query, 'Query');
+                logThis(ini_get('default_socket_timeout'), 'Timeout');
                 break;
             }
         }
-    } else {
+    }
+    if (!$using_remote_node) {
+        ini_set('default_socket_timeout', intval(RSSZ_TIMEOUT_PER_PAGE));
         $query = "http://torrentz.eu/" . $params[0] . "?q=" . $q;
         $page = 0;
         while (($sum = process_url($query.'&p='.$page, $channel_aux)) != 0 && ($params[1] * 2 > $page)) {
@@ -602,6 +642,7 @@ function run($p, $r, $q) {
             $channel_aux = array();
             $page += 2;
         }
+        logThis(ini_get('default_socket_timeout'), 'Timeout');
     }
 
 	$r = explode('-', $r);
