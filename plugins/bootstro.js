@@ -40,6 +40,7 @@ $(document).ready(function(){
             // for sites which have fixed top/bottom nav bar
         };
         var settings;
+        var selectorInUse;
 
 
         //===================PRIVATE METHODS======================
@@ -138,11 +139,28 @@ $(document).ready(function(){
             $.each(popover, function(t,e){
                 //only deal with the visible element
                 //build the selector
+                var element = null;
+                if (typeof e['dynamic'] !== "undefined") {
+                    console.log("e.dynamic: "+ e['dynamic']);
+                    if ($(".bootstro-dynamic-elements").length > 0) {
+                        element = $(e['dynamic']).appendTo('.bootstro-dynamic-elements');
+                    } else {
+                        element = $(e['dynamic']).prependTo('body');
+                    }
+                } else {
+                    console.log("not dynamic.");
+                    element = $(e.selector);
+                }
+
                 $.each(e, function(j, attr){
-                    $(e.selector).attr('data-bootstro-' + j, attr);
+                    if (j != 'dynamic') {
+                        element.attr('data-bootstro-' + j, attr);
+                    } else {
+                        element.attr('data-bootstro-' + j, true);
+                    }
                 });
                 //RSSZ MOD
-                $(e.selector).attr('data-container', "body");
+                element.attr('data-container', "body");
                 //end mod
                 //if ($(e.selector).is(":visible"))
                     selectorArr.push(e.selector);
@@ -168,6 +186,36 @@ $(document).ready(function(){
                  return $elements.filter(":not([data-bootstro-step])").eq(i - nrOfElementsWithStep);
                  })
                  */
+            }
+        }
+
+        update_dynamic_element = function(i)
+        {
+            //console.log("update dynamic element "+i);
+            //console.dir($elements);
+            //console.dir($("[data-bootstro-step=" + i +"]"));
+            var element = $("[data-bootstro-step=" + i +"]");
+            //console.log(element.attr('data-bootstro-dynamic'));
+            //console.log(element);
+            var dynamic = null;
+            if (element.attr('data-bootstro-dynamic')) {
+                //console.log("is dynamic");
+                dynamic = $(element.attr('data-bootstro-selector'));
+                if (dynamic.length) {
+                    var data = element.data();
+                    //console.log("old data array:");
+                    //console.log(data);
+
+                    var attributes = element.prop("attributes");
+                    $.each(attributes, function() {
+                        dynamic.attr(this.name, this.value);
+                    });
+                    //$elements[i] = dynamic;
+                    $elements = $(selectorInUse);
+                    //console.dir($elements);
+                } else {
+                    console.log("ERROR: Dynamic element not found!")
+                }
             }
         }
 
@@ -252,6 +300,7 @@ $(document).ready(function(){
             bootstro.destroy_popover(activeIndex);
             if (count != 0)
             {
+                update_dynamic_element(idx);
                 var p = get_popup(idx);
                 var $el = get_element(idx);
 
@@ -259,6 +308,9 @@ $(document).ready(function(){
                 if ($el.hasClass("dropdown")) {
                     console.log("repositioning");
                     $(".popover.in").css("top", (($(".popover.in").offset().top - $el.height() / 2) + 20) + 'px');
+                }
+                if ($(".popover.in").offset().top < 0) {
+                    $(".popover.in").css("top", '0');
                 }
                 bootstro.resetNextAction($el);
                 //scroll if neccessary
@@ -332,9 +384,11 @@ $(document).ready(function(){
         bootstro._start = function(selector)
         {
             selector = selector || '.bootstro';
-
+            selectorInUse = selector;
+            console.log("_start("+selector+")");
             $elements = $(selector);
             count  = $elements.size();
+            console.log("count: " + count);
             if (count > 0 && $('div.bootstro-backdrop').length === 0)
             {
                 // Prevents multiple copies
@@ -452,6 +506,7 @@ $(document).ready(function(){
             $('.bootstro-next-action').removeClass('bootstro-next-action');
             console.log("next-action-count: " + $('.bootstro-next-action').length);
             if (element.data('bootstro-action') == 'next') {
+                console.log("wse");
                 if (element.data('bootstro-selector-next') != 'undefined') {
 
                     bootstro.selector_next = element.data('bootstro-selector-next');

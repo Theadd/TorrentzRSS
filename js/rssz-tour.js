@@ -43,11 +43,21 @@ var tours = {
             "selector-next": "#ui-add-new-handle-duplicates-tv > a > div > button",
             "placement": "right"
         }, {
+            "selector": ".rule-dupe-tv:last",
+            "title": "Click to expand.",
+            "content": "Content here.",
+            "width": "400px",
+            "step": "4",
+            "action": "next",
+            "selector-next": ".rule-dupe-tv:last > a",
+            "dynamic": "<li class=\"dropdown rule-dupe-tv\"></li>",
+            "placement": "right"
+        }, {
             "selector": ".btn-sidebar-submit",
             "title": "Apply!",
             "content": "I was found because I have selector=.btn-sidebar-submit",
             "width": "400px",
-            "step": "4",
+            "step": "5",
             "placement": "right"
         }
     ]
