@@ -615,13 +615,19 @@ var sidebar_rules = {
     <ul data-value="exclude" class="dropdown-menu query-rule">\
         <li class="no-sortable">\
             <div class="nav-option-textbox">\
-                <input type="text" placeholder=" Pattern (Use lowercase letters!)" class="pull-right" style="width: 100%; text-align: left;" />\
+                <input type="text" placeholder=" Pattern (Case insensitive)" class="pull-right" style="width: 100%; text-align: left;" data-toggle="tooltip" data-placement="right" data-html="true"\
+                title="<b>Advanced search parameters:</b><br><small>Case insensitive</small><ul>\
+            <li><a href=#>Mozilla Firefox</a>: Search for Mozilla and Firefox</li>\
+            <li><a href=#><b>&quot;</b>Mozilla Firefox<b>&quot;</b></a>: Search for &quot;Mozilla Firefox&quot; string</li>\
+            <li><a href=#>Mozilla <b>|</b> Linux</a>: Search for Mozilla <b>or</b> Linux</li>\
+            <li><a href=#><b>&quot;</b>Mozilla<b>&quot;</b></a>: Search exactly for delimited word Mozilla.</li>\
+        </ul><br><p><b>Example:</b> <pre>word &quot;a phrase&quot; | &quot;exactword&quot;</pre></p>" />\
             </div>\
             <a class="nav-option no-link" href="#">&nbsp;</a>\
         </li>\
         <li class="divider inner-divider no-sortable no-sortable-inner">OPTIONS</li>\
         <li class="no-sortable"><a data-value="r" data-group="type" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Regular expression</a></li>\
-        <li class="no-sortable"><a data-value="R" data-group="type" class="nav-option nav-option-radio selected" href="#"><i class="fa fa-check"></i> String literal</a></li>\
+        <li class="no-sortable"><a data-value="R" data-group="type" class="nav-option nav-option-radio selected" href="#"><i class="fa fa-check"></i> String</a></li>\
         <li class="no-sortable"><a data-value="m" data-group="match" class="nav-option nav-option-radio selected" href="#"><i class="fa fa-check"></i> Matching</a></li>\
         <li class="no-sortable"><a data-value="M" data-group="match" class="nav-option nav-option-radio" href="#"><i class="fa fa-check"></i> Non-matching</a></li>\
         <li class="no-sortable"><a data-value="t" data-group="field" class="nav-option nav-option-radio selected" href="#"><i class="fa fa-check"></i> From title field</a></li>\
