@@ -16,7 +16,7 @@ The back end (API) is only composed by a single *process.php* and an empty *data
 * Intersect results from another TorrentzRSS query ID *(Useful to avoid duplicates over time)*
 * Sort results in several ways
 * Exclude duplicates from searches containing movies or TV shows
-* Exclude by patterns on title or category field (Using REGEX or string literals)
+* Exclude by patterns on title or category field (Using REGEX or advanced strings)
 * Evaluate conditionals, e.g. seeds > 100
 
 *Do you think of another rule that might be necessary? Create a new issue.*

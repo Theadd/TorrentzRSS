@@ -433,6 +433,11 @@ ul.main-menu li.placeholder {
     text-align: left;
 }
 
+.tooltip-inner pre {
+    overflow: visible !important;
+
+}
+
 .tooltip-inner ul {
     padding-left: 25px;
 }

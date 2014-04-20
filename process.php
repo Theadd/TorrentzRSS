@@ -116,6 +116,56 @@ function array_orderby()
     return array_pop($args);
 }
 
+/** Returns an array of regex patterns required to match an advanced search string.
+ *
+ * @example 'these words "this phrase" | "exactword" blue | "red hair"'
+ * array (size=4)
+ * 0 => string 'these' (length=5)
+ * 1 => string 'words' (length=5)
+ * 2 => string '(this\sphrase)|\bexactword\b' (length=24)
+ * 3 => string 'blue|(red\shair)' (length=16)
+ *
+ * @param $string {String} Advanced search string.
+ * @return array Array of regex patterns.
+ */
+function getPatternsFromString($string) {
+    $string .= '  ';
+    $patterns = array();
+    $aux = array();
+    $str = str_getcsv($string, ' ');
+    foreach ($str as &$value) {
+        if (strpos($value, " ") !== false) {
+            $value = str_replace(" ", '\s', $value);
+            $value = "($value)";
+        } else if ($value != '|') {
+            if (preg_match("/\"$value\"/", $string)) {
+                $value = '\b'.$value.'\b';
+            }
+        }
+    }
+    $last_value = $str[count($str) - 1];
+    foreach ($str as $key => $value) {
+        if ($value == "|") {
+            if ($key == count($str) - 2) {
+                $aux[] = $str[$key - 1]."|".$last_value;
+            } else {
+                $aux[] = $str[$key - 1]."|".$str[$key + 1];
+            }
+            $str[$key - 1] = "";
+            $str[$key] = "";
+            $str[$key + 1] = "";
+        }
+    }
+    foreach ($str as $value) {
+        if (strlen($value)) {
+            $patterns[] = $value;
+        }
+    }
+    $patterns = array_merge($patterns, $aux);
+
+    return $patterns;
+}
+
 function process_url($url, &$channel) {
 	$url = addslashes(stripslashes($url));
     $content = "";
@@ -762,13 +812,29 @@ function run($p, $r, $q) {
                 $isRegExp = (strpos($args, 'r'));
                 $matching = (strpos($args, 'm'));
                 $fromTitle = (strpos($args, 't'));
-                $pattern = base64_decode(substr($rule, $pos + 1));
+                $pattern = base64_decode(substr($rule, $pos + 1));//strtolower(base64_decode(substr($rule, $pos + 1)), ENT_COMPAT, "UTF-8");
+                if (!$isRegExp) {
+                    $pattern = getPatternsFromString($pattern);
+                }
+                logThis($pattern, "Pattern");
 
                 $i = 0;
                 $channels = count($channel);
                 while ($i < $channels) {
                     $field = ($fromTitle) ? $channel[$i]['title_lowercase'] : $channel[$i]['category'][0];
-                    $match = ($isRegExp) ? preg_match("/".$pattern."/", $field) : (strpos($field, $pattern) !== false);
+                    $match = true;
+                    if ($isRegExp) {
+                        $match = preg_match("/".$pattern."/", $field);
+                    } else {
+                        foreach ($pattern as $pattern_)
+                        {
+                            if (!preg_match("/".$pattern_."/i", $field))
+                            {
+                                $match = false;
+                                break;
+                            }
+                        }
+                    }
                     if ($match && $matching) {
                         unset($channel[$i]);
                     } else if (!$match && !$matching) {
