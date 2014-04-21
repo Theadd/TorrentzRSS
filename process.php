@@ -42,7 +42,11 @@ define("RSSZ_MULTIPLE_NODES", false);
 
 /* END OF CONFIGURATION PARAMETERS */
 
-error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
+if (RSSZ_DEBUG_MODE) {
+    error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
+} else {
+    error_reporting(0);
+}
 
 /* RSSZ_USE_SHELL_EXEC: If true, it will use 'curl' command line to retrieve the data, otherwise it will use curl functions from php. */
 if (!function_exists('curl_setopt') || !function_exists('curl_setopt')) {   //TODO: both are identical.
@@ -85,15 +89,9 @@ $SQI = 0;   //Search Query Index: Identifies current search among nested search 
 
 logThis("Init", 'Logger');
 
-if (RSSZ_ALLOW_CROSS_DOMAIN)
+if (RSSZ_ALLOW_CROSS_DOMAIN) {
     header('Access-Control-Allow-Origin: *');
-
-
-/*
-$_REQUEST['f']='json';
-$_REQUEST['p']='feed-1-t15-d120-rk';
-$_REQUEST['r']='';
-$_REQUEST['q']='superman';*/
+}
 
 function json_get_encoded($data) {
     return ((version_compare(phpversion(), '5.4.0', '>=')) ? json_encode($data, JSON_PRETTY_PRINT) : json_encode($data));
@@ -873,13 +871,27 @@ function run($p, $r, $q) {
 }
 
 
-function triggerOnShutdown($total, $excluded, $statsfile) {
+function triggerOnShutdown($total, $excluded, $statsfile, $errors, $errorsfile) {
+
+    //UPDATE ERRORS FILE:
+    if (is_array($errors) && count($errors)) {
+        $date = @date("r");
+        if (!($contents = @file($errorsfile, FILE_IGNORE_NEW_LINES))) {
+            $contents = array();
+        }
+        foreach ($errors as $error) {
+            if (count($contents) > 500) {
+                array_shift($contents);
+            }
+            $contents[] = $date." - ".$error;
+        }
+        file_put_contents($errorsfile, implode("\r\n", $contents));
+    }
 
     //UPDATE STATS FILE:
     $lockwait = 2;       // seconds to wait for lock
     $waittime = 250000;  // microseconds to wait between lock attempts
     // 2s / 250000us = 8 attempts.
-
 
     if (!file_exists($statsfile)) {
         $stats = array('total' => 0, 'excluded' => 0, 'queries' => 0);
@@ -1002,7 +1014,7 @@ if (isset($_REQUEST['tiny'])) {
 		}
 	}
 
-    register_shutdown_function('triggerOnShutdown', $data['channel']["total"], $data['channel']["excluded"], getcwd().'/data/stats');
+    register_shutdown_function('triggerOnShutdown', $data['channel']["total"], $data['channel']["excluded"], getcwd().'/data/stats', $errors, getcwd().'/data/errors.log');
 
 }
 
