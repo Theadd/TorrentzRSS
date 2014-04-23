@@ -13,6 +13,8 @@ define("RSSZ_SITE_URL", "http://Theadd.github.io/TorrentzRSS/");
 define("RSSZ_MIN_TTL", 15);
 /** Timeout in seconds per page requests from this node to torrentz.eu. */
 define("RSSZ_TIMEOUT_PER_PAGE", 3);
+/** Whether or not to set a timeout for each request. */
+define("RSSZ_SET_TIMEOUT", false);
 /** Does this server/node act as master, delegating (some or all) requests to other API nodes?
  * NOTE: This only delegates cURL http requests to torrentz.eu, all data processing is still being done in this node. */
 define("RSSZ_MULTIPLE_NODES", false);
@@ -666,7 +668,9 @@ function run($p, $r, $q) {
             if (($left -= $slave[1]) <= 0) {
                 //remote request
                 $using_remote_node = true;
-                ini_set('default_socket_timeout', max(round($slave[2] * $params[1]), 1));
+                if (RSSZ_SET_TIMEOUT) {
+                    ini_set('default_socket_timeout', max(round($slave[2] * $params[1]), 1));
+                }
                 $query = $slave[0] . "?f=json&p=" . $p . "&r=&q=" . $q;
                 if (($sum = @remote_process_url($query, $channel)) === null) {
                     logThis("FALLBACK FROM REMOTE NODE! $query", "FALLBACK!");
@@ -681,7 +685,9 @@ function run($p, $r, $q) {
         }
     }
     if (!$using_remote_node) {
-        ini_set('default_socket_timeout', intval(RSSZ_TIMEOUT_PER_PAGE));
+        if (RSSZ_SET_TIMEOUT) {
+            ini_set('default_socket_timeout', intval(RSSZ_TIMEOUT_PER_PAGE));
+        }
         $query = "http://torrentz.eu/" . $params[0] . "?q=" . $q;
         $page = 0;
         while (($sum = process_url($query.'&p='.$page, $channel_aux)) != 0 && ($params[1] * 2 > $page)) {
