@@ -24,18 +24,18 @@ define("RSSZ_MULTIPLE_NODES", false);
     /** $_NODES contains an array of nodes within "your" network of API nodes. */
     $_NODES = array(    //This are valid nodes provided as example
         array(
-            "http://rssz.netau.net/process.php",    //{string} Remote node url to process.php
-            0.1,    //{float} Ratio. (e.g.: 0.2 = 20% of requests will be handled by this node)
-            1     //timeout per page requests
+            "http://rssz.esy.es/process.php",    //{string} Remote node url to process.php
+            0.3,    //{float} Ratio. (e.g.: 0.2 = 20% of requests will be handled by this node)
+            2     //timeout per page requests
         ),
-        array(
+        array(  //SLOW
+            "http://rssz.netau.net/process.php",
+            0.2,
+            4
+        ),
+        array(  //BLOCKED by torrentz.eu
             "http://mation.byethost15.com/process.php",
-            0.15,
-            0.75
-        ),
-        array(
-            "http://rssz.esy.es/process.php",
-            0.25,
+            0,
             0.75
         )
     );
@@ -44,7 +44,7 @@ define("RSSZ_MULTIPLE_NODES", false);
 
 /* END OF CONFIGURATION PARAMETERS */
 
-if (RSSZ_DEBUG_MODE) {
+if (RSSZ_DEBUG_MODE || (isset($_REQUEST['debug']) && ($_REQUEST['debug']))) {
     error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 } else {
     error_reporting(0);
@@ -981,7 +981,7 @@ if (isset($_REQUEST['tiny'])) {
 		"dataSource"  => "http://torrentz.eu/",
 		"project"  => "https://github.com/Theadd/TorrentzRSS",
 		"author"  => "Theadd",
-		"version"  => "1.1",
+		"version"  => "1.2",
 		"license"  => "GPL v2",
 		"params"  => $_REQUEST['p'],
 		"rules"  => $_REQUEST['r'],
