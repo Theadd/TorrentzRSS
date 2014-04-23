@@ -195,9 +195,19 @@ function process_url($url, &$channel) {
     $isHeader = true;
     foreach(preg_split("/((\r?\n)|(\r\n?))/", $response) as $line){
 
-        if ($isHeader && empty($line)) {
-            $isHeader = false;
-            continue;
+        if ($isHeader) {
+            if (empty($line)) {
+                $isHeader = false;
+                continue;
+            } else {
+                //HTTP/1.1 429 Too Many Requests
+                if (preg_match("/HTTP.*?\s(\d+?)\s(.*?)$/", $line, $im)) {
+                    logThis($im[1]." ".$im[2], "HTTP Response status");
+                    if (intval($im[1]) == 429) {
+                        $GLOBALS['errors'][] = "Torrentz.eu says: [".$im[1]."] ".$im[2];
+                    }
+                }
+            }
         }
         if (!$isHeader) {
             $content .= $line.PHP_EOL;
@@ -254,6 +264,10 @@ function remote_process_url($url, &$channel) {
 
     if (!empty($content['channel']['errors'])) {
         foreach ($content['channel']['errors'] as $error) {
+            if (preg_match("/\[429\]/", $error)) {
+                trigger_error($error, E_USER_WARNING);
+                return null;
+            }
             $GLOBALS['errors'][] = $error;
         }
     }
