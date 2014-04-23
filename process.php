@@ -13,6 +13,8 @@ define("RSSZ_SITE_URL", "http://Theadd.github.io/TorrentzRSS/");
 define("RSSZ_MIN_TTL", 15);
 /** Timeout in seconds per page requests from this node to torrentz.eu. */
 define("RSSZ_TIMEOUT_PER_PAGE", 3);
+/** Whether or not to set a timeout for each request. */
+define("RSSZ_SET_TIMEOUT", false);
 /** Does this server/node act as master, delegating (some or all) requests to other API nodes?
  * NOTE: This only delegates cURL http requests to torrentz.eu, all data processing is still being done in this node. */
 define("RSSZ_MULTIPLE_NODES", false);
@@ -22,18 +24,18 @@ define("RSSZ_MULTIPLE_NODES", false);
     /** $_NODES contains an array of nodes within "your" network of API nodes. */
     $_NODES = array(    //This are valid nodes provided as example
         array(
-            "http://rssz.netau.net/process.php",    //{string} Remote node url to process.php
-            0.1,    //{float} Ratio. (e.g.: 0.2 = 20% of requests will be handled by this node)
-            1     //timeout per page requests
+            "http://rssz.esy.es/process.php",    //{string} Remote node url to process.php
+            0.3,    //{float} Ratio. (e.g.: 0.2 = 20% of requests will be handled by this node)
+            2     //timeout per page requests
         ),
-        array(
+        array(  //SLOW
+            "http://rssz.netau.net/process.php",
+            0.2,
+            4
+        ),
+        array(  //BLOCKED by torrentz.eu
             "http://mation.byethost15.com/process.php",
-            0.15,
-            0.75
-        ),
-        array(
-            "http://rssz.esy.es/process.php",
-            0.25,
+            0,
             0.75
         )
     );
@@ -42,7 +44,11 @@ define("RSSZ_MULTIPLE_NODES", false);
 
 /* END OF CONFIGURATION PARAMETERS */
 
-error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
+if (RSSZ_DEBUG_MODE || (isset($_REQUEST['debug']) && ($_REQUEST['debug']))) {
+    error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
+} else {
+    error_reporting(0);
+}
 
 /* RSSZ_USE_SHELL_EXEC: If true, it will use 'curl' command line to retrieve the data, otherwise it will use curl functions from php. */
 if (!function_exists('curl_setopt') || !function_exists('curl_setopt')) {   //TODO: both are identical.
@@ -85,15 +91,9 @@ $SQI = 0;   //Search Query Index: Identifies current search among nested search 
 
 logThis("Init", 'Logger');
 
-if (RSSZ_ALLOW_CROSS_DOMAIN)
+if (RSSZ_ALLOW_CROSS_DOMAIN) {
     header('Access-Control-Allow-Origin: *');
-
-
-/*
-$_REQUEST['f']='json';
-$_REQUEST['p']='feed-1-t15-d120-rk';
-$_REQUEST['r']='';
-$_REQUEST['q']='superman';*/
+}
 
 function json_get_encoded($data) {
     return ((version_compare(phpversion(), '5.4.0', '>=')) ? json_encode($data, JSON_PRETTY_PRINT) : json_encode($data));
@@ -195,9 +195,19 @@ function process_url($url, &$channel) {
     $isHeader = true;
     foreach(preg_split("/((\r?\n)|(\r\n?))/", $response) as $line){
 
-        if ($isHeader && empty($line)) {
-            $isHeader = false;
-            continue;
+        if ($isHeader) {
+            if (empty($line)) {
+                $isHeader = false;
+                continue;
+            } else {
+                //HTTP/1.1 429 Too Many Requests
+                if (preg_match("/HTTP.*?\s(\d+?)\s(.*?)$/", $line, $im)) {
+                    logThis($im[1]." ".$im[2], "HTTP Response status");
+                    if (intval($im[1]) == 429) {
+                        $GLOBALS['errors'][] = "Torrentz.eu says: [".$im[1]."] ".$im[2];
+                    }
+                }
+            }
         }
         if (!$isHeader) {
             $content .= $line.PHP_EOL;
@@ -254,6 +264,10 @@ function remote_process_url($url, &$channel) {
 
     if (!empty($content['channel']['errors'])) {
         foreach ($content['channel']['errors'] as $error) {
+            if (preg_match("/\[429\]/", $error)) {
+                trigger_error($error, E_USER_WARNING);
+                return null;
+            }
             $GLOBALS['errors'][] = $error;
         }
     }
@@ -668,7 +682,9 @@ function run($p, $r, $q) {
             if (($left -= $slave[1]) <= 0) {
                 //remote request
                 $using_remote_node = true;
-                ini_set('default_socket_timeout', max(round($slave[2] * $params[1]), 1));
+                if (RSSZ_SET_TIMEOUT) {
+                    ini_set('default_socket_timeout', max(round($slave[2] * $params[1]), 1));
+                }
                 $query = $slave[0] . "?f=json&p=" . $p . "&r=&q=" . $q;
                 if (($sum = @remote_process_url($query, $channel)) === null) {
                     logThis("FALLBACK FROM REMOTE NODE! $query", "FALLBACK!");
@@ -683,7 +699,9 @@ function run($p, $r, $q) {
         }
     }
     if (!$using_remote_node) {
-        ini_set('default_socket_timeout', intval(RSSZ_TIMEOUT_PER_PAGE));
+        if (RSSZ_SET_TIMEOUT) {
+            ini_set('default_socket_timeout', intval(RSSZ_TIMEOUT_PER_PAGE));
+        }
         $query = "http://torrentz.eu/" . $params[0] . "?q=" . $q;
         $page = 0;
         while (($sum = process_url($query.'&p='.$page, $channel_aux)) != 0 && ($params[1] * 2 > $page)) {
@@ -873,13 +891,27 @@ function run($p, $r, $q) {
 }
 
 
-function triggerOnShutdown($total, $excluded, $statsfile) {
+function triggerOnShutdown($total, $excluded, $statsfile, $errors, $errorsfile) {
+
+    //UPDATE ERRORS FILE:
+    if (is_array($errors) && count($errors)) {
+        $date = @date("r");
+        if (!($contents = @file($errorsfile, FILE_IGNORE_NEW_LINES))) {
+            $contents = array();
+        }
+        foreach ($errors as $error) {
+            if (count($contents) > 500) {
+                array_shift($contents);
+            }
+            $contents[] = $date." - ".$error;
+        }
+        file_put_contents($errorsfile, implode("\r\n", $contents));
+    }
 
     //UPDATE STATS FILE:
     $lockwait = 2;       // seconds to wait for lock
     $waittime = 250000;  // microseconds to wait between lock attempts
     // 2s / 250000us = 8 attempts.
-
 
     if (!file_exists($statsfile)) {
         $stats = array('total' => 0, 'excluded' => 0, 'queries' => 0);
@@ -949,7 +981,7 @@ if (isset($_REQUEST['tiny'])) {
 		"dataSource"  => "http://torrentz.eu/",
 		"project"  => "https://github.com/Theadd/TorrentzRSS",
 		"author"  => "Theadd",
-		"version"  => "1.1",
+		"version"  => "1.2",
 		"license"  => "GPL v2",
 		"params"  => $_REQUEST['p'],
 		"rules"  => $_REQUEST['r'],
@@ -1002,7 +1034,7 @@ if (isset($_REQUEST['tiny'])) {
 		}
 	}
 
-    register_shutdown_function('triggerOnShutdown', $data['channel']["total"], $data['channel']["excluded"], getcwd().'/data/stats');
+    register_shutdown_function('triggerOnShutdown', $data['channel']["total"], $data['channel']["excluded"], getcwd().'/data/stats', $errors, getcwd().'/data/errors.log');
 
 }
 
