@@ -8,6 +8,11 @@
         <meta name="keywords" content="torrentz.eu rss, rss feeds, torrents, torrent rss, bittorrent rss, torrent download, torrent movies, torrent tv shows">
         <meta name="robots" content="index, follow">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="cache-control" content="max-age=0" />
+        <meta http-equiv="cache-control" content="no-cache" />
+        <meta http-equiv="expires" content="0" />
+        <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+        <meta http-equiv="pragma" content="no-cache" />
         <link rel="icon" type="image/png" href="img/logo.png" />
 		<link href="plugins/bootstrap/bootstrap.css" rel="stylesheet">
 		<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
@@ -58,7 +63,7 @@
 		<div id="sidebar-left" class="col-xs-2 col-sm-2">
 			<ul class="nav main-menu">
                 <li class="divider no-sortable">QUERY PARAMETERS</li>
-                <li class="dropdown no-sortable">
+                <li class="dropdown no-sortable" id="ui-quality">
                     <a href="#" class="dropdown-toggle no-sortable" data-toggle="dropdown">
                         <i class="fa fa-signal no-sortable"></i>
                         <span class="hidden-xs no-sortable">Quality &amp; Safety</span>
@@ -69,7 +74,7 @@
                         <li class="no-sortable"><a data-value="verified" class="nav-option nav-option-radio no-sortable" href="#"><i class="fa fa-check no-sortable"></i> Verified</a></li>
                     </ul>
                 </li>
-                <li class="dropdown no-sortable">
+                <li class="dropdown no-sortable" id="ui-order">
                     <a href="#" class="dropdown-toggle no-sortable" data-toggle="dropdown">
                         <i class="fa fa-sort no-sortable"></i>
                         <span class="hidden-xs no-sortable">Order by</span>
@@ -81,7 +86,7 @@
                         <li class="no-sortable"><a data-value="peers" class="nav-option nav-option-radio no-sortable selected" href="#"><i class="fa fa-check no-sortable"></i> Peers</a></li>
                     </ul>
                 </li>
-                <li class="dropdown no-sortable">
+                <li class="dropdown no-sortable" id="ui-pages">
                     <a href="#" class="dropdown-toggle no-sortable" data-toggle="dropdown">
                         <i class="fa fa-bars no-sortable"></i>
                         <span class="hidden-xs no-sortable">Page requests</span>
@@ -301,6 +306,7 @@
 <script src="js/rssz.js"></script>
 <script src="js/rssz-query.js"></script>
 <script src="js/rssz-tour.js"></script>
+<script src="js/rssz-csp.js"></script>
 <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

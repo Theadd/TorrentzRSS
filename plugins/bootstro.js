@@ -148,7 +148,6 @@ $(document).ready(function(){
                         element = $(e['dynamic']).prependTo('body');
                     }
                 } else {
-                    console.log("not dynamic.");
                     element = $(e.selector);
                 }
 
@@ -191,7 +190,7 @@ $(document).ready(function(){
 
         update_dynamic_element = function(i)
         {
-            //console.log("update dynamic element "+i);
+            console.log("update dynamic element "+i);
             //console.dir($elements);
             //console.dir($("[data-bootstro-step=" + i +"]"));
             var element = $("[data-bootstro-step=" + i +"]");
@@ -199,8 +198,10 @@ $(document).ready(function(){
             //console.log(element);
             var dynamic = null;
             if (element.attr('data-bootstro-dynamic')) {
-                //console.log("is dynamic");
+                console.log("is dynamic");
                 dynamic = $(element.attr('data-bootstro-selector'));
+                console.log("here dynamic found:");
+                console.log(dynamic);
                 if (dynamic.length) {
                     var data = element.data();
                     //console.log("old data array:");
@@ -242,7 +243,7 @@ $(document).ready(function(){
             if ($el.attr('data-bootstro-width'))
             {
                 p.width = $el.attr('data-bootstro-width');
-                style = style + 'width:' + $el.attr('data-bootstro-width') + ';'
+                style = style + 'min-width:' + $el.attr('data-bootstro-width') + ';'
             }
             if ($el.attr('data-bootstro-height'))
             {
@@ -303,10 +304,11 @@ $(document).ready(function(){
                 update_dynamic_element(idx);
                 var p = get_popup(idx);
                 var $el = get_element(idx);
-
+            console.log("go_to("+idx+"), element: ");
+            console.log($el);
                 $el.popover(p).popover('show');
                 if ($el.hasClass("dropdown")) {
-                    console.log("repositioning");
+                    console.log("repositioning idx="+idx);
                     $(".popover.in").css("top", (($(".popover.in").offset().top - $el.height() / 2) + 20) + 'px');
                 }
                 if ($(".popover.in").offset().top < 0) {
@@ -504,7 +506,7 @@ $(document).ready(function(){
             bootstro.selector_next = "none";
             $("html").unbind('click.bootstro-next-action');
             $('.bootstro-next-action').removeClass('bootstro-next-action');
-            console.log("next-action-count: " + $('.bootstro-next-action').length);
+
             if (element.data('bootstro-action') == 'next') {
                 console.log("wse");
                 if (element.data('bootstro-selector-next') != 'undefined') {
@@ -524,6 +526,7 @@ $(document).ready(function(){
                     //}
                 });
             }
+            console.log("next-action-count: " + $('.bootstro-next-action').length);
 
         }
 
