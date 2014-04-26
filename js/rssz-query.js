@@ -267,7 +267,7 @@ function queryManager(config_params) {
                 $('.preloader').hide();
 
                 busy = false;
-                bootstro.nextWhenNotBusy();
+                bootstro.nextWithDelay();
             });
             request.fail(function(data) {
                 log.warn("Fail: "+data);
