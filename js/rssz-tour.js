@@ -150,7 +150,7 @@ var tours = {
             "title": "Add query intersection rule",
             "content": "Add a <b>query intersection</b> rule by clicking the <i class=\"fa fa-plus\"></i> button.",
             "top": "20px",
-            "width": "400px",
+            "width": "300px",
             "nextButton": "<span></span>",
             "prevButton": "<span></span>",
             "step": "3",
