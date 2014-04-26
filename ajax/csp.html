@@ -36,7 +36,7 @@
 
                         </tbody>
                     </table>
-					<small id="uuid-container" class="ui-uuid-container">* <b>UUID</b>: Click <a id="get-uuid" data-query="" href="#">here</a> to generate it.</small>
+					<small id="uuid-container">* <b>UUID</b>: Click <a id="get-uuid" data-query="" href="#">here</a> to generate it.</small>
 				</div>
 				<div class="clearfix"></div>
 
@@ -50,7 +50,8 @@
     $(document).ready(function() {
         var tbody = $('#results-table').find('tbody');
         console.log("calling manager.perform");
-        var working = manager.perform(tbody, true);
+        var csp = new csProcess();
+        var working = csp.perform(tbody, true);
         console.log("end call, return: " + working);
     });
 </script>

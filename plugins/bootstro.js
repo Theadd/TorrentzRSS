@@ -141,14 +141,12 @@ $(document).ready(function(){
                 //build the selector
                 var element = null;
                 if (typeof e['dynamic'] !== "undefined") {
-                    console.log("e.dynamic: "+ e['dynamic']);
                     if ($(".bootstro-dynamic-elements").length > 0) {
                         element = $(e['dynamic']).appendTo('.bootstro-dynamic-elements');
                     } else {
                         element = $(e['dynamic']).prependTo('body');
                     }
                 } else {
-                    console.log("not dynamic.");
                     element = $(e.selector);
                 }
 
@@ -159,9 +157,9 @@ $(document).ready(function(){
                         element.attr('data-bootstro-' + j, true);
                     }
                 });
-                //RSSZ MOD
+
                 element.attr('data-container', "body");
-                //end mod
+
                 //if ($(e.selector).is(":visible"))
                     selectorArr.push(e.selector);
             });
@@ -191,28 +189,18 @@ $(document).ready(function(){
 
         update_dynamic_element = function(i)
         {
-            //console.log("update dynamic element "+i);
-            //console.dir($elements);
-            //console.dir($("[data-bootstro-step=" + i +"]"));
             var element = $("[data-bootstro-step=" + i +"]");
-            //console.log(element.attr('data-bootstro-dynamic'));
-            //console.log(element);
             var dynamic = null;
             if (element.attr('data-bootstro-dynamic')) {
-                //console.log("is dynamic");
                 dynamic = $(element.attr('data-bootstro-selector'));
                 if (dynamic.length) {
                     var data = element.data();
-                    //console.log("old data array:");
-                    //console.log(data);
 
                     var attributes = element.prop("attributes");
                     $.each(attributes, function() {
                         dynamic.attr(this.name, this.value);
                     });
-                    //$elements[i] = dynamic;
                     $elements = $(selectorInUse);
-                    //console.dir($elements);
                 } else {
                     console.log("ERROR: Dynamic element not found!")
                 }
@@ -242,7 +230,7 @@ $(document).ready(function(){
             if ($el.attr('data-bootstro-width'))
             {
                 p.width = $el.attr('data-bootstro-width');
-                style = style + 'width:' + $el.attr('data-bootstro-width') + ';'
+                style = style + 'min-width:' + $el.attr('data-bootstro-width') + ';'
             }
             if ($el.attr('data-bootstro-height'))
             {
@@ -303,48 +291,34 @@ $(document).ready(function(){
                 update_dynamic_element(idx);
                 var p = get_popup(idx);
                 var $el = get_element(idx);
-
+                
                 $el.popover(p).popover('show');
-                if ($el.hasClass("dropdown")) {
-                    console.log("repositioning");
-                    $(".popover.in").css("top", (($(".popover.in").offset().top - $el.height() / 2) + 20) + 'px');
+                var popoverIn = $(".popover.in");
+                if (typeof $el.data('bootstro-top') !== 'undefined') {
+                    popoverIn.css("top", ((popoverIn.offset().top - $el.height() / 2) + parseInt($el.data('bootstro-top'))) + 'px');
                 }
-                if ($(".popover.in").offset().top < 0) {
-                    $(".popover.in").css("top", '0');
+                if (popoverIn.offset().top < 0) {
+                    popoverIn.css("top", '0');
                 }
                 bootstro.resetNextAction($el);
                 //scroll if neccessary
                 var docviewTop = $(window).scrollTop();
-                var top = Math.min($(".popover.in").offset().top, $el.offset().top);
-                //RSSZ MOD
-
-                //console.dir($el);
-                //console.dir($elements);
-                //console.log("IDX: "+idx);
-                //console.log($("[data-bootstro-step=" + idx +"]").offset());
-                //console.log($("#ui-add-new-handle-duplicates").offset().top);
-                //end mod
+                var top = Math.min(popoverIn.offset().top, $el.offset().top);
                 //distance between docviewTop & min.
                 var topDistance = top - docviewTop;
-
-                console.log("popover top: "+$(".popover.in").offset().top + ", element top: " + $el.offset().top + ", docviewTop: " + docviewTop + ", top: " + top + ", topDistance: " + topDistance);
 
                 if (topDistance < settings.margin) //the element too up above
                     $('html,body').animate({
                             scrollTop: top - settings.margin},
                         'slow');
-                else if(!is_entirely_visible($(".popover.in")) || !is_entirely_visible($el))
+                else if(!is_entirely_visible(popoverIn) || !is_entirely_visible($el))
                 //the element is too down below
                     $('html,body').animate({
                             scrollTop: top - settings.margin},
                         'slow');
                 // html
 
-                //RSSZ MOD
-                var popo = $(".popover");
-                console.log("popover top: " + popo.offset().top);
-                //if (popo.top)
-                //RSSZ COMMENT $el.addClass('bootstro-highlight');
+                //$el.addClass('bootstro-highlight');
                 activeIndex = idx;
             }
         };
@@ -385,10 +359,8 @@ $(document).ready(function(){
         {
             selector = selector || '.bootstro';
             selectorInUse = selector;
-            console.log("_start("+selector+")");
             $elements = $(selector);
             count  = $elements.size();
-            console.log("count: " + count);
             if (count > 0 && $('div.bootstro-backdrop').length === 0)
             {
                 // Prevents multiple copies
@@ -413,7 +385,6 @@ $(document).ready(function(){
                         {
                             //result is an array of {selector:'','title':'','width', ...}
                             var popover = data.result;
-                            //console.log(popover);
                             selector = process_items(popover);
                             bootstro._start(selector);
                         }
@@ -447,17 +418,6 @@ $(document).ready(function(){
                 e.preventDefault();
                 return false;
             });
-
-            //RSSZ MOD
-            /*$("html").on('click.bootstro', "[data-bootstro-action='next'] > a", function(e){
-                //$(this).data("bootstro-action", 'none');
-                //$(this).click();
-                //bootstro.next();
-                console.log("nextWhenNotBusy();");
-                bootstro.nextWhenNotBusy();
-                //e.preventDefault();
-                //return false;
-            });*/
 
             $("html").on('click.bootstro', ".bootstro-prev-btn", function(e){
                 bootstro.prev();
@@ -504,11 +464,9 @@ $(document).ready(function(){
             bootstro.selector_next = "none";
             $("html").unbind('click.bootstro-next-action');
             $('.bootstro-next-action').removeClass('bootstro-next-action');
-            console.log("next-action-count: " + $('.bootstro-next-action').length);
-            if (element.data('bootstro-action') == 'next') {
-                console.log("wse");
-                if (element.data('bootstro-selector-next') != 'undefined') {
 
+            if (element.data('bootstro-action') == 'next') {
+                if (typeof element.data('bootstro-selector-next') !== 'undefined') {
                     bootstro.selector_next = element.data('bootstro-selector-next');
                     $(element.data('bootstro-selector-next')).addClass('.bootstro-next-action');
                 } else {
@@ -516,25 +474,17 @@ $(document).ready(function(){
                     element.addClass('.bootstro-next-action');
                 }
 
-                console.log("SELECTOR NEXT: " + bootstro.selector_next);
-
                 $("html").on('click.bootstro-next-action', bootstro.selector_next, function(e){
-                    //if ($(this).is(bootstro.selector_next)) {
-                        bootstro.nextWhenNotBusy();
-                    //}
+                    bootstro.nextWithDelay();
                 });
             }
 
         }
 
-        bootstro.nextWhenNotBusy = function() {
+        bootstro.nextWithDelay = function() {
 
             setTimeout(function() {
-                if (!uiBusyState) {
-                    bootstro.next();
-                } else {
-                    bootstro.nextWhenNotBusy();
-                }
+                bootstro.next();
             }, 500);
 
         }

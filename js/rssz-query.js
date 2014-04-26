@@ -90,6 +90,7 @@ function queryManager(config_params) {
 
                 request.success(function(data) {
                     $("#uuid-container").html("* <b>UUID</b>: " + data);
+                    _cookie("uuid", data);
                     this_qm.setBusy(false);
                 });
                 request.fail(function(data) {
@@ -266,6 +267,7 @@ function queryManager(config_params) {
                 $('.preloader').hide();
 
                 busy = false;
+                bootstro.nextWhenNotBusy();
             });
             request.fail(function(data) {
                 log.warn("Fail: "+data);
@@ -296,6 +298,7 @@ function queryManager(config_params) {
             this.orderby = $('#order').data('value');
             this.pages = $('#pages').data('value');
             this.query = $('#search-query').val();
+            _cookie("search-query", this.query);
             //general settings    //"t15-d120-rk";
             var dupe_settings = $("#dupe-delay");
             this.settings = "t" + parseInt($("#ttl").find('input').val()) + this_qm.rule_delimiter + "d" + parseInt(dupe_settings.find('input').val()) + this_qm.rule_delimiter;

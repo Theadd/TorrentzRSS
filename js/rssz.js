@@ -242,6 +242,20 @@ function URLParameters() {
     };
 }
 
+/* COOKIES */
+
+function _cookie(key, value) {
+    if (typeof value === "undefined") {
+        var keyValue = document.cookie.match('(^|;) ?' + key + '=([^;]*)(;|$)');
+        return keyValue ? keyValue[2] : null;
+    } else {
+        var expires = new Date();
+        expires.setTime(expires.getTime() + (1 * 24 * 60 * 60 * 1000));
+        document.cookie = key + '=' + value + ';expires=' + expires.toUTCString();
+        return true;
+    }
+}
+
 /* SORTABLE SIDEBAR */
 
 $(function  () {
