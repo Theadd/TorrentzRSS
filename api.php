@@ -119,9 +119,8 @@ $_REQUEST['r'] = substr($_REQUEST['r'], 1);
 
 //query
 $_REQUEST['q'] = $_REQUEST['query'];
-print_r($_REQUEST);
-$var = json_encode($_REQUEST);
-echo $_GET['jsoncallback'] . '(' . $var . ')';
+
+include "process.php";
 
 
 
