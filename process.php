@@ -946,6 +946,7 @@ function triggerOnShutdown($total, $excluded, $statsfile, $errors, $errorsfile) 
 if (!isset($_REQUEST['r']))
     $_REQUEST['r'] = '';
 
+//Keep previous results
 if (isset($_REQUEST['f']) && strtolower($_REQUEST['f']) == 'rss') {
     $data = array('q' => $_REQUEST['q'], 'p' => $_REQUEST['p'], 'r' => $_REQUEST['r']);
     $sdata = serialize($data);
@@ -962,6 +963,10 @@ if (isset($_REQUEST['f']) && strtolower($_REQUEST['f']) == 'rss') {
 
 if (isset($_REQUEST['tiny'])) {
 	$data = array('q' => $_REQUEST['q'], 'p' => $_REQUEST['p'], 'r' => $_REQUEST['r']);
+    $data['query'] = (isset($_REQUEST['query'])) ? $_REQUEST['query'] : '';
+    $data['rules'] = (isset($_REQUEST['rules'])) ? $_REQUEST['rules'] : array();
+    $data['parameters'] = (isset($_REQUEST['parameters'])) ? $_REQUEST['parameters'] : array();
+    $data['settings'] = (isset($_REQUEST['settings'])) ? $_REQUEST['settings'] : array();
 	$sdata = serialize($data);
 	$tiny = md5($sdata);
 	file_put_contents("data/".$tiny, $sdata);
@@ -996,12 +1001,20 @@ if (isset($_REQUEST['tiny'])) {
 	$data['channel'] = array_merge($data['channel'], $value);
 	$data['channel']["total"] = count($value);
 	$data['channel']["excluded"] = $results - $data['channel']["total"];
+    if (isset($_REQUEST['errors']) && is_array($_REQUEST['errors'])) {
+        $errors = array_merge($_REQUEST['errors'], $errors);
+    }
 	$data['channel']["errors"] = $errors;
 
 	if (isset($_REQUEST['f']) && strtolower($_REQUEST['f']) == 'json') {
-		//header('Content-Type: application/json');
-        header('Content-Type: application/json; charset=utf-8', true,200);
-		echo json_get_encoded($data);
+		if (isset($_GET['jsoncallback'])) {
+            //JSON API
+            $data['source'] = "JSONCALLBACK!";
+            echo $_GET['jsoncallback'] . '(' . json_encode($data) . ')';
+        } else {
+            header('Content-Type: application/json; charset=utf-8', true,200);
+            echo json_get_encoded($data);
+        }
 	} else {    //rss
 
         //save returned hashes so we'll prioritize them in later rss calls
