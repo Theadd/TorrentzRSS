@@ -55,6 +55,9 @@ function RSSZServer() {
                     params[name] = value;
                 }
             });
+            var api = new RSSZApi(path, params);
+            api.reduce();
+            console.log(api.params);
         });
 
         ipcomm.on('reload-config', function(event, arg) {
