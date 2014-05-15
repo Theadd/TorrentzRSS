@@ -94,9 +94,9 @@ jQuery.fn.swap = function(b){
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 $(document).ready(function () {
-	$('.show-sidebar').on('click', function () {
+	$('.toggle-sidebar').on('click', function () {
 		$('div#main').toggleClass('sidebar-show');
-		setTimeout(MessagesMenuWidth, 250);
+		//setTimeout(MessagesMenuWidth, 250);
 	});
 	var ajax_url = location.hash.replace(/^#/, '');
 	if (ajax_url.length < 1) {
@@ -220,5 +220,3 @@ $(document).ready(function () {
     });
 
 });
-
-

@@ -1,0 +1,107 @@
+
+<style>
+
+.form-control {
+    clear: none;
+    display: inline;
+    font-size: 0.9em;
+    height: 22px;
+    margin: 10px 0 0 10px;
+    opacity: 0.9;
+    width: inherit;
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+h3.window-title {
+    background-color: rgba(106, 166, 214, 0.3);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.13);
+    color: rgba(0, 0, 0, 0.25);
+    font-size: 1.5em;
+    font-weight: bold;
+    letter-spacing: 0.3em;
+    padding: 12px 20px;
+    text-transform: uppercase;
+}
+
+</style>
+
+<h3 class="window-title">Options</h3>
+<div style="padding: 15px 30px;">
+
+
+    <div class="row">
+        <div class="checkbox">
+            <label>
+                <input class="option-item" data-key="background" type="checkbox" checked=""> Minimize instead of closing
+                <i class="fa fa-square-o"></i>
+            </label>
+        </div>
+    </div>
+    <div class="row">
+        <input class="form-control option-item-text" data-key="server-port" type="text" value="1542" maxlength="5" style="padding: 0; text-align: center; width: calc(100% - 245px);">
+        <div class="checkbox" style="float: left;">
+            <label>
+                <input class="option-item" data-key="server" type="checkbox" checked=""> Enable HTTP Server on port:
+                <i class="fa fa-square-o"></i>
+            </label>
+        </div>
+    </div>
+    <div class="row" style="margin-left: 20px;">
+        <div class="checkbox">
+            <label>
+                <input class="option-item" data-key="server-json" type="checkbox" checked=""> Serve JSON requests
+                <i class="fa fa-square-o"></i>
+            </label>
+        </div>
+    </div>
+    <div class="row" style="margin-left: 20px;">
+        <div class="checkbox">
+            <label>
+                <input class="option-item" data-key="server-rss" type="checkbox" checked=""> Serve RSS requests
+                <i class="fa fa-square-o"></i>
+            </label>
+        </div>
+    </div>
+    <div class="row">
+
+        <div class="checkbox">
+            <label>
+                <input class="option-item" data-key="forward" type="checkbox"> Remote forward requests
+                <i class="fa fa-square-o"></i>
+            </label>
+        </div>
+    </div>
+    <div class="row">
+        <div style="font-weight: normal; margin-left: 37px; position: relative; top: -10px;">
+            <label style="font-weight: normal; width: 100%;">
+                URL: <input class="form-control option-item-text" data-key="forward-url" type="text" value="http://37.187.9.5/rssz/json?jsoncallback=?" placeholder="http://" style="padding: 0; text-align: center; width: calc(100% - 50px);">
+            </label>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+
+    $.each($(".option-item[type='checkbox']"), function() {
+        var value = _cookie($(this).data('key')) || false;
+        $(this).prop('checked', value);
+    });
+    $.each($('.option-item-text'), function() {
+        var text = _cookie($(this).data('key')) || "";
+        $(this).val(text);
+    });
+
+    var body = $('body');
+    body.on("click",".option-item[type='checkbox']", function() {
+        _cookie($(this).data('key'), $(this).is(':checked'));
+    });
+    body.on("blur",".option-item-text", function() {
+        _cookie($(this).data('key'), $(this).val());
+    });
+
+});
+
+
+
+</script>

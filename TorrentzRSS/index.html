@@ -39,9 +39,40 @@
 			<div id="top-panel" class="col-xs-12 col-sm-10">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12">
-						<a href="#" class="show-sidebar">
+						<!--<a href="#" class="show-sidebar">
 						  <i class="fa fa-bars"></i>
 						</a>
+						<div class="dropdown">
+						  <button class="btn dropdown-toggle sr-only" type="button" id="dropdownMenu1" data-toggle="dropdown">
+						    Dropdown
+						    <span class="caret"></span>
+						  </button>
+						  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+						    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
+						    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
+						    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
+						    <li role="presentation" class="divider"></li>
+						    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
+						  </ul>
+						</div>-->
+
+						<div class="dropdown">
+			        <a class="show-sidebar" href="#" data-toggle="dropdown" role="button" id="dropOptions"><i class="fa fa-bars"></i></a>
+			        <ul aria-labelledby="dropOptions" role="menu" class="dropdown-menu" style="left: -10px; top: 40px;">
+			          <li><a href="#" tabindex="-1" class="toggle-sidebar" role="menuitem"><i class="fa fa-fw fa-tasks"></i> Toggle Sidebar</a></li>
+			          <li><a href="#" tabindex="-1" class="toggle-devtools" role="menuitem"><i class="fa fa-fw fa-flash"></i> Toggle DevTools</a></li>
+								<li><a href="#" tabindex="-1" class="reload-ignore-cache" role="menuitem"><i class="fa fa-fw fa-refresh"></i> Reload</a></li>
+								<li class="divider"></li>
+								<li><a href="#" tabindex="-1" class="toggle-options" role="menuitem"><i class="fa fa-fw fa-cogs"></i> Options...</a></li>
+			        </ul>
+			      </div>
+
+						<!--<a href="#" class="show-sidebar">
+							<i class="fa fa-tasks"></i>
+						</a>
+						<a href="#" class="icon-menu-item icon-menu-item-devtools">
+							<i class="fa fa-flash"></i>
+						</a>-->
                         <form class="form-search">
                             <div class="input-group" id="search-box">
                                 <input id="search-query" type="text" placeholder="Torrentz.eu Search Query" class="form-control" value="" />
@@ -295,7 +326,17 @@
 </div>
 <!--End Container-->
 
-<script src="plugins/jquery/jquery-2.1.0.min.js"></script>
+<!--<script src="plugins/jquery/jquery-2.1.0.min.js"></script>-->
+<script>
+	if (typeof require !== "undefined") {
+		window.$ = window.jQuery = require('./plugins/jquery/jquery-2.1.0.min');
+		window.atomApp = true;
+	} else {
+		//
+		document.write("<scr" + 'ipt type="text/javascript" src="plugins/jquery/jquery-2.1.0.min.js"></scr' + "ipt>");
+		window.atomApp = false;
+	}
+</script>
 <script src="plugins/jquery-ui.min.js"></script>
 <script src="plugins/bootstrap/bootstrap.js"></script>
 <!--<script src="plugins/jquery-sortable.js"></script>-->
@@ -309,6 +350,7 @@
 <script src="js/rssz.js"></script>
 <script src="js/rssz-query.js"></script>
 <script src="js/rssz-tour.js"></script>
+<script src="js/rssz-app.js"></script>
 <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

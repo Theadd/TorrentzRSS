@@ -246,13 +246,24 @@ function URLParameters() {
 
 function _cookie(key, value) {
     if (typeof value === "undefined") {
-        var keyValue = document.cookie.match('(^|;) ?' + key + '=([^;]*)(;|$)');
-        return keyValue ? keyValue[2] : null;
+        var keyValue = null;
+        if (window.localStorage === null) {
+            keyValue = document.cookie.match('(^|;) ?' + key + '=([^;]*)(;|$)');
+            return keyValue ? keyValue[2] : null;
+        } else {
+            keyValue = window.localStorage.getItem(key);
+            return keyValue ? keyValue : null;
+        }
     } else {
-        var expires = new Date();
-        expires.setTime(expires.getTime() + (1 * 24 * 60 * 60 * 1000));
-        document.cookie = key + '=' + value + ';expires=' + expires.toUTCString();
-        return true;
+        if (window.localStorage === null) {
+            var expires = new Date();
+            expires.setTime(expires.getTime() + (1 * 24 * 60 * 60 * 1000));
+            document.cookie = key + '=' + value + ';expires=' + expires.toUTCString();
+            return true;
+        } else {
+            window.localStorage.setItem(key, value);
+            return true;
+        }
     }
 }
 
@@ -672,8 +683,3 @@ var sidebar_rules = {
     </ul>\
 </li>'
 };
-
-
-
-
-

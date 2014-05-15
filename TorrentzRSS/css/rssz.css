@@ -476,3 +476,23 @@ pre.inline {
     margin-left: 3px;
     padding: 0;
 }
+
+
+/* ATOM_SHELL */
+
+/*.icon-menu-item {
+  display: block;
+  width: 22px;
+  text-align: right;
+  float: left;
+}
+
+.form-search > .input-group {
+  width: calc(100% - 52px);
+}
+*/
+li.disabled > a {
+  color: #D6D6D6 !important;
+  background: inherit !important;
+  cursor: default !important;
+}
