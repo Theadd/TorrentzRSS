@@ -1,2 +1,4 @@
 build/atom-shell
 build/node_modules
+.gitignore
+/.idea/

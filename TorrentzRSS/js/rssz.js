@@ -233,7 +233,7 @@ function URLParameters() {
     this.get = function(sParam) {
         for (var i = 0; i < sURLVariables.length; i++) {
             //TODO: fix '=' in base64 encoded string as in: ?p=feedA-1-t30-d120-rk&r=cc2VlZHMgPj0gMTA=-tQSs&q=tv#results
-            var sParameterName = sURLVariables[i].split('=');
+            var sParameterName = sURLVariables[i].split(/=(.+)?/);
             if (sParameterName[0] == sParam) {
                 return sParameterName[1];
             }
