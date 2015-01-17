@@ -193,20 +193,8 @@ var tours = {
 
 
 $(function(){
-    /*$("body").on("click","#tour", function() {
-        bootstro.start(".bootstro", {
-            onComplete : function(params)
-            {
-                alert("Reached end of introduction with total " + (params.idx + 1)+ " slides");
-            },
-            onExit : function(params)
-            {
-                alert("Introduction stopped at slide #" + (params.idx + 1));
-            },
-            container: 'body'
-        });
-    });*/
     $("body").on("click","#tour-intersection", function() {
+        window.scrollTo(0, 0);
         bootstro.start('', {
             items : tours.intersection,
             stopOnBackdropClick: false,
@@ -216,6 +204,7 @@ $(function(){
         });
     });
     $("body").on("click","#tour-intersection2", function() {
+        window.scrollTo(0, 0);
         bootstro.start('', {
             items : tours.intersection2,
             stopOnBackdropClick: false,
