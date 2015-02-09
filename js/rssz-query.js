@@ -17,7 +17,7 @@ function queryManager(config_params) {
     this.orderby = "peers";
     this.pages = "1";
     this.query = "espa%C3%B1ol+|+spanish+|+castellano+movies+|+video+seed+%3E+20+size+%3E+600m+size+%3C++6000m+-hdtv+-screener+-latino+-xxx";
-    this.settings = "t15-d120-rk";
+    this.settings = "t15-d120-rk-Lm";
     this.rules = '';
     this.rule_delimiter = '-';
 
@@ -299,12 +299,13 @@ function queryManager(config_params) {
             this.pages = $('#pages').data('value');
             this.query = $('#search-query').val();
             _cookie("search-query", this.query);
-            //general settings    //"t15-d120-rk";
+            //general settings    //"t15-d120-rk-Lm";
             var dupe_settings = $("#dupe-delay");
             this.settings = "t" + parseInt($("#ttl").find('input').val()) + this_qm.rule_delimiter + "d" + parseInt(dupe_settings.find('input').val()) + this_qm.rule_delimiter;
             dupe_settings.find('a.selected').each(function() {
                 this_qm.settings += $(this).data('value');
             });
+            this.settings += this_qm.rule_delimiter + "L" + $("#links-source").find('a.selected').first().data('value');
 
             this.setBusy(false);
         } else {

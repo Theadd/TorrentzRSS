@@ -87,6 +87,7 @@ $session = array( 0 => array(
     'keepPreviousResults' => false,   //RSS only
     'priority_hashes' => array()
 ));
+$linksSource = 'm';   //overwritten
 $SQI = 0;   //Search Query Index: Identifies current search among nested search queries due to merge query rule
 
 logThis("Init", 'Logger');
@@ -229,7 +230,18 @@ function process_url($url, &$channel) {
         $m[2] = str_replace(',', '', $m[2]);
         $m[3] = str_replace(',', '', $m[3]);
         $item['title_lowercase'] = strtolower(htmlentities($item['title'], ENT_COMPAT, "UTF-8"));
-        $item['link'] = "http://torrage.com/torrent/".strtoupper($m[4]).".torrent";
+        switch ($GLOBALS['linksSource']) {
+            case "r":
+                $item['link'] = "http://torrage.com/torrent/".strtoupper($m[4]).".torrent";
+                break;
+            case "c":
+                $item['link'] = "http://torcache.net/torrent/".strtoupper($m[4]).".torrent";
+                break;
+            case "m":
+            default:
+                $item['link'] = "magnet:?xt=urn:btih:".strtolower($m[4])."&dn=".urlencode($item['title']);
+                break;
+        }
         $item['size'] = $m[1];
         $item['size_raw'] = intval($m[1]);
         $item['hash'] = strtoupper($m[4]);
@@ -666,6 +678,7 @@ function run($p, $r, $q) {
     if (isset($params[2])) {
         if ($GLOBALS['SQI'] == 0) { //set TTL to main search query, skip nested ones.
             $GLOBALS['userTTL'] = intval(substr($params[2], 1));
+            $GLOBALS['linksSource'] = (isset($params[5]) && strlen($params[5]) >= 2) ? substr($params[5], 1) : 'm';
         }
         $GLOBALS['session'][$GLOBALS['SQI']]['duplicatesDelay'] = intval(substr($params[3], 1));
         $GLOBALS['session'][$GLOBALS['SQI']]['duplicatesDelayOnlyRSS'] = (strpos($params[4], 'r') !== false);
