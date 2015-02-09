@@ -87,6 +87,7 @@ $session = array( 0 => array(
     'keepPreviousResults' => false,   //RSS only
     'priority_hashes' => array()
 ));
+$linksSource = 'm';   //overwritten
 $SQI = 0;   //Search Query Index: Identifies current search among nested search queries due to merge query rule
 
 logThis("Init", 'Logger');
@@ -229,7 +230,18 @@ function process_url($url, &$channel) {
         $m[2] = str_replace(',', '', $m[2]);
         $m[3] = str_replace(',', '', $m[3]);
         $item['title_lowercase'] = strtolower(htmlentities($item['title'], ENT_COMPAT, "UTF-8"));
-        $item['link'] = "http://torrage.com/torrent/".strtoupper($m[4]).".torrent";
+        switch ($GLOBALS['linksSource']) {
+            case "r":
+                $item['link'] = "http://torrage.com/torrent/".strtoupper($m[4]).".torrent";
+                break;
+            case "c":
+                $item['link'] = "http://torcache.net/torrent/".strtoupper($m[4]).".torrent";
+                break;
+            case "m":
+            default:
+                $item['link'] = "magnet:?xt=urn:btih:".strtolower($m[4])."&dn=".urlencode($item['title']);
+                break;
+        }
         $item['size'] = $m[1];
         $item['size_raw'] = intval($m[1]);
         $item['hash'] = strtoupper($m[4]);
@@ -666,6 +678,7 @@ function run($p, $r, $q) {
     if (isset($params[2])) {
         if ($GLOBALS['SQI'] == 0) { //set TTL to main search query, skip nested ones.
             $GLOBALS['userTTL'] = intval(substr($params[2], 1));
+            $GLOBALS['linksSource'] = (isset($params[5]) && strlen($params[5]) >= 2) ? substr($params[5], 1) : 'm';
         }
         $GLOBALS['session'][$GLOBALS['SQI']]['duplicatesDelay'] = intval(substr($params[3], 1));
         $GLOBALS['session'][$GLOBALS['SQI']]['duplicatesDelayOnlyRSS'] = (strpos($params[4], 'r') !== false);
@@ -946,6 +959,7 @@ function triggerOnShutdown($total, $excluded, $statsfile, $errors, $errorsfile) 
 if (!isset($_REQUEST['r']))
     $_REQUEST['r'] = '';
 
+//Keep previous results
 if (isset($_REQUEST['f']) && strtolower($_REQUEST['f']) == 'rss') {
     $data = array('q' => $_REQUEST['q'], 'p' => $_REQUEST['p'], 'r' => $_REQUEST['r']);
     $sdata = serialize($data);
@@ -962,6 +976,10 @@ if (isset($_REQUEST['f']) && strtolower($_REQUEST['f']) == 'rss') {
 
 if (isset($_REQUEST['tiny'])) {
 	$data = array('q' => $_REQUEST['q'], 'p' => $_REQUEST['p'], 'r' => $_REQUEST['r']);
+    $data['query'] = (isset($_REQUEST['query'])) ? $_REQUEST['query'] : '';
+    $data['rules'] = (isset($_REQUEST['rules'])) ? $_REQUEST['rules'] : array();
+    $data['parameters'] = (isset($_REQUEST['parameters'])) ? $_REQUEST['parameters'] : array();
+    $data['settings'] = (isset($_REQUEST['settings'])) ? $_REQUEST['settings'] : array();
 	$sdata = serialize($data);
 	$tiny = md5($sdata);
 	file_put_contents("data/".$tiny, $sdata);
@@ -996,12 +1014,20 @@ if (isset($_REQUEST['tiny'])) {
 	$data['channel'] = array_merge($data['channel'], $value);
 	$data['channel']["total"] = count($value);
 	$data['channel']["excluded"] = $results - $data['channel']["total"];
+    if (isset($_REQUEST['errors']) && is_array($_REQUEST['errors'])) {
+        $errors = array_merge($_REQUEST['errors'], $errors);
+    }
 	$data['channel']["errors"] = $errors;
 
 	if (isset($_REQUEST['f']) && strtolower($_REQUEST['f']) == 'json') {
-		//header('Content-Type: application/json');
-        header('Content-Type: application/json; charset=utf-8', true,200);
-		echo json_get_encoded($data);
+		if (isset($_GET['jsoncallback'])) {
+            //JSON API
+            $data['source'] = "JSONCALLBACK!";
+            echo $_GET['jsoncallback'] . '(' . json_encode($data) . ')';
+        } else {
+            header('Content-Type: application/json; charset=utf-8', true,200);
+            echo json_get_encoded($data);
+        }
 	} else {    //rss
 
         //save returned hashes so we'll prioritize them in later rss calls
