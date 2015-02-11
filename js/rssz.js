@@ -41,8 +41,8 @@ var Base64 = {
             }
 
             output = output +
-                this._keyStr.charAt(enc1) + this._keyStr.charAt(enc2) +
-                this._keyStr.charAt(enc3) + this._keyStr.charAt(enc4);
+            this._keyStr.charAt(enc1) + this._keyStr.charAt(enc2) +
+            this._keyStr.charAt(enc3) + this._keyStr.charAt(enc4);
 
         }
 
@@ -278,12 +278,12 @@ $(function  () {
 
 body.on("click","a.nav-option-radio", function() {
     /*var group = $(this).closest("ul");
-    group.find("a.nav-option-radio").removeClass("selected");
-    $(this).addClass("selected");
-    group.data("value", $(this).data("value"));*/
+     group.find("a.nav-option-radio").removeClass("selected");
+     $(this).addClass("selected");
+     group.data("value", $(this).data("value"));*/
 
     var parent = $(this).closest("ul"),
-        group = $(this).data("group");
+      group = $(this).data("group");
 
     if (group === undefined) {
         parent.find("a.nav-option-radio").removeClass("selected");
@@ -297,8 +297,8 @@ body.on("click","a.nav-option-radio", function() {
 
 body.on("click","a.nav-option-radio-optional", function() {
     var parent = $(this).closest("ul"),
-        group = $(this).data("group"),
-        selected = $(this).hasClass("selected");
+      group = $(this).data("group"),
+      selected = $(this).hasClass("selected");
     //ul[data-group='Companies']
     if (group === undefined) {
         parent.find("a.nav-option-radio-optional").removeClass("selected");
@@ -338,9 +338,14 @@ jQuery(window).ready(function () {
         var query = decodeURIComponent(qval).replace(/\+/g, ' ');
         $('#search-query').val(query);
 
-        var regex = /feed([a-z_]*)([A-Z]*)-([0-9]+)/g;
+        //var regex = /feed([a-z_]*)([A-Z]*)-([0-9]+)/g;
+        var regex = /feed([a-z_]*)([A-Z]*)-([0-9]+)(?:.*?\-L(.))/g;
         var result;
         result = regex.exec(pval);
+        if (result[4].length) {
+            var linksSource_element = {'m': 1, 'r': 2, 'c': 3 };
+            $("#links-source > li:nth-child(" + linksSource_element[result[4]] + ") > a").click();
+        }
         if (result[3].length) {
             var page_element = {'1': 1, '2': 2, '5': 3, '10': 4, '100': 5 };
             $("#pages > li:nth-child(" + page_element[result[3]] + ") > a").click();
@@ -367,8 +372,8 @@ jQuery(window).ready(function () {
             $('#no-selected-rule').hide();
             var bottom = $('#sidebar-rules-delimiter');
             var rules = rval.split(manager.rule_delimiter),
-                i = 0,
-                rev_rule = {'l': 'limit', 'm': 'merge', 'd': 'dupe-movies', 't': 'dupe-tv', 's': 'sort', 'e': 'exclude', 'c': 'eval', 'i': 'intersection' };
+              i = 0,
+              rev_rule = {'l': 'limit', 'm': 'merge', 'd': 'dupe-movies', 't': 'dupe-tv', 's': 'sort', 'e': 'exclude', 'c': 'eval', 'i': 'intersection' };
             //limit=l;merge=m;dupe-movies=d;dupe-tv=t;sort=s;exclude=e;eval=c
             for (; i < rules.length; ++i) {
                 var name = rev_rule[rules[i].substring(0, 1)];
@@ -414,11 +419,11 @@ jQuery(window).ready(function () {
     }
 
 
-   /* var regex = /^[0-9a-z]{20,50}$/;
-    var m = regex.exec(last);
-    if (m) {
-        manager.loadUUID(m);
-    }*/
+    /* var regex = /^[0-9a-z]{20,50}$/;
+     var m = regex.exec(last);
+     if (m) {
+     manager.loadUUID(m);
+     }*/
 
 
 });
@@ -427,7 +432,7 @@ jQuery(window).ready(function () {
 
 function appResize() {
     var content = $('#content'),
-        available = $(window).height() - content.offset().top;
+      available = $(window).height() - content.offset().top;
     content.css('min-height', available + 'px');
 }
 
